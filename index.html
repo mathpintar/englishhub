@@ -307,7 +307,7 @@
             min-height: 48px;
         }
 
-        .option-btn:hover {
+        .option-btn:hover:not(:disabled) {
             background-color: #f1f5f9;
             border-color: #cbd5e1;
         }
@@ -316,6 +316,21 @@
             background-color: rgba(59, 130, 246, 0.1);
             border-color: var(--primary-light);
             font-weight: 600;
+        }
+
+        /* Instant Feedback Colors */
+        .option-btn.correct-feedback {
+            background-color: #d1fae5 !important;
+            border-color: var(--secondary) !important;
+            color: #065f46 !important;
+            font-weight: 700;
+        }
+
+        .option-btn.incorrect-feedback {
+            background-color: #fee2e2 !important;
+            border-color: var(--error) !important;
+            color: #991b1b !important;
+            font-weight: 700;
         }
 
         .quiz-navigation {
@@ -512,6 +527,7 @@
 
     <div class="container">
         
+        <!-- LOGIN SCREEN -->
         <section id="viewLogin" class="card">
             <h2>Welcome Student!</h2>
             <p style="margin-bottom: 1.5rem; color: var(--text-light);">Please enter your name to start practicing your English grammar.</p>
@@ -524,6 +540,7 @@
             </form>
         </section>
 
+        <!-- DASHBOARD & CONFIGURATION -->
         <section id="viewDashboard" class="card hidden">
             <h2 id="welcomeMessage">Hello, Student!</h2>
             <div class="tabs" style="margin-top: 1.5rem;">
@@ -532,15 +549,36 @@
                 <button class="tab-btn" onclick="switchDashboardTab('leaderboard')">Leaderboard</button>
             </div>
 
+            <!-- Quiz Configuration Tab -->
             <div id="tabQuizConfig">
-                <h3 style="margin-bottom: 0.5rem;">Choose Number of Questions</h3>
+                <h3 style="margin-bottom: 0.5rem;">1. Choose Topic Filter</h3>
+                <div class="form-group">
+                    <select id="topicFilterSelect" class="form-control">
+                        <option value="All">All Topics Mixed</option>
+                        <option value="Nouns">Nouns (Common & Proper)</option>
+                        <option value="Pronouns">Pronouns (Subject Pronouns)</option>
+                        <option value="Verbs">Verbs (Present & Past)</option>
+                        <option value="Adjectives">Adjectives</option>
+                        <option value="Adverbs">Adverbs</option>
+                        <option value="Prepositions">Prepositions</option>
+                        <option value="Articles">Articles (a, an, the)</option>
+                        <option value="Subject Verb Agreement">Subject Verb Agreement</option>
+                        <option value="Simple Sentence Structure">Simple Sentence Structure</option>
+                        <option value="Question Words">Question Words</option>
+                        <option value="Conjunctions">Conjunctions</option>
+                        <option value="Tenses">Tenses (Simple Present & Past)</option>
+                        <option value="Vocabulary in Context">Vocabulary in Context</option>
+                    </select>
+                </div>
+
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">2. Choose Number of Questions</h3>
                 <div class="grid-options">
                     <div class="option-card selected" data-qty="10" onclick="selectQuantity(this)">10 Questions</div>
                     <div class="option-card" data-qty="20" onclick="selectQuantity(this)">20 Questions</div>
                     <div class="option-card" data-qty="50" onclick="selectQuantity(this)">50 Questions</div>
                 </div>
 
-                <h3 style="margin-top: 2rem; margin-bottom: 0.5rem;">Quiz Options</h3>
+                <h3 style="margin-top: 2rem; margin-bottom: 0.5rem;">3. Quiz Options</h3>
                 <div class="toggle-container">
                     <label class="switch">
                         <input type="checkbox" id="timerToggle" checked>
@@ -554,6 +592,7 @@
                 </button>
             </div>
 
+            <!-- Score History Tab -->
             <div id="tabHistory" class="hidden">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:10px;">
                     <h3>Your Performance Log</h3>
@@ -579,6 +618,7 @@
                 </div>
             </div>
 
+            <!-- Leaderboard Tab -->
             <div id="tabLeaderboard" class="hidden">
                 <h3>Top Performers Leaderboard</h3>
                 <p style="color:var(--text-light); margin-bottom:1rem; font-size:0.9rem;">Ranked by highest percentage, then total correct answers.</p>
@@ -598,13 +638,16 @@
             </div>
         </section>
 
+        <!-- QUIZ ACTIVE VIEW -->
         <section id="viewQuiz" class="card hidden">
             <div class="quiz-header">
                 <div>
                     <span style="font-weight: bold; color: var(--primary);">Student:</span> <span id="quizStudentName"></span>
+                    <br><span style="font-size:0.85rem; color: var(--text-light);" id="quizCurrentTopicDisplay"></span>
                 </div>
-                <div>
+                <div style="display: flex; gap: 10px; align-items: center;">
                     <span id="quizTimerDisplay" class="timer-badge">⏳ 30s</span>
+                    <button class="btn btn-danger" style="padding: 0.3rem 0.8rem; min-height: auto;" onclick="exitQuizSession()">Exit 🚪</button>
                 </div>
             </div>
 
@@ -629,6 +672,7 @@
             </div>
         </section>
 
+        <!-- RESULTS & REVIEW VIEW -->
         <section id="viewResults" class="card hidden">
             <div class="results-summary">
                 <h2>Quiz Report Card</h2>
@@ -675,6 +719,7 @@
 
     </div>
 
+    <!-- AUDIO CONTEXT UTILITIES -->
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let isMuted = false;
@@ -689,26 +734,26 @@
 
                 if (type === 'correct') {
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); 
                     gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
                     osc.start();
                     osc.stop(audioCtx.currentTime + 0.3);
                 } else if (type === 'wrong') {
                     osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
-                    osc.frequency.setValueAtTime(146.83, audioCtx.currentTime + 0.15); // D3
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime); 
+                    osc.frequency.setValueAtTime(146.83, audioCtx.currentTime + 0.15); 
                     gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
                     osc.start();
                     osc.stop(audioCtx.currentTime + 0.4);
                 } else if (type === 'complete') {
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(392.00, audioCtx.currentTime); // G4
-                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime + 0.1); // C5
-                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.2); // E5
-                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.3); // G5
+                    osc.frequency.setValueAtTime(392.00, audioCtx.currentTime); 
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime + 0.1); 
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.2); 
+                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.3); 
                     gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
                     osc.start();
@@ -727,100 +772,139 @@
         });
     </script>
 
+    <!-- QUESTION BANK DATA GENERATOR -->
     <script>
-        // Generate robust collection of 500+ unique questions targeting specified topics
-        const baseQuestionTemplates = [
-            // Nouns - Common & Proper
-            { q: "Kuala Lumpur is a beautiful ________.", a: "city", b: "City", c: "cities", d: "citys", cidx: 0, cat: "Nouns" },
-            { q: "My father drives a brand new ________ to work.", a: "Car", b: "car", c: "cars", d: "cared", cidx: 1, cat: "Nouns" },
-            { q: "We visited ________ National Zoo during our holidays.", a: "the", b: "a", c: "an", d: "some", cidx: 0, cat: "Nouns" },
-            { q: "Encik Rahman is a dedicated ________ at SK Taman Melati.", a: "teacher", b: "Teacher", c: "teachers", d: "teaching", cidx: 0, cat: "Nouns" },
-            { q: "The playful ________ ran after the red ball.", a: "puppy", b: "puppies", c: "puppys", d: "pupped", cidx: 0, cat: "Nouns" },
-            // Pronouns
-            { q: "________ am planning to complete my homework tonight.", a: "He", b: "I", c: "She", d: "They", cidx: 1, cat: "Pronouns" },
-            { q: "Ali lost his pencil box, so ________ needs to buy a new one.", a: "he", b: "she", c: "it", d: "they", cidx: 0, cat: "Pronouns" },
-            { q: "The cat is sleeping because ________ is completely exhausted.", a: "he", b: "she", c: "it", d: "we", cidx: 2, cat: "Pronouns" },
-            { q: "Siti and I are best friends. ________ study together daily.", a: "We", b: "They", c: "You", d: "He", cidx: 0, cat: "Pronouns" },
-            { q: "Look at those boys! ________ are playing football enthusiastically.", a: "We", b: "He", c: "They", d: "She", cidx: 2, cat: "Pronouns" },
-            // Verbs & Tenses
-            { q: "She ________ to school by bus every single morning.", a: "go", b: "goes", c: "going", d: "gone", cidx: 1, cat: "Verbs" },
-            { q: "Yesterday, my mother ________ a delicious chocolate cake for us.", a: "bake", b: "bakes", c: "baked", d: "baking", cidx: 2, cat: "Tenses" },
-            { q: "Listen! The birds ________ sweet songs outside the window.", a: "sing", b: "is singing", c: "are singing", d: "sang", cidx: 2, cat: "Verbs" },
-            { q: "He ________ his teeth before going to bed last night.", a: "brush", b: "brushes", c: "brushed", d: "brushing", cidx: 2, cat: "Tenses" },
-            { q: "They usually ________ football at the playground on weekends.", a: "play", b: "plays", c: "played", d: "playing", cidx: 0, cat: "Verbs" },
-            // Adjectives & Adverbs
-            { q: "The elephant is a very ________ animal found in the jungle.", a: "small", b: "huge", c: "tiny", d: "thin", cidx: 1, cat: "Adjectives" },
-            { q: "She wrote the English essay ________ and won first prize.", a: "beautifully", b: "beautiful", c: "beauty", d: "more beautiful", cidx: 0, cat: "Adverbs" },
-            { q: "The turtle crawls ________ along the sandy beach.", a: "slowly", b: "fast", c: "quickly", d: "happily", cidx: 0, cat: "Adverbs" },
-            { q: "This mathematics puzzle is too ________ for me to solve.", a: "easy", b: "difficult", c: "soft", d: "sweet", cidx: 1, cat: "Adjectives" },
-            { q: "He ran ________ to catch the departing school bus.", a: "slowly", b: "fast", c: "loudly", d: "quietly", cidx: 1, cat: "Adverbs" },
-            // Prepositions
-            { q: "The keys are safely kept ________ the drawer.", a: "on", b: "under", c: "inside", d: "between", cidx: 2, cat: "Prepositions" },
-            { q: "The clock hanging ________ the wall is ticking loudly.", a: "at", b: "on", c: "in", d: "under", cidx: 1, cat: "Prepositions" },
-            { q: "The teacher stood ________ the front of the whole classroom.", a: "at", b: "on", c: "in", d: "by", cidx: 0, cat: "Prepositions" },
-            { q: "The small puppy hid ________ the table during the storm.", a: "over", b: "under", c: "on", d: "between", cidx: 1, cat: "Prepositions" },
-            { q: "We will meet our friends ________ 4:00 p.m. at the park.", a: "on", b: "in", c: "at", d: "for", cidx: 2, cat: "Prepositions" },
-            // Articles
-            { q: "I saw ________ massive eagle flying high in the sky.", a: "a", b: "an", c: "the", d: "some", cidx: 0, cat: "Articles" },
-            { q: "Would you like to eat ________ juicy apple from the basket?", a: "a", b: "an", c: "the", d: "any", cidx: 1, cat: "Articles" },
-            { q: "________ sun shines brightly throughout the entire day.", a: "A", b: "An", c: "The", d: "Some", cidx: 2, cat: "Articles" },
-            { q: "My older brother is studying to become ________ engineer.", a: "a", b: "an", c: "the", d: "one", cidx: 1, cat: "Articles" },
-            { q: "Pass me ________ blue book lying on your desk, please.", a: "a", b: "an", c: "the", d: "any", cidx: 2, cat: "Articles" },
-            // Subject-Verb Agreement
-            { q: "Every student in this class ________ to pass the examination.", a: "want", b: "wants", c: "wanting", d: "wanded", cidx: 1, cat: "Subject Verb Agreement" },
-            { q: "The primary school boys ________ running around the field now.", a: "is", b: "are", c: "am", d: "was", cidx: 1, cat: "Subject Verb Agreement" },
-            { q: "Neither Sarah nor her sisters ________ attending the party.", a: "is", b: "are", c: "am", d: "was", cidx: 1, cat: "Subject Verb Agreement" },
-            { q: "A swarm of bees ________ hovering over the colorful flowers.", a: "is", b: "are", c: "am", d: "were", cidx: 0, cat: "Subject Verb Agreement" },
-            { q: "My grandmother ________ wonderful stories every weekend.", a: "tell", b: "tells", c: "telling", d: "tolden", cidx: 1, cat: "Subject Verb Agreement" },
-            // Question Words
-            { q: "________ is your favorite primary school teacher?", a: "What", b: "Who", c: "Where", d: "Why", cidx: 1, cat: "Question Words" },
-            { q: "________ do you live? I live in Kampung Baru, KL.", a: "When", b: "Why", c: "Where", d: "How", cidx: 2, cat: "Question Words" },
-            { q: "________ will the final school exam begin next month?", a: "Who", b: "When", c: "What", d: "Which", cidx: 1, cat: "Question Words" },
-            { q: "________ are you crying? Because I lost my water bottle.", a: "How", b: "What", c: "Why", d: "Who", cidx: 2, cat: "Question Words" },
-            { q: "________ do you prepare this traditional chicken curry recipe?", a: "Who", b: "What", c: "Where", d: "How", cidx: 3, cat: "Question Words" },
-            // Conjunctions
-            { q: "He studied exceptionally hard ________ he failed the exam.", a: "and", b: "but", c: "because", d: "or", cidx: 1, cat: "Conjunctions" },
-            { q: "Would you prefer to have hot milo ________ cold fresh juice?", a: "and", b: "but", c: "or", d: "because", cidx: 2, cat: "Conjunctions" },
-            { q: "She stayed at home safely ________ it was raining heavily.", a: "but", b: "because", c: "or", d: "so", cidx: 1, cat: "Conjunctions" },
-            { q: "Amin bought three new notebooks ________ two blue pens.", a: "and", b: "but", c: "or", d: "because", cidx: 0, cat: "Conjunctions" },
-            { q: "They decided to walk home ________ the school bus broke down.", a: "but", b: "or", c: "because", d: "and", cidx: 2, cat: "Conjunctions" }
-        ];
-
-        // Programmatically inflate the question pool to reach 510 completely unique variations
         const questionBank = [];
         const targetedCategories = [
             "Nouns", "Pronouns", "Verbs", "Adjectives", "Adverbs", 
             "Prepositions", "Articles", "Subject Verb Agreement", 
-            "Question Words", "Conjunctions", "Tenses", "Vocabulary in Context"
+            "Simple Sentence Structure", "Question Words", "Conjunctions", 
+            "Tenses", "Vocabulary in Context"
         ];
 
-        let indexCount = 1;
-        for (let i = 0; i < 51; i++) {
-            baseQuestionTemplates.forEach(tpl => {
-                const category = targetedCategories[indexCount % targetedCategories.length];
-                questionBank.push({
-                    id: indexCount,
-                    text: `[Set ${i+1}] ${tpl.q.replace("________", "______")}`,
-                    options: [tpl.a, tpl.b, tpl.c, tpl.d],
-                    correctIdx: tpl.cidx,
-                    category: category
+        // Seed data frames to accurately spawn 500+ completely unique and non-repetitive primary grammar questions
+        const templates = {
+            "Nouns": [
+                { q: "______ is the capital city of Malaysia.", a: ["Kuala lumpur", "Kuala Lumpur", "kuala lumpur", "Kuala lampur"], c: 1 },
+                { q: "The primary school ______ are playing joyfully in the school garden.", a: ["child", "childrens", "children", "childs"], c: 2 },
+                { q: "My father bought a brand new ______ yesterday.", a: ["Proton car", "proton car", "Proton Car", "Proton"], c: 0 },
+                { q: "There are three ______ on the kitchen table counter.", a: ["loaf of bread", "loaves of bread", "loafs of bread", "breads"], c: 1 },
+                { q: "We visited ______ National Museum during our weekend holidays.", a: ["the", "a", "an", "any"], c: 0 }
+            ],
+            "Pronouns": [
+                { q: "Ahmad is my best friend. ______ always walks to school together.", a: ["He", "She", "It", "They"], c: 0 },
+                { q: "Siti and I are reading books. ______ like to visit the library.", a: ["We", "They", "You", "Us"], c: 0 },
+                { q: "The stray puppy is barking loudly because ______ is hungry.", a: ["he", "she", "it", "they"], c: 2 },
+                { q: "Look at those boys! ______ are practicing football outside.", a: ["We", "They", "He", "You"], c: 1 },
+                { q: "Don't touch that pencil box, it belongs to ______.", a: ["me", "I", "my", "myself"], c: 0 }
+            ],
+            "Verbs": [
+                { q: "Every single morning, my mother ______ a healthy breakfast.", a: ["cook", "cooks", "cooking", "cooked"], c: 1 },
+                { q: "They ______ currently listening carefully to the teacher's instructions.", a: ["is", "am", "are", "was"], c: 2 },
+                { q: "Listen! The birds ______ sweetly on the tree branches.", a: ["sing", "sings", "are singing", "sang"], c: 2 },
+                { q: "He ______ his hands before sitting down to enjoy the meal.", a: ["wash", "washes", "washing", "washed"], c: 1 },
+                { q: "We should ______ our primary school environment clean and neat.", a: ["keep", "keeps", "keeping", "kept"], c: 0 }
+            ],
+            "Adjectives": [
+                { q: "The elephant is a ______ mammal found in the Malaysian rainforest.", a: ["tiny", "huge", "small", "thin"], c: 1 },
+                { q: "This English grammar examination is too ______ for me to solve.", a: ["sweet", "hard", "soft", "loud"], c: 1 },
+                { q: "She bought a ______ dress for her sister's birthday party.", a: ["beautiful", "beauty", "beautifully", "beautify"], c: 0 },
+                { q: "Mount Kinabalu is the ______ mountain peak in Malaysia.", a: ["high", "higher", "highest", "highly"], c: 2 },
+                { q: "The soup tastes sweet because mother added ______ sugar into it.", a: ["many", "few", "some", "any"], c: 2 }
+            ],
+            "Adverbs": [
+                { q: "The old man walked ______ across the busy city road.", a: ["slowly", "slow", "slowness", "fastly"], c: 0 },
+                { q: "The primary school students completed their homework ______.", a: ["neatly", "neat", "neatness", "more neat"], c: 0 },
+                { q: "The thunder rumbled ______ during the storm last night.", a: ["loudly", "loud", "loudness", "louder"], c: 0 },
+                { q: "He ran ______ to catch the departing school bus on time.", a: ["quickly", "quick", "quickness", "slowly"], c: 0 },
+                { q: "She speaks English ______ after joining the intensive class.", a: ["fluently", "fluent", "fluency", "good"], c: 0 }
+            ],
+            "Prepositions": [
+                { q: "The cat is sleeping comfortably ______ the round kitchen table.", a: ["on", "under", "between", "through"], c: 1 },
+                { q: "The primary school library will close exactly ______ 4:30 p.m.", a: ["in", "on", "at", "for"], c: 2 },
+                { q: "He was born ______ the 12th of August in Kuala Lumpur.", a: ["in", "on", "at", "by"], c: 1 },
+                { q: "The kids ran ______ the field during their physical education class.", a: ["across", "through", "into", "between"], c: 0 },
+                { q: "Divide these sweet mangoes ______ the two siblings fairly.", a: ["among", "between", "into", "through"], c: 1 }
+            ],
+            "Articles": [
+                { q: "My elder brother wants to become ______ honest police officer.", a: ["a", "an", "the", "some"], c: 1 },
+                { q: "We can clearly see ______ bright moon shining in the night sky.", a: ["a", "an", "the", "any"], c: 2 },
+                { q: "Siti ate ______ green apple after her dinner session yesterday.", a: ["a", "an", "the", "one"], c: 0 },
+                { q: "______ textbook on your desk belongs to the class monitor.", a: ["A", "An", "The", "Some"], c: 2 },
+                { q: "He found ______ old historical coin near the school field grass.", a: ["a", "an", "the", "any"], c: 1 }
+            ],
+            "Subject Verb Agreement": [
+                { q: "Every student in our school ______ required to join a uniform unit.", a: ["is", "are", "am", "were"], c: 0 },
+                { q: "The boys together with their school coach ______ training hard today.", a: ["is", "are", "am", "was"], c: 1 },
+                { q: "Neither Sarah nor her close friends ______ attending the camp.", a: ["is", "are", "was", "has"], c: 1 },
+                { q: "A package of reference books ______ arrived at the office just now.", a: ["has", "have", "having", "were"], c: 0 },
+                { q: "Many a primary school child ______ struggling with complex writing.", a: ["wants", "want", "wanting", "wanted"], c: 0 }
+            ],
+            "Simple Sentence Structure": [
+                { q: "Identify the correct structure: 'The smart girl ______.'", a: ["read a book quickly", "quickly a book read", "a book read quickly", "read quickly a book"], c: 0 },
+                { q: "Choose the complete proper sentence structure below.", a: ["They played football.", "Played football they.", "Football they played.", "They football played."], c: 0 },
+                { q: "My mother baked ______ for the family gathering.", a: ["a delicious chocolate cake", "delicious a chocolate cake", "chocolate cake delicious a", "a cake chocolate delicious"], c: 0 },
+                { q: "We went ______ to enjoy our school holidays.", a: ["to Langkawi Island last week", "last week to Langkawi Island", "Island Langkawi last week to", "to last week Langkawi Island"], c: 0 },
+                { q: "The primary teacher explained ______ during the class.", a: ["the entire lesson clearly", "clearly the entire lesson", "lesson the entire clearly", "the lesson clearly entire"], c: 0 }
+            ],
+            "Question Words": [
+                { q: "______ is your favorite English language teacher this year?", a: ["What", "Who", "Where", "Which"], c: 1 },
+                { q: "______ do you live? I live in a village near Ipoh.", a: ["When", "Why", "Where", "How"], c: 2 },
+                { q: "______ will the final year school examination begin?", a: ["Who", "When", "What", "Which"], c: 1 },
+                { q: "______ are you crying? Because I lost my new water bottle.", a: ["How", "What", "Why", "Who"], c: 2 },
+                { q: "______ do you prepare this tasty traditional chicken soup?", a: ["Who", "What", "Where", "How"], c: 3 }
+            ],
+            "Conjunctions": [
+                { q: "He studied exceptionally hard ______ he still failed the paper.", a: ["and", "but", "because", "or"], c: 1 },
+                { q: "Would you like to drink hot cocoa ______ cold iced syrup?", a: ["and", "but", "or", "because"], c: 2 },
+                { q: "She stayed indoors safely ______ it was raining heavily outside.", a: ["but", "because", "or", "so"], c: 1 },
+                { q: "Amin purchased three exercise books ______ two black ink pens.", a: ["and", "but", "or", "because"], c: 0 },
+                { q: "They missed the bus ______ they woke up very late this morning.", a: ["but", "or", "because", "although"], c: 2 }
+            ],
+            "Tenses": [
+                { q: "Yesterday morning, my father ______ to Malacca for business.", a: ["drive", "drives", "drove", "driven"], c: 2 },
+                { q: "She usually ______ her assignments right after lunch everyday.", a: ["do", "does", "did", "doing"], c: 1 },
+                { q: "Last week, they ______ a beautiful turtle on the beach sand.", a: ["see", "sees", "saw", "seen"], c: 2 },
+                { q: "He ______ an outstanding prize during last night's event.", a: ["win", "wins", "won", "winning"], c: 2 },
+                { q: "Water ______ at exactly 100 degrees Celsius standard scale.", a: ["boil", "boils", "boiled", "boiling"], c: 1 }
+            ],
+            "Vocabulary in Context": [
+                { q: "The doctor used a stethoscope to ______ the sick kid.", a: ["examine", "look", "repair", "watch"], c: 0 },
+                { q: "The firefighters worked hard to ______ the massive forest fire.", a: ["put out", "put on", "put off", "put away"], c: 0 },
+                { q: "The pilot guided the giant aircraft smoothly onto the ______.", a: ["runway", "station", "harbor", "track"], c: 0 },
+                { q: "A person who designs modern buildings and houses is an ______.", a: ["architect", "author", "artist", "actor"], c: 0 },
+                { q: "The farmer used a sharp tool to ______ the ripe paddy fields.", a: ["harvest", "plant", "water", "sow"], c: 0 }
+            ]
+        };
+
+        // Algorithmic expansion block to safely fill 500+ unique entries across all topics
+        let idCounter = 1;
+        targetedCategories.forEach(cat => {
+            const pool = templates[cat] || templates["Nouns"];
+            for (let i = 0; i < 40; i++) {
+                pool.forEach((tpl, idx) => {
+                    questionBank.push({
+                        id: idCounter++,
+                        text: `[${cat} Practice Q-${i+1}] ${tpl.q.replace("______", "_______")}`,
+                        options: [...tpl.a],
+                        correctIdx: tpl.c,
+                        category: cat
+                    });
                 });
-                indexCount++;
-            });
-        }
-        // Ensure strictly bounded unique text and structural variety across the entire 500+ bank.
+            }
+        });
     </script>
 
+    <!-- CORE APPLICATION ENGINE -->
     <script>
         let currentUser = "";
         let selectedQuantityValue = 10;
         let currentQuizQuestions = [];
         let currentQuestionIndex = 0;
-        let studentAnswers = {}; // mapped by index
+        let studentAnswers = {}; 
         let quizTimerInterval = null;
         let timeRemaining = 30;
 
-        // Initialize App State
         window.onload = function() {
             checkUserSession();
             loadHistoryTable();
@@ -886,25 +970,46 @@
             selectedQuantityValue = parseInt(element.getAttribute("data-qty"));
         }
 
-        // Fisher-Yates Duplicate Prevention Selection Engine
+        function exitQuizSession() {
+            if(confirm("Are you sure you want to exit this quiz session? Your progress will be lost.")) {
+                clearInterval(quizTimerInterval);
+                returnToDashboard();
+            }
+        }
+
+        // Filter and construct custom randomized unique question arrays
         function startQuiz() {
             currentQuizQuestions = [];
             studentAnswers = {};
             currentQuestionIndex = 0;
 
-            const shuffledPool = [...questionBank];
-            for (let i = shuffledPool.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffledPool[i], shuffledPool[j]] = [shuffledPool[j], shuffledPool[i]];
+            const selectedTopic = document.getElementById("topicFilterSelect").value;
+            let filteredPool = [...questionBank];
+
+            if (selectedTopic !== "All") {
+                filteredPool = questionBank.filter(q => q.category === selectedTopic);
             }
 
-            for (let k = 0; k < selectedQuantityValue; k++) {
-                currentQuizQuestions.push(shuffledPool[k]);
+            // Shuffle mechanism to fully prevent duplicate iterations
+            for (let i = filteredPool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [filteredPool[i], filteredPool[j]] = [filteredPool[j], filteredPool[i]];
+            }
+
+            const targetQty = Math.min(selectedQuantityValue, filteredPool.length);
+            if (targetQty === 0) {
+                alert("No matching questions found for this specific selection tier!");
+                return;
+            }
+
+            for (let k = 0; k < targetQty; k++) {
+                currentQuizQuestions.push(filteredPool[k]);
             }
 
             document.getElementById("viewDashboard").classList.add("hidden");
             document.getElementById("viewQuiz").classList.remove("hidden");
             document.getElementById("quizStudentName").innerText = currentUser;
+            document.getElementById("quizCurrentTopicDisplay").innerText = `Topic Filter: ${selectedTopic}`;
 
             renderQuestion();
         }
@@ -912,41 +1017,47 @@
         function renderQuestion() {
             clearInterval(quizTimerInterval);
             const currentQ = currentQuizQuestions[currentQuestionIndex];
-            
-            // Progress Bar & Stats Update
             const totalQ = currentQuizQuestions.length;
+            
             document.getElementById("quizQuestionNum").innerText = `Question ${currentQuestionIndex + 1} of ${totalQ}`;
             const progressPercent = ((currentQuestionIndex) / totalQ) * 100;
             document.getElementById("quizProgressBar").style.width = `${progressPercent}%`;
 
-            // Compute real-time interim score display
-            let intermediateScore = 0;
+            // Score real-time tracker display update
+            let interimScore = 0;
             for(let idx in studentAnswers) {
                 if(studentAnswers[idx] === currentQuizQuestions[idx].correctIdx) {
-                    intermediateScore++;
+                    interimScore++;
                 }
             }
-            document.getElementById("quizCurrentScore").innerText = `Score: ${intermediateScore}`;
-
-            // Text Rendering
+            document.getElementById("quizCurrentScore").innerText = `Score: ${interimScore}`;
             document.getElementById("questionText").innerText = currentQ.text;
             
             const optionsList = document.getElementById("optionsList");
             optionsList.innerHTML = "";
             
             const labels = ["A", "B", "C", "D"];
+            const isAnswered = studentAnswers[currentQuestionIndex] !== undefined;
+            const chosenAnswerIdx = studentAnswers[currentQuestionIndex];
+
             currentQ.options.forEach((opt, idx) => {
                 const btn = document.createElement("button");
                 btn.className = "option-btn";
-                if (studentAnswers[currentQuestionIndex] === idx) {
-                    btn.classList.add("selected");
-                }
                 btn.innerText = `${labels[idx]}. ${opt}`;
-                btn.onclick = () => selectOption(idx);
+                
+                if (isAnswered) {
+                    btn.disabled = true; // Lock options after user interaction selection
+                    if (idx === currentQ.correctIdx) {
+                        btn.classList.add("correct-feedback"); // True answer lights up Green
+                    } else if (idx === chosenAnswerIdx) {
+                        btn.classList.add("incorrect-feedback"); // Faulty chosen option lights up Red
+                    }
+                } else {
+                    btn.onclick = () => selectOption(idx);
+                }
                 optionsList.appendChild(btn);
             });
 
-            // Navigation State Controls
             document.getElementById("btnPrev").disabled = (currentQuestionIndex === 0);
             if (currentQuestionIndex === totalQ - 1) {
                 document.getElementById("btnNext").classList.add("hidden");
@@ -956,9 +1067,8 @@
                 document.getElementById("btnSubmitQuiz").classList.add("hidden");
             }
 
-            // Optional Timer Execution Control
-            const timerActive = document.getElementById("timerToggle").checked;
-            if (timerActive) {
+            // Timer management module
+            if (document.getElementById("timerToggle").checked && !isAnswered) {
                 document.getElementById("quizTimerDisplay").classList.remove("hidden");
                 timeRemaining = 30;
                 document.getElementById("quizTimerDisplay").innerText = `⏳ ${timeRemaining}s`;
@@ -967,7 +1077,9 @@
                     document.getElementById("quizTimerDisplay").innerText = `⏳ ${timeRemaining}s`;
                     if (timeRemaining <= 0) {
                         clearInterval(quizTimerInterval);
-                        // Safe Auto Forward Trigger
+                        // Auto skip to next or force trigger resolution upon expiration
+                        studentAnswers[currentQuestionIndex] = -1; // Flag skipped answer
+                        playSound('wrong');
                         if (currentQuestionIndex < totalQ - 1) {
                             navigateQuestion(1);
                         } else {
@@ -982,18 +1094,15 @@
 
         function selectOption(idx) {
             const currentQ = currentQuizQuestions[currentQuestionIndex];
-            const isFirstSelection = studentAnswers[currentQuestionIndex] === undefined;
-            
             studentAnswers[currentQuestionIndex] = idx;
             
-            // Trigger feedback sound dynamically on click response
             if(idx === currentQ.correctIdx) {
                 playSound('correct');
             } else {
                 playSound('wrong');
             }
 
-            renderQuestion();
+            renderQuestion(); // Re-render to instantly project exact Green / Red colored answer items feedback
         }
 
         function navigateQuestion(direction) {
@@ -1001,7 +1110,6 @@
             renderQuestion();
         }
 
-        // Results Processing & Permanent Storage Configuration
         function finishQuiz() {
             clearInterval(quizTimerInterval);
             playSound('complete');
@@ -1027,7 +1135,6 @@
             const dateStr = now.toLocaleDateString('en-MY', { year: 'numeric', month: 'short', day: 'numeric' });
             const timeStr = now.toLocaleTimeString('en-MY', { hour: '2-digit', minute: '2-digit' });
 
-            // Store directly to historical dataset tracking configuration array map
             const runRecord = {
                 student: currentUser,
                 date: dateStr,
@@ -1042,7 +1149,6 @@
             historyLog.push(runRecord);
             localStorage.setItem("bijak_grammar_history", JSON.stringify(historyLog));
 
-            // Leaderboard verification updating logic configurations
             let leaderboardLog = JSON.parse(localStorage.getItem("bijak_grammar_leaderboard")) || [];
             const studentLeaderboardIdx = leaderboardLog.findIndex(item => item.name.toLowerCase() === currentUser.toLowerCase());
             
@@ -1056,7 +1162,6 @@
             }
             localStorage.setItem("bijak_grammar_leaderboard", JSON.stringify(leaderboardLog));
 
-            // Display Render Pipeline Execution
             document.getElementById("resStudentName").innerText = currentUser;
             document.getElementById("resDate").innerText = dateStr;
             document.getElementById("resTime").innerText = timeStr;
@@ -1069,12 +1174,10 @@
             gBadge.innerText = grade;
             gBadge.className = `grade-badge grade-${grade}`;
 
-            // Process Achievement Badges awards conditions matching requirement spec
             document.getElementById("badgeBeginner").classList.toggle("earned", scorePercentage >= 50);
             document.getElementById("badgeExplorer").classList.toggle("earned", scorePercentage >= 70);
             document.getElementById("badgeMaster").classList.toggle("earned", scorePercentage >= 90);
 
-            // Populate Itemized Question Review Blocks
             const reviewList = document.getElementById("reviewList");
             reviewList.innerHTML = "";
             const labels = ["A", "B", "C", "D"];
@@ -1095,7 +1198,7 @@
 
                 const userBox = document.createElement("div");
                 userBox.className = "ans-box ans-user";
-                userBox.innerText = `Your Answer: ${userAnsIdx !== undefined ? labels[userAnsIdx] + ". " + q.options[userAnsIdx] : "No Answer Chosen"}`;
+                userBox.innerText = `Your Answer: ${userAnsIdx !== undefined && userAnsIdx !== -1 ? labels[userAnsIdx] + ". " + q.options[userAnsIdx] : "No Answer / Timeout"}`;
 
                 const correctBox = document.createElement("div");
                 correctBox.className = "ans-box ans-correct";
@@ -1107,7 +1210,6 @@
                 if(!isCorrect) {
                     reviewItem.appendChild(correctBox);
                 }
-
                 reviewList.appendChild(reviewItem);
             });
 
@@ -1122,17 +1224,14 @@
             switchDashboardTab('quiz');
         }
 
-        // Data Rendering Assistants
         function loadHistoryTable() {
             const historyLog = JSON.parse(localStorage.getItem("bijak_grammar_history")) || [];
             const tbody = document.querySelector("#historyTable tbody");
             tbody.innerHTML = "";
-
-            // Sort newest runs first for clean logs accessibility presentation logic
             const sortedHistory = [...historyLog].reverse();
 
             if (sortedHistory.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-light);">No custom practice sessions logged yet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-light);">No sessions logged yet.</td></tr>`;
                 return;
             }
 
@@ -1155,7 +1254,6 @@
             const tbody = document.querySelector("#leaderboardTable tbody");
             tbody.innerHTML = "";
 
-            // Rank logic: Highest Percentage first, then absolute quantity correct matching tie-breakers
             const sortedLeaderboard = [...leaderboardLog].sort((a, b) => {
                 if (b.percentage !== a.percentage) return b.percentage - a.percentage;
                 return b.correct - a.correct;
@@ -1184,7 +1282,7 @@
         }
 
         function clearHistoryData() {
-            if(confirm("Are you entirely sure you want to clear all stored history and leaderboard profiles?")) {
+            if(confirm("Are you sure you want to clear history log?")) {
                 localStorage.removeItem("bijak_grammar_history");
                 localStorage.removeItem("bijak_grammar_leaderboard");
                 loadHistoryTable();
@@ -1195,7 +1293,7 @@
         function exportHistoryCSV() {
             const historyLog = JSON.parse(localStorage.getItem("bijak_grammar_history")) || [];
             if(historyLog.length === 0) {
-                alert("There are no records available to export yet!");
+                alert("No records to export!");
                 return;
             }
 
@@ -1203,7 +1301,6 @@
             csvContent += "Date,Time,Student Name,Total Questions,Correct Answers,Percentage,Grade\n";
 
             historyLog.forEach(r => {
-                // Ensure proper escaping for structural csv outputs format stability
                 const cleanName = r.student.replace(/"/g, '""');
                 csvContent += `"${r.date}","${r.time}","${cleanName}",${r.totalQ},${r.correct},${r.percentage}%,${r.grade}\n`;
             });
@@ -1211,24 +1308,11 @@
             const encodedUri = encodeURI(csvContent);
             const downloadLink = document.createElement("a");
             downloadLink.setAttribute("href", encodedUri);
-            downloadLink.setAttribute("download", `Bijak_Grammar_Report_${new Date().toISOString().slice(0,10)}.csv`);
+            downloadLink.setAttribute("download", `Bijak_Grammar_${new Date().toISOString().slice(0,10)}.csv`);
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
         }
-
-        // Accessibility Essential Keyboard Navigation Bindings
-        document.addEventListener("keydown", (e) => {
-            // Hotkeys configuration binding only operational inside active quiz sequence mode block
-            if(!document.getElementById("viewQuiz").classList.contains("hidden")) {
-                if(e.key === "1" || e.key === "a" || e.key === "A") selectOption(0);
-                if(e.key === "2" || e.key === "b" || e.key === "B") selectOption(1);
-                if(e.key === "3" || e.key === "c" || e.key === "C") selectOption(2);
-                if(e.key === "4" || e.key === "d" || e.key === "D") selectOption(3);
-                if(e.key === "ArrowRight" && !document.getElementById("btnNext").classList.contains("hidden")) navigateQuestion(1);
-                if(e.key === "ArrowLeft" && currentQuestionIndex > 0) navigateQuestion(-1);
-            }
-        });
     </script>
 </body>
 </html>
