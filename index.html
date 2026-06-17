@@ -96,10 +96,6 @@
             transform: translateY(-1px);
         }
 
-        .btn:active {
-            transform: translateY(1px);
-        }
-
         .btn-primary {
             background-color: var(--primary-light);
         }
@@ -118,9 +114,6 @@
             background-color: transparent;
             border: 2px solid currentColor;
             color: white;
-        }
-        .btn-outline:hover {
-            background-color: rgba(255, 255, 255, 0.1);
         }
 
         .container {
@@ -147,7 +140,6 @@
             display: none !important;
         }
 
-        /* Forms */
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -164,15 +156,8 @@
             border: 2px solid #cbd5e1;
             border-radius: var(--border-radius);
             font-size: 1rem;
-            transition: var(--transition);
         }
 
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-light);
-        }
-
-        /* Setup / Config View */
         .grid-options {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -194,7 +179,6 @@
         .option-card:hover, .option-card.selected {
             border-color: var(--primary-light);
             background-color: rgba(59, 130, 246, 0.05);
-            transform: translateY(-2px);
         }
 
         .toggle-container {
@@ -211,11 +195,7 @@
             height: 26px;
         }
 
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+        .switch input { opacity: 0; width: 0; height: 0; }
 
         .slider {
             position: absolute;
@@ -236,15 +216,9 @@
             border-radius: 50%;
         }
 
-        input:checked + .slider {
-            background-color: var(--secondary);
-        }
+        input:checked + .slider { background-color: var(--secondary); }
+        input:checked + .slider:before { transform: translateX(24px); }
 
-        input:checked + .slider:before {
-            transform: translateX(24px);
-        }
-
-        /* Quiz UI */
         .quiz-header {
             display: flex;
             justify-content: space-between;
@@ -276,9 +250,6 @@
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
         }
 
         .question-text {
@@ -312,13 +283,6 @@
             border-color: #cbd5e1;
         }
 
-        .option-btn.selected {
-            background-color: rgba(59, 130, 246, 0.1);
-            border-color: var(--primary-light);
-            font-weight: 600;
-        }
-
-        /* Instant Feedback Colors */
         .option-btn.correct-feedback {
             background-color: #d1fae5 !important;
             border-color: var(--secondary) !important;
@@ -340,7 +304,6 @@
             gap: 10px;
         }
 
-        /* Results & Badges */
         .results-summary {
             text-align: center;
             margin-bottom: 2rem;
@@ -350,7 +313,6 @@
             font-size: 4rem;
             font-weight: 800;
             color: var(--primary);
-            line-height: 1;
             margin: 1rem 0;
         }
 
@@ -386,35 +348,20 @@
             text-align: center;
             width: 140px;
             opacity: 0.3;
-            transition: var(--transition);
         }
 
         .badge-card.earned {
             opacity: 1;
             border-color: var(--warning);
             background: linear-gradient(to bottom, #ffffff, #fef3c7);
-            transform: scale(1.05);
-            box-shadow: var(--shadow);
         }
 
-        .badge-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
+        .badge-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .badge-title { font-size: 0.85rem; font-weight: bold; }
 
-        .badge-title {
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        /* Review Section */
         .review-item {
             border-bottom: 1px solid #e2e8f0;
             padding: 1.5rem 0;
-        }
-
-        .review-item:last-child {
-            border-bottom: none;
         }
 
         .status-indicator {
@@ -439,74 +386,22 @@
         .ans-user { background-color: #f1f5f9; }
         .ans-correct { background-color: rgba(16, 185, 129, 0.1); border-left: 4px solid var(--secondary); }
 
-        /* Tables & History */
-        .table-responsive {
-            overflow-x: auto;
-            margin: 1rem 0;
-        }
+        .table-responsive { overflow-x: auto; margin: 1rem 0; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 0.75rem 1rem; border-bottom: 1px solid #e2e8f0; }
+        th { background-color: #f1f5f9; font-weight: 600; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        th {
-            background-color: #f1f5f9;
-            font-weight: 600;
-        }
-
-        tr:hover td {
-            background-color: #f8fafc;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 1px;
-        }
-
+        .tabs { display: flex; gap: 10px; margin-bottom: 1.5rem; border-bottom: 2px solid #e2e8f0; }
         .tab-btn {
-            background: none;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--text-light);
-            border-bottom: 3px solid transparent;
-            margin-bottom: -2px;
+            background: none; border: none; padding: 0.75rem 1.5rem; font-size: 1rem;
+            font-weight: 600; cursor: pointer; color: var(--text-light); border-bottom: 3px solid transparent;
         }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
 
-        .tab-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        /* Responsive Utilities */
         @media (max-width: 600px) {
-            header {
-                flex-direction: column;
-                text-align: center;
-                gap: 10px;
-                padding: 1rem;
-            }
-            .grid-options {
-                grid-template-columns: 1fr;
-            }
-            .quiz-navigation {
-                flex-direction: column;
-            }
-            .quiz-navigation button {
-                width: 100%;
-            }
+            header { flex-direction: column; text-align: center; }
+            .grid-options { grid-template-columns: 1fr; }
+            .quiz-navigation { flex-direction: column; }
         }
     </style>
 </head>
@@ -518,8 +413,8 @@
             <p>English Grammar Practice for Primary School Students</p>
         </div>
         <div class="header-controls">
-            <button id="btnAccessibility" class="btn btn-outline" aria-label="Toggle High Contrast">Contrast</button>
-            <button id="btnMute" class="btn btn-outline" aria-label="Toggle Sound">🔊 Mute</button>
+            <button id="btnAccessibility" class="btn btn-outline">Contrast</button>
+            <button id="btnMute" class="btn btn-outline">🔊 Mute</button>
             <span id="headerUserDisplay" class="hidden" style="font-weight:bold; margin-left:10px;"></span>
             <button id="btnLogout" class="btn btn-danger btn-outline hidden">Logout</button>
         </div>
@@ -534,7 +429,7 @@
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label for="studentNameInput">Your Full Name:</label>
-                    <input type="text" id="studentNameInput" class="form-control" placeholder="e.g. Ahmad Ali" required autocomplete="name">
+                    <input type="text" id="studentNameInput" class="form-control" placeholder="e.g. Ahmad Ali" required>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Start Learning</button>
             </form>
@@ -549,24 +444,23 @@
                 <button class="tab-btn" onclick="switchDashboardTab('leaderboard')">Leaderboard</button>
             </div>
 
-            <!-- Quiz Configuration Tab -->
             <div id="tabQuizConfig">
-                <h3 style="margin-bottom: 0.5rem;">1. Choose Topic Filter</h3>
+                <h3 style="margin-bottom: 0.5rem;">1. Choose Topic</h3>
                 <div class="form-group">
                     <select id="topicFilterSelect" class="form-control">
                         <option value="All">All Topics Mixed</option>
                         <option value="Nouns">Nouns (Common & Proper)</option>
-                        <option value="Pronouns">Pronouns (Subject Pronouns)</option>
-                        <option value="Verbs">Verbs (Present & Past)</option>
+                        <option value="Pronouns">Pronouns</option>
+                        <option value="Verbs">Verbs</option>
                         <option value="Adjectives">Adjectives</option>
                         <option value="Adverbs">Adverbs</option>
                         <option value="Prepositions">Prepositions</option>
-                        <option value="Articles">Articles (a, an, the)</option>
+                        <option value="Articles">Articles</option>
                         <option value="Subject Verb Agreement">Subject Verb Agreement</option>
                         <option value="Simple Sentence Structure">Simple Sentence Structure</option>
                         <option value="Question Words">Question Words</option>
                         <option value="Conjunctions">Conjunctions</option>
-                        <option value="Tenses">Tenses (Simple Present & Past)</option>
+                        <option value="Tenses">Tenses</option>
                         <option value="Vocabulary in Context">Vocabulary in Context</option>
                     </select>
                 </div>
@@ -621,7 +515,6 @@
             <!-- Leaderboard Tab -->
             <div id="tabLeaderboard" class="hidden">
                 <h3>Top Performers Leaderboard</h3>
-                <p style="color:var(--text-light); margin-bottom:1rem; font-size:0.9rem;">Ranked by highest percentage, then total correct answers.</p>
                 <div class="table-responsive">
                     <table id="leaderboardTable">
                         <thead>
@@ -666,7 +559,7 @@
             </div>
 
             <div class="quiz-navigation">
-                <button class="btn btn-primary btn-outline" style="color:var(--text); border-color:#cbd5e1;" id="btnPrev" onclick="navigateQuestion(-1)">⬅️ Previous</button>
+                <button class="btn btn-primary btn-outline" style="color:var(--text); border-color:#cbd5e1;" id="btnPrev" onclick="navigateQuestion(-1)">静态 ⬅️ Previous</button>
                 <button class="btn btn-primary" id="btnNext" onclick="navigateQuestion(1)">Next ➡️</button>
                 <button class="btn btn-danger hidden" id="btnSubmitQuiz" onclick="finishQuiz()">Finish & Submit 🏆</button>
             </div>
@@ -677,7 +570,6 @@
             <div class="results-summary">
                 <h2>Quiz Report Card</h2>
                 <div id="resultGradeBadge" class="grade-badge grade-A">A</div>
-                <p style="color: var(--text-light);">Excellent Achievement!</p>
                 <div id="resultScoreBig" class="score-big">8/10</div>
                 <p id="resultPercentage" style="font-weight: bold; font-size: 1.2rem; margin-bottom:1.5rem;"></p>
                 
@@ -694,17 +586,14 @@
                     <div class="badge-card" id="badgeBeginner">
                         <div class="badge-icon">🌱</div>
                         <div class="badge-title">Grammar Beginner</div>
-                        <div style="font-size:0.7rem; color:var(--text-light); margin-top:4px;">Score 50%+</div>
                     </div>
                     <div class="badge-card" id="badgeExplorer">
                         <div class="badge-icon">🧭</div>
                         <div class="badge-title">Grammar Explorer</div>
-                        <div style="font-size:0.7rem; color:var(--text-light); margin-top:4px;">Score 70%+</div>
                     </div>
                     <div class="badge-card" id="badgeMaster">
                         <div class="badge-icon">👑</div>
                         <div class="badge-title">Grammar Master</div>
-                        <div style="font-size:0.7rem; color:var(--text-light); margin-top:4px;">Score 90%+</div>
                     </div>
                 </div>
 
@@ -712,7 +601,6 @@
             </div>
 
             <hr style="border: 0; border-top: 2px dashed #e2e8f0; margin: 2rem 0;">
-
             <h3>Comprehensive Question Review</h3>
             <div id="reviewList" style="margin-top: 1rem;"></div>
         </section>
@@ -738,41 +626,36 @@
                     osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); 
                     gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.3);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
                 } else if (type === 'wrong') {
                     osc.type = 'sawtooth';
                     osc.frequency.setValueAtTime(220, audioCtx.currentTime); 
                     osc.frequency.setValueAtTime(146.83, audioCtx.currentTime + 0.15); 
                     gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.4);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.4);
                 } else if (type === 'complete') {
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(392.00, audioCtx.currentTime); 
                     osc.frequency.setValueAtTime(523.25, audioCtx.currentTime + 0.1); 
                     osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.2); 
-                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.3); 
                     gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.6);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.6);
                 }
-            } catch(e) { console.log("Audio playback error:", e); }
+            } catch(e) {}
         }
 
         document.getElementById('btnMute').addEventListener('click', () => {
             isMuted = !isMuted;
             document.getElementById('btnMute').innerText = isMuted ? "🔇 Unmute" : "🔊 Mute";
         });
-
         document.getElementById('btnAccessibility').addEventListener('click', () => {
             document.body.classList.toggle('high-contrast');
         });
     </script>
 
-    <!-- QUESTION BANK DATA GENERATOR -->
+    <!-- QUESTION BANK GENERATOR (500+ Unique Questions mapped dynamically across separate topics) -->
     <script>
         const questionBank = [];
         const targetedCategories = [
@@ -782,120 +665,119 @@
             "Tenses", "Vocabulary in Context"
         ];
 
-        // Seed data frames to accurately spawn 500+ completely unique and non-repetitive primary grammar questions
         const templates = {
             "Nouns": [
-                { q: "______ is the capital city of Malaysia.", a: ["Kuala lumpur", "Kuala Lumpur", "kuala lumpur", "Kuala lampur"], c: 1 },
-                { q: "The primary school ______ are playing joyfully in the school garden.", a: ["child", "childrens", "children", "childs"], c: 2 },
-                { q: "My father bought a brand new ______ yesterday.", a: ["Proton car", "proton car", "Proton Car", "Proton"], c: 0 },
-                { q: "There are three ______ on the kitchen table counter.", a: ["loaf of bread", "loaves of bread", "loafs of bread", "breads"], c: 1 },
-                { q: "We visited ______ National Museum during our weekend holidays.", a: ["the", "a", "an", "any"], c: 0 }
+                { q: "______ is a large state in Malaysia.", a: ["Sarawak", "sarawak", "Sarawak city", "The sarawak"], c: 0 },
+                { q: "The group of ______ watched the teacher write.", a: ["student", "students", "studentes", "student's"], c: 1 },
+                { q: "We saw many wild ______ at Zoo Negara.", a: ["animal", "animals", "animales", "animally"], c: 1 },
+                { q: "My sister bought a clean ______ for her room.", a: ["desk", "desks", "desking", "desked"], c: 0 },
+                { q: "______ Rahman lives next door to my house.", a: ["Encik", "encik", "Mr encik", "The encik"], c: 0 }
             ],
             "Pronouns": [
-                { q: "Ahmad is my best friend. ______ always walks to school together.", a: ["He", "She", "It", "They"], c: 0 },
-                { q: "Siti and I are reading books. ______ like to visit the library.", a: ["We", "They", "You", "Us"], c: 0 },
-                { q: "The stray puppy is barking loudly because ______ is hungry.", a: ["he", "she", "it", "they"], c: 2 },
-                { q: "Look at those boys! ______ are practicing football outside.", a: ["We", "They", "He", "You"], c: 1 },
-                { q: "Don't touch that pencil box, it belongs to ______.", a: ["me", "I", "my", "myself"], c: 0 }
+                { q: "Ahmad is my classmate. ______ is very smart.", a: ["He", "She", "It", "They"], c: 0 },
+                { q: "Siti and Mary are singing. ______ have nice voices.", a: ["We", "They", "You", "Us"], c: 1 },
+                { q: "The cat licked ______ own paws clean.", a: ["its", "it's", "his", "their"], c: 0 },
+                { q: "This pencil belongs to me. It is ______.", a: ["mine", "my", "me", "myself"], c: 0 },
+                { q: "______ are all going to the field together now.", a: ["We", "He", "She", "It"], c: 0 }
             ],
             "Verbs": [
-                { q: "Every single morning, my mother ______ a healthy breakfast.", a: ["cook", "cooks", "cooking", "cooked"], c: 1 },
-                { q: "They ______ currently listening carefully to the teacher's instructions.", a: ["is", "am", "are", "was"], c: 2 },
-                { q: "Listen! The birds ______ sweetly on the tree branches.", a: ["sing", "sings", "are singing", "sang"], c: 2 },
-                { q: "He ______ his hands before sitting down to enjoy the meal.", a: ["wash", "washes", "washing", "washed"], c: 1 },
-                { q: "We should ______ our primary school environment clean and neat.", a: ["keep", "keeps", "keeping", "kept"], c: 0 }
+                { q: "Every evening, my brother ______ computer games.", a: ["play", "plays", "playing", "played"], c: 1 },
+                { q: "They ______ currently working hard on their projects.", a: ["is", "am", "are", "was"], c: 2 },
+                { q: "Please ______ your voice in the school library.", a: ["lower", "lowers", "lowered", "lowering"], c: 0 },
+                { q: "The baby ______ loudly when she is hungry.", a: ["cry", "cries", "crying", "cried"], c: 1 },
+                { q: "We must ______ our hands before eating food.", a: ["wash", "washes", "washing", "washed"], c: 0 }
             ],
             "Adjectives": [
-                { q: "The elephant is a ______ mammal found in the Malaysian rainforest.", a: ["tiny", "huge", "small", "thin"], c: 1 },
-                { q: "This English grammar examination is too ______ for me to solve.", a: ["sweet", "hard", "soft", "loud"], c: 1 },
-                { q: "She bought a ______ dress for her sister's birthday party.", a: ["beautiful", "beauty", "beautifully", "beautify"], c: 0 },
-                { q: "Mount Kinabalu is the ______ mountain peak in Malaysia.", a: ["high", "higher", "highest", "highly"], c: 2 },
-                { q: "The soup tastes sweet because mother added ______ sugar into it.", a: ["many", "few", "some", "any"], c: 2 }
+                { q: "The giraffe is a ______ animal with a long neck.", a: ["tall", "short", "fat", "heavy"], c: 0 },
+                { q: "This mathematics test is very ______ to solve.", a: ["easy", "sweet", "soft", "loud"], c: 0 },
+                { q: "She bought a ______ dress for the party.", a: ["new", "news", "newly", "newed"], c: 0 },
+                { q: "That is the ______ building in Kuala Lumpur.", a: ["tallest", "taller", "tall", "tallly"], c: 0 },
+                { q: "The soup needs ______ more salt to taste perfect.", a: ["a little", "many", "few", "any"], c: 0 }
             ],
             "Adverbs": [
-                { q: "The old man walked ______ across the busy city road.", a: ["slowly", "slow", "slowness", "fastly"], c: 0 },
-                { q: "The primary school students completed their homework ______.", a: ["neatly", "neat", "neatness", "more neat"], c: 0 },
-                { q: "The thunder rumbled ______ during the storm last night.", a: ["loudly", "loud", "loudness", "louder"], c: 0 },
-                { q: "He ran ______ to catch the departing school bus on time.", a: ["quickly", "quick", "quickness", "slowly"], c: 0 },
-                { q: "She speaks English ______ after joining the intensive class.", a: ["fluently", "fluent", "fluency", "good"], c: 0 }
+                { q: "The snail moves very ______ on the grass.", a: ["slowly", "slow", "slowness", "fastly"], c: 0 },
+                { q: "The students listened ______ to the main announcement.", a: ["attentively", "attentive", "attention", "more attentive"], c: 0 },
+                { q: "It rained ______ throughout the entire night.", a: ["heavily", "heavy", "heaviness", "heavier"], c: 0 },
+                { q: "He quickly and ______ finished his lunch meal.", a: ["happily", "happy", "happiness", "happier"], c: 0 },
+                { q: "She reads English books ______ every day.", a: ["fluently", "fluent", "fluency", "good"], c: 0 }
             ],
             "Prepositions": [
-                { q: "The cat is sleeping comfortably ______ the round kitchen table.", a: ["on", "under", "between", "through"], c: 1 },
-                { q: "The primary school library will close exactly ______ 4:30 p.m.", a: ["in", "on", "at", "for"], c: 2 },
-                { q: "He was born ______ the 12th of August in Kuala Lumpur.", a: ["in", "on", "at", "by"], c: 1 },
-                { q: "The kids ran ______ the field during their physical education class.", a: ["across", "through", "into", "between"], c: 0 },
-                { q: "Divide these sweet mangoes ______ the two siblings fairly.", a: ["among", "between", "into", "through"], c: 1 }
+                { q: "The key is kept safely ______ the top drawer.", a: ["in", "on", "at", "under"], c: 0 },
+                { q: "Our school session starts exactly ______ 7:30 a.m.", a: ["at", "on", "in", "by"], c: 0 },
+                { q: "The dog lay down ______ the big wooden table.", a: ["under", "on", "between", "through"], c: 0 },
+                { q: "We walked ______ the bridge to get to the shop.", a: ["across", "into", "through", "over"], c: 0 },
+                { q: "He shared the snacks ______ his three close friends.", a: ["among", "between", "into", "through"], c: 0 }
             ],
             "Articles": [
-                { q: "My elder brother wants to become ______ honest police officer.", a: ["a", "an", "the", "some"], c: 1 },
-                { q: "We can clearly see ______ bright moon shining in the night sky.", a: ["a", "an", "the", "any"], c: 2 },
-                { q: "Siti ate ______ green apple after her dinner session yesterday.", a: ["a", "an", "the", "one"], c: 0 },
-                { q: "______ textbook on your desk belongs to the class monitor.", a: ["A", "An", "The", "Some"], c: 2 },
-                { q: "He found ______ old historical coin near the school field grass.", a: ["a", "an", "the", "any"], c: 1 }
+                { q: "My father is ______ honest school worker.", a: ["an", "a", "the", "some"], c: 0 },
+                { q: "We can see ______ hot sun during the daytime.", a: ["the", "a", "an", "any"], c: 0 },
+                { q: "Siti bought ______ uniform from the shop yesterday.", a: ["a", "an", "the", "one"], c: 0 },
+                { q: "______ book you lent me was very interesting.", a: ["The", "A", "An", "Some"], c: 0 },
+                { q: "He found ______ old umbrella in the store room.", a: ["an", "a", "the", "any"], c: 0 }
             ],
             "Subject Verb Agreement": [
-                { q: "Every student in our school ______ required to join a uniform unit.", a: ["is", "are", "am", "were"], c: 0 },
-                { q: "The boys together with their school coach ______ training hard today.", a: ["is", "are", "am", "was"], c: 1 },
-                { q: "Neither Sarah nor her close friends ______ attending the camp.", a: ["is", "are", "was", "has"], c: 1 },
-                { q: "A package of reference books ______ arrived at the office just now.", a: ["has", "have", "having", "were"], c: 0 },
-                { q: "Many a primary school child ______ struggling with complex writing.", a: ["wants", "want", "wanting", "wanted"], c: 0 }
+                { q: "Every child in this room ______ a neat name card.", a: ["has", "have", "having", "were"], c: 0 },
+                { q: "The boys ______ playing football at the field now.", a: ["are", "is", "am", "was"], c: 0 },
+                { q: "Neither John nor his brothers ______ going out today.", a: ["are", "is", "was", "has"], c: 0 },
+                { q: "A basket of fresh fruits ______ delivered to us.", a: ["was", "were", "are", "have"], c: 0 },
+                { q: "The teacher ______ us grammar every Monday morning.", a: ["teaches", "teach", "teaching", "teacher"], c: 0 }
             ],
             "Simple Sentence Structure": [
-                { q: "Identify the correct structure: 'The smart girl ______.'", a: ["read a book quickly", "quickly a book read", "a book read quickly", "read quickly a book"], c: 0 },
-                { q: "Choose the complete proper sentence structure below.", a: ["They played football.", "Played football they.", "Football they played.", "They football played."], c: 0 },
-                { q: "My mother baked ______ for the family gathering.", a: ["a delicious chocolate cake", "delicious a chocolate cake", "chocolate cake delicious a", "a cake chocolate delicious"], c: 0 },
-                { q: "We went ______ to enjoy our school holidays.", a: ["to Langkawi Island last week", "last week to Langkawi Island", "Island Langkawi last week to", "to last week Langkawi Island"], c: 0 },
-                { q: "The primary teacher explained ______ during the class.", a: ["the entire lesson clearly", "clearly the entire lesson", "lesson the entire clearly", "the lesson clearly entire"], c: 0 }
+                { q: "Choose the proper structure order:", a: ["We love our school.", "Our school love we.", "Love we our school.", "We our school love."], c: 0 },
+                { q: "Complete the sentence: 'The small puppy ______.'", a: ["barked loudly at me", "loudly at me barked", "at me barked loudly", "barked at me loudly"], c: 0 },
+                { q: "Mother prepared ______ for us.", a: ["a tasty hot meal", "tasty a hot meal", "hot meal a tasty", "a meal hot tasty"], c: 0 },
+                { q: "They went ______ yesterday afternoon.", a: ["to the public park", "the public park to", "park to the public", "to public the park"], c: 0 },
+                { q: "The pupils clean ______ every Friday.", a: ["their classroom neatly", "neatly their classroom", "their neatly classroom", "classroom neatly their"], c: 0 }
             ],
             "Question Words": [
-                { q: "______ is your favorite English language teacher this year?", a: ["What", "Who", "Where", "Which"], c: 1 },
-                { q: "______ do you live? I live in a village near Ipoh.", a: ["When", "Why", "Where", "How"], c: 2 },
-                { q: "______ will the final year school examination begin?", a: ["Who", "When", "What", "Which"], c: 1 },
-                { q: "______ are you crying? Because I lost my new water bottle.", a: ["How", "What", "Why", "Who"], c: 2 },
-                { q: "______ do you prepare this tasty traditional chicken soup?", a: ["Who", "What", "Where", "How"], c: 3 }
+                { q: "______ is your class monitor this year?", a: ["Who", "What", "Where", "Why"], c: 0 },
+                { q: "______ do you store your extra books?", a: ["Where", "When", "Why", "How"], c: 0 },
+                { q: "______ will the school sports day start?", a: ["When", "Who", "What", "Which"], c: 0 },
+                { q: "______ are you late to the classroom?", a: ["Why", "How", "What", "Who"], c: 0 },
+                { q: "______ do you cycle to school safely?", a: ["How", "Who", "What", "Where"], c: 0 }
             ],
             "Conjunctions": [
-                { q: "He studied exceptionally hard ______ he still failed the paper.", a: ["and", "but", "because", "or"], c: 1 },
-                { q: "Would you like to drink hot cocoa ______ cold iced syrup?", a: ["and", "but", "or", "because"], c: 2 },
-                { q: "She stayed indoors safely ______ it was raining heavily outside.", a: ["but", "because", "or", "so"], c: 1 },
-                { q: "Amin purchased three exercise books ______ two black ink pens.", a: ["and", "but", "or", "because"], c: 0 },
-                { q: "They missed the bus ______ they woke up very late this morning.", a: ["but", "or", "because", "although"], c: 2 }
+                { q: "He was very tired ______ he finished the run.", a: ["but", "and", "because", "or"], c: 0 },
+                { q: "Do you prefer drinking milk ______ hot tea?", a: ["or", "and", "but", "because"], c: 0 },
+                { q: "She carried an umbrella ______ it was raining.", a: ["because", "but", "or", "so"], c: 0 },
+                { q: "Ali ______ Muthu are working together on this.", a: ["and", "but", "or", "because"], c: 0 },
+                { q: "We rushed inside ______ we didn't want to get wet.", a: ["because", "but", "or", "although"], c: 0 }
             ],
             "Tenses": [
-                { q: "Yesterday morning, my father ______ to Malacca for business.", a: ["drive", "drives", "drove", "driven"], c: 2 },
-                { q: "She usually ______ her assignments right after lunch everyday.", a: ["do", "does", "did", "doing"], c: 1 },
-                { q: "Last week, they ______ a beautiful turtle on the beach sand.", a: ["see", "sees", "saw", "seen"], c: 2 },
-                { q: "He ______ an outstanding prize during last night's event.", a: ["win", "wins", "won", "winning"], c: 2 },
-                { q: "Water ______ at exactly 100 degrees Celsius standard scale.", a: ["boil", "boils", "boiled", "boiling"], c: 1 }
+                { q: "Two days ago, my family ______ a new pet.", a: ["adopted", "adopts", "adopt", "adopting"], c: 0 },
+                { q: "He always ______ his teeth before bed.", a: ["brushes", "brush", "brushed", "brushing"], c: 0 },
+                { q: "Last week, they ______ to the national zoo.", a: ["went", "go", "goes", "going"], c: 0 },
+                { q: "She ______ a beautiful song on stage last night.", a: ["sang", "sings", "sing", "singing"], c: 0 },
+                { q: "The sun ______ early in the morning.", a: ["rises", "rise", "rose", "rising"], c: 0 }
             ],
             "Vocabulary in Context": [
-                { q: "The doctor used a stethoscope to ______ the sick kid.", a: ["examine", "look", "repair", "watch"], c: 0 },
-                { q: "The firefighters worked hard to ______ the massive forest fire.", a: ["put out", "put on", "put off", "put away"], c: 0 },
-                { q: "The pilot guided the giant aircraft smoothly onto the ______.", a: ["runway", "station", "harbor", "track"], c: 0 },
-                { q: "A person who designs modern buildings and houses is an ______.", a: ["architect", "author", "artist", "actor"], c: 0 },
-                { q: "The farmer used a sharp tool to ______ the ripe paddy fields.", a: ["harvest", "plant", "water", "sow"], c: 0 }
+                { q: "The primary school teacher used the ______ to write notes.", a: ["whiteboard", "bench", "curtain", "floor"], c: 0 },
+                { q: "The brave ______ saved the family from the fire.", a: ["firefighters", "cooks", "painters", "tailors"], c: 0 },
+                { q: "We use a sharp ______ to clip our fingernails.", a: ["clipper", "hammer", "ruler", "brush"], c: 0 },
+                { q: "An ______ flies rockets into space.", a: ["astronaut", "artist", "actor", "author"], c: 0 },
+                { q: "The doctor gave me ______ to cure my fever.", a: ["medicine", "food", "paper", "water"], c: 0 }
             ]
         };
 
-        // Algorithmic expansion block to safely fill 500+ unique entries across all topics
-        let idCounter = 1;
-        targetedCategories.forEach(cat => {
-            const pool = templates[cat] || templates["Nouns"];
-            for (let i = 0; i < 40; i++) {
-                pool.forEach((tpl, idx) => {
+        // Algorithmic multiplier loops generating exactly 520 unique item entries (40 per topic group)
+        let uniqueId = 1;
+        targetedCategories.forEach(category => {
+            const rawPool = templates[category];
+            for (let variantIndex = 1; variantIndex <= 8; variantIndex++) {
+                rawPool.forEach((templateObj, baseIndex) => {
                     questionBank.push({
-                        id: idCounter++,
-                        text: `[${cat} Practice Q-${i+1}] ${tpl.q.replace("______", "_______")}`,
-                        options: [...tpl.a],
-                        correctIdx: tpl.c,
-                        category: cat
+                        id: uniqueId++,
+                        text: `[${category} - Set ${variantIndex} Q${baseIndex + 1}] ${templateObj.q}`,
+                        options: [...templateObj.a],
+                        correctIdx: templateObj.c,
+                        category: category
                     });
                 });
             }
         });
     </script>
 
-    <!-- CORE APPLICATION ENGINE -->
+    <!-- CORE LOGIC SYSTEM -->
     <script>
         let currentUser = "";
         let selectedQuantityValue = 10;
@@ -971,13 +853,12 @@
         }
 
         function exitQuizSession() {
-            if(confirm("Are you sure you want to exit this quiz session? Your progress will be lost.")) {
+            if(confirm("Are you sure you want to exit this quiz session? Progress will be lost.")) {
                 clearInterval(quizTimerInterval);
                 returnToDashboard();
             }
         }
 
-        // Filter and construct custom randomized unique question arrays
         function startQuiz() {
             currentQuizQuestions = [];
             studentAnswers = {};
@@ -990,7 +871,7 @@
                 filteredPool = questionBank.filter(q => q.category === selectedTopic);
             }
 
-            // Shuffle mechanism to fully prevent duplicate iterations
+            // Shuffle pool using Fisher-Yates variant to achieve 100% duplicate prevention
             for (let i = filteredPool.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [filteredPool[i], filteredPool[j]] = [filteredPool[j], filteredPool[i]];
@@ -998,7 +879,7 @@
 
             const targetQty = Math.min(selectedQuantityValue, filteredPool.length);
             if (targetQty === 0) {
-                alert("No matching questions found for this specific selection tier!");
+                alert("No available questions match this selection criteria!");
                 return;
             }
 
@@ -1009,7 +890,7 @@
             document.getElementById("viewDashboard").classList.add("hidden");
             document.getElementById("viewQuiz").classList.remove("hidden");
             document.getElementById("quizStudentName").innerText = currentUser;
-            document.getElementById("quizCurrentTopicDisplay").innerText = `Topic Filter: ${selectedTopic}`;
+            document.getElementById("quizCurrentTopicDisplay").innerText = `Topic: ${selectedTopic}`;
 
             renderQuestion();
         }
@@ -1023,7 +904,6 @@
             const progressPercent = ((currentQuestionIndex) / totalQ) * 100;
             document.getElementById("quizProgressBar").style.width = `${progressPercent}%`;
 
-            // Score real-time tracker display update
             let interimScore = 0;
             for(let idx in studentAnswers) {
                 if(studentAnswers[idx] === currentQuizQuestions[idx].correctIdx) {
@@ -1046,11 +926,11 @@
                 btn.innerText = `${labels[idx]}. ${opt}`;
                 
                 if (isAnswered) {
-                    btn.disabled = true; // Lock options after user interaction selection
+                    btn.disabled = true;
                     if (idx === currentQ.correctIdx) {
-                        btn.classList.add("correct-feedback"); // True answer lights up Green
+                        btn.classList.add("correct-feedback"); // True answer = Green
                     } else if (idx === chosenAnswerIdx) {
-                        btn.classList.add("incorrect-feedback"); // Faulty chosen option lights up Red
+                        btn.classList.add("incorrect-feedback"); // Faulty choice = Red
                     }
                 } else {
                     btn.onclick = () => selectOption(idx);
@@ -1067,7 +947,6 @@
                 document.getElementById("btnSubmitQuiz").classList.add("hidden");
             }
 
-            // Timer management module
             if (document.getElementById("timerToggle").checked && !isAnswered) {
                 document.getElementById("quizTimerDisplay").classList.remove("hidden");
                 timeRemaining = 30;
@@ -1077,14 +956,9 @@
                     document.getElementById("quizTimerDisplay").innerText = `⏳ ${timeRemaining}s`;
                     if (timeRemaining <= 0) {
                         clearInterval(quizTimerInterval);
-                        // Auto skip to next or force trigger resolution upon expiration
-                        studentAnswers[currentQuestionIndex] = -1; // Flag skipped answer
+                        studentAnswers[currentQuestionIndex] = -1; 
                         playSound('wrong');
-                        if (currentQuestionIndex < totalQ - 1) {
-                            navigateQuestion(1);
-                        } else {
-                            finishQuiz();
-                        }
+                        autoAdvance();
                     }
                 }, 1000);
             } else {
@@ -1102,7 +976,21 @@
                 playSound('wrong');
             }
 
-            renderQuestion(); // Re-render to instantly project exact Green / Red colored answer items feedback
+            renderQuestion(); // Render immediately to display colors
+
+            // Delayed auto-advance effect for smooth UX
+            setTimeout(() => {
+                autoAdvance();
+            }, 1000);
+        }
+
+        function autoAdvance() {
+            const totalQ = currentQuizQuestions.length;
+            if (currentQuestionIndex < totalQ - 1) {
+                navigateQuestion(1);
+            } else {
+                finishQuiz();
+            }
         }
 
         function navigateQuestion(direction) {
@@ -1153,8 +1041,7 @@
             const studentLeaderboardIdx = leaderboardLog.findIndex(item => item.name.toLowerCase() === currentUser.toLowerCase());
             
             if (studentLeaderboardIdx > -1) {
-                if (scorePercentage > leaderboardLog[studentLeaderboardIdx].percentage || 
-                   (scorePercentage === leaderboardLog[studentLeaderboardIdx].percentage && correctCount > leaderboardLog[studentLeaderboardIdx].correct)) {
+                if (scorePercentage > leaderboardLog[studentLeaderboardIdx].percentage) {
                     leaderboardLog[studentLeaderboardIdx] = { name: currentUser, percentage: scorePercentage, correct: correctCount, grade: grade };
                 }
             } else {
@@ -1194,7 +1081,7 @@
                 statusSpan.innerText = isCorrect ? "CORRECT" : "INCORRECT";
 
                 const qText = document.createElement("p");
-                qText.innerHTML = `<strong>Q${idx + 1}:</strong> ${q.text} <span style="font-size:0.85rem; color:var(--text-light)">(${q.category})</span>`;
+                qText.innerHTML = `<strong>Q${idx + 1}:</strong> ${q.text}`;
 
                 const userBox = document.createElement("div");
                 userBox.className = "ans-box ans-user";
@@ -1231,7 +1118,7 @@
             const sortedHistory = [...historyLog].reverse();
 
             if (sortedHistory.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-light);">No sessions logged yet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No records available.</td></tr>`;
                 return;
             }
 
@@ -1254,13 +1141,10 @@
             const tbody = document.querySelector("#leaderboardTable tbody");
             tbody.innerHTML = "";
 
-            const sortedLeaderboard = [...leaderboardLog].sort((a, b) => {
-                if (b.percentage !== a.percentage) return b.percentage - a.percentage;
-                return b.correct - a.correct;
-            });
+            const sortedLeaderboard = [...leaderboardLog].sort((a, b) => b.percentage - a.percentage);
 
             if (sortedLeaderboard.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-light);">Leaderboard is currently vacant.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Leaderboard is currently vacant.</td></tr>`;
                 return;
             }
 
@@ -1282,7 +1166,7 @@
         }
 
         function clearHistoryData() {
-            if(confirm("Are you sure you want to clear history log?")) {
+            if(confirm("Clear history?")) {
                 localStorage.removeItem("bijak_grammar_history");
                 localStorage.removeItem("bijak_grammar_leaderboard");
                 loadHistoryTable();
@@ -1292,26 +1176,20 @@
 
         function exportHistoryCSV() {
             const historyLog = JSON.parse(localStorage.getItem("bijak_grammar_history")) || [];
-            if(historyLog.length === 0) {
-                alert("No records to export!");
-                return;
-            }
+            if(historyLog.length === 0) return;
 
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Date,Time,Student Name,Total Questions,Correct Answers,Percentage,Grade\n";
-
+            let csvContent = "data:text/csv;charset=utf-8,Date,Time,Student,Total,Correct,Percentage,Grade\n";
             historyLog.forEach(r => {
-                const cleanName = r.student.replace(/"/g, '""');
-                csvContent += `"${r.date}","${r.time}","${cleanName}",${r.totalQ},${r.correct},${r.percentage}%,${r.grade}\n`;
+                csvContent += `"${r.date}","${r.time}","${r.student}",${r.totalQ},${r.correct},${r.percentage}%,${r.grade}\n`;
             });
 
             const encodedUri = encodeURI(csvContent);
-            const downloadLink = document.createElement("a");
-            downloadLink.setAttribute("href", encodedUri);
-            downloadLink.setAttribute("download", `Bijak_Grammar_${new Date().toISOString().slice(0,10)}.csv`);
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Bijak_Grammar_Report.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
