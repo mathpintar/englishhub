@@ -55,17 +55,41 @@
 
         <main class="flex-grow p-4 flex flex-col justify-start items-center w-full overflow-y-auto touch-pan-y">
 
-            <div v-if="screen === 'login-selection'" class="w-full space-y-6 text-center my-auto">
-                <div class="bg-gradient-to-b from-emerald-400 to-emerald-500 p-6 rounded-3xl border-4 border-emerald-300 shadow-inner text-white">
-                    <span class="text-6xl block mb-2">🧠</span>
+            <!-- PAPARAN UTAMA (SEBELUM LOG MASUK) -->
+            <div v-if="screen === 'login-selection'" class="w-full space-y-4 text-center my-auto">
+                <div class="bg-gradient-to-b from-emerald-400 to-emerald-500 p-5 rounded-3xl border-4 border-emerald-300 shadow-inner text-white">
+                    <span class="text-5xl block mb-1">🧠</span>
                     <h2 class="text-3xl font-black font-kids">MathPintar</h2>
-                    <p class="text-sm opacity-90 mt-1">Jom jadi bijak Matematik dengan bentuk lazim!</p>
+                    <p class="text-xs opacity-90 mt-1">Jom jadi bijak Matematik dengan bentuk lazim!</p>
                 </div>
-                <div class="space-y-4 pt-4">
-                    <button @click="screen = 'login-child'" class="w-full bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black text-xl py-4 rounded-2xl shadow-md border-b-4 border-yellow-600 transition-all flex justify-center items-center gap-2">
+
+                <!-- NOTIS KEMAS KINI SISTEM -->
+                <div class="bg-amber-50 border-2 border-amber-300 p-4 rounded-2xl text-left space-y-2 shadow-sm">
+                    <div class="flex items-center gap-1.5 text-amber-800 font-black text-xs uppercase tracking-wide">
+                        <span>📢</span> NOTIS KEMAS KINI SISTEM — 19/8/2026
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed">
+                        Sistem kini telah menukar No. PIN daripada 4 digit kepada 6 digit bagi mengelakkan berlakunya pertindihan No. PIN antara akaun.
+                    </p>
+                    <div class="text-xs text-slate-800 font-bold pt-1">Tindakan yang perlu dilakukan:</div>
+                    <ol class="list-decimal list-inside text-xs text-slate-700 space-y-1 font-medium pl-1">
+                        <li>Sila log masuk ke akaun Ibu Bapa.</li>
+                        <li>Jana No. PIN baharu untuk anak.</li>
+                        <li>Gunakan No. PIN terkini tersebut untuk log masuk sebagai anak dan menjawab soalan.</li>
+                    </ol>
+                    <p class="text-[11px] text-amber-900 font-semibold pt-1">
+                        Sila pastikan anda menggunakan No. PIN yang baharu untuk mengakses akaun anak.
+                    </p>
+                    <p class="text-[11px] text-slate-600 italic">
+                        Kami memohon maaf atas segala kesulitan yang berlaku dan mengucapkan terima kasih atas kerjasama serta kefahaman ibu ayah. 🙏
+                    </p>
+                </div>
+
+                <div class="space-y-3 pt-1">
+                    <button @click="screen = 'login-child'" class="w-full bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black text-lg py-3.5 rounded-2xl shadow-md border-b-4 border-yellow-600 transition-all flex justify-center items-center gap-2">
                         👦 MASUK SEBAGAI ANAK (PIN)
                     </button>
-                    <button @click="screen = 'login-parent'" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-black text-lg py-3.5 rounded-2xl shadow-md border-b-4 border-slate-900 transition-all flex justify-center items-center gap-2">
+                    <button @click="screen = 'login-parent'" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-black text-base py-3 rounded-2xl shadow-md border-b-4 border-slate-900 transition-all flex justify-center items-center gap-2">
                         🔑 LOG MASUK IBU BAPA / GURU
                     </button>
                 </div>
@@ -647,7 +671,6 @@
                     }
                 };
 
-                // Fungsi baharu untuk menjana PIN 6-digit unik yang tidak wujud lagi dalam seluruh pangkalan data
                 const generateUniquePin = async () => {
                     const existingPins = new Set();
                     try {
