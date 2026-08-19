@@ -1776,10 +1776,10 @@ bentuk: {
 
                     const langQuestions = topicObj.questions[lang.value] || topicObj.questions['ms'];
                     let rawQuestions = [...langQuestions];
-                    rawQuestions.sort(() => Math.random() - 0.5);
+                    rawQuestions.sort(() => Math.random() - 0.20);
 
                     topicQuestions.value = rawQuestions.slice(0, 5).map(q => {
-                        let shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+                        let shuffledOptions = [...q.options].sort(() => Math.random() - 0.20);
                         return {
                             ...q,
                             options: shuffledOptions,
@@ -1804,7 +1804,7 @@ bentuk: {
                         playSound('wrong');
                     }
 
-                    if (currentTopicIndex.value < 4) {
+                    if (currentTopicIndex.value < 19) {
                         currentTopicIndex.value += 1;
                     } else {
                         endSession();
