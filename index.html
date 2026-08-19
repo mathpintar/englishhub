@@ -114,7 +114,7 @@
                 </button>
             </div>
 
-            <!-- PAPARAN PILIHAN MOD MODUL -->
+            <!-- PAPARAN PILIHAN MOD MODUL (SELEPAS LOG MASUK PIN) -->
             <div v-if="user && screen === 'mode-selection'" class="w-full space-y-4 my-auto text-center">
                 <div class="bg-emerald-50 border-2 border-emerald-200 p-4 rounded-2xl">
                     <p class="text-lg font-bold text-slate-700">{{ t('welcome') }}, <span class="text-emerald-600 font-black text-xl uppercase">{{ user }}</span>! 👋</p>
@@ -179,26 +179,23 @@
                 </button>
             </div>
 
-            <!-- GAMEPLAY LATIHAN TOPIK / PEMBETULAN TOPIK -->
-            <div v-if="screen === 'topic-gameplay' || screen === 'topic-correction'" class="w-full flex flex-col justify-between items-center space-y-4 my-auto">
+            <!-- GAMEPLAY LATIHAN TOPIK (MCQ / MULTIPLE CHOICE) -->
+            <div v-if="screen === 'topic-gameplay'" class="w-full flex flex-col justify-between items-center space-y-4 my-auto">
                 <div class="w-full bg-slate-100 p-3 rounded-2xl border-2 border-slate-200 flex justify-between items-center text-xs font-bold text-slate-600">
-                    <div v-if="screen === 'topic-gameplay'">{{ t('question') }}: <span class="text-indigo-600 text-sm">{{ currentTopicIndex + 1 }}</span> / 5</div>
-                    <div v-else class="text-red-600 text-sm bg-red-50 px-2 py-0.5 rounded-lg border border-red-200 animate-pulse">🛠️ {{ t('correctionMode') }}</div>
-                    
-                    <div v-if="screen === 'topic-gameplay'" class="text-center font-mono text-sm bg-slate-800 text-yellow-400 px-3 py-1 rounded-full shadow-inner">⏱️ {{ formattedTime }}</div>
-                    <div v-if="screen === 'topic-gameplay'">{{ t('score') }}: <span class="text-blue-600 text-sm">{{ score }}</span></div>
-                    <button v-else @click="screen = 'results'" class="bg-slate-700 text-white px-2.5 py-1 rounded-md text-[11px]">{{ t('cancelBtn') }}</button>
+                    <div>{{ t('question') }}: <span class="text-indigo-600 text-sm">{{ currentTopicIndex + 1 }}</span> / 5</div>
+                    <div class="text-center font-mono text-sm bg-slate-800 text-yellow-400 px-3 py-1 rounded-full shadow-inner">⏱️ {{ formattedTime }}</div>
+                    <div>{{ t('score') }}: <span class="text-blue-600 text-sm">{{ score }}</span></div>
                 </div>
 
                 <div class="w-full bg-indigo-50 p-6 rounded-3xl border-4 border-indigo-200 shadow-inner flex flex-col items-center justify-center min-h-[160px] text-center">
                     <span class="text-xs font-bold bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full mb-3">
-                        {{ t('year') }} {{ selectedYear }} • {{ activeTopicQuestion.topicName }}
+                        {{ t('year') }} {{ selectedYear }} • {{ currentTopicQuestion.topicName }}
                     </span>
-                    <h3 class="text-xl font-bold text-slate-800 leading-snug">{{ activeTopicQuestion.question }}</h3>
+                    <h3 class="text-xl font-bold text-slate-800 leading-snug">{{ currentTopicQuestion.question }}</h3>
                 </div>
 
                 <div class="w-full space-y-2.5">
-                    <button v-for="(opt, idx) in activeTopicQuestion.options" :key="idx" @click="screen === 'topic-gameplay' ? submitTopicAnswer(opt) : submitTopicCorrection(opt)" class="w-full bg-white hover:bg-indigo-100 active:bg-indigo-200 text-slate-800 font-bold text-base py-3.5 px-4 rounded-2xl border-2 border-indigo-200 shadow-sm transition-all text-left flex items-center gap-3 transform active:scale-95">
+                    <button v-for="(opt, idx) in currentTopicQuestion.options" :key="idx" @click="submitTopicAnswer(opt)" class="w-full bg-white hover:bg-indigo-100 active:bg-indigo-200 text-slate-800 font-bold text-base py-3.5 px-4 rounded-2xl border-2 border-indigo-200 shadow-sm transition-all text-left flex items-center gap-3 transform active:scale-95">
                         <span class="w-8 h-8 rounded-xl bg-indigo-500 text-white font-black flex items-center justify-center text-sm shrink-0">
                             {{ String.fromCharCode(65 + idx) }}
                         </span>
@@ -521,7 +518,6 @@
                     </div>
                 </div>
 
-                <!-- SENARAI SEMAKAN BENTUK LAZIM -->
                 <div v-if="currentSessionType === 'Bentuk Lazim'" class="space-y-2 text-left">
                     <h3 class="font-bold text-slate-700 text-sm px-1">📝 {{ t('checklistQuestions') }}:</h3>
                     <div class="space-y-2 max-h-[220px] overflow-y-auto border border-slate-200 rounded-xl p-2 bg-slate-50">
@@ -538,25 +534,6 @@
                                 </div>
                             </div>
                             <button v-if="!q.isCorrect" @click="startCorrection(index)" class="bg-red-500 hover:bg-red-600 text-white font-bold text-xs px-2.5 py-1.5 rounded-lg border-b-2 border-red-700 transition-all transform active:scale-95 shrink-0">🛠️ {{ t('correctItBtn') }}</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SENARAI SEMAKAN LATIHAN IKUT TOPIK -->
-                <div v-if="currentSessionType === 'Latihan Topik'" class="space-y-2 text-left">
-                    <h3 class="font-bold text-slate-700 text-sm px-1">📝 {{ t('checklistQuestions') }}:</h3>
-                    <div class="space-y-2 max-h-[220px] overflow-y-auto border border-slate-200 rounded-xl p-2 bg-slate-50">
-                        <div v-for="(q, index) in topicQuestions" :key="'rev-topic-'+index" class="bg-white p-2.5 rounded-lg border border-slate-200 flex justify-between items-center text-sm shadow-sm">
-                            <div class="flex items-center gap-2">
-                                <span class="text-base">{{ q.isCorrect ? '✅' : '❌' }}</span>
-                                <div class="pr-2">
-                                    <div class="font-bold text-slate-800 text-xs">S{{ index + 1 }}: {{ q.question }}</div>
-                                    <div class="text-[11px] text-slate-500 font-medium">Jawapan anda: <span class="font-bold">{{ q.studentAnswer }}</span></div>
-                                    <div v-if="!q.isCorrect" class="text-[11px] text-red-500 font-medium">{{ t('correctAnswer') }}: {{ q.correct }}</div>
-                                    <div v-else-if="q.wasCorrected" class="text-[11px] text-emerald-600 font-bold flex items-center gap-0.5">✨ {{ t('correctedSuccess') }}</div>
-                                </div>
-                            </div>
-                            <button v-if="!q.isCorrect" @click="startTopicCorrection(index)" class="bg-red-500 hover:bg-red-600 text-white font-bold text-xs px-2.5 py-1.5 rounded-lg border-b-2 border-red-700 transition-all transform active:scale-95 shrink-0">🛠️ {{ t('correctItBtn') }}</button>
                         </div>
                     </div>
                 </div>
@@ -641,7 +618,7 @@
                 const user = ref(null);               
                 const parentUser = ref(null);         
                 const screen = ref('login-selection');
-                const lang = ref('ms'); 
+                const lang = ref('ms'); // Sistem Bahasa ('ms' | 'en')
                 
                 const childPinInput = ref('');
                 const authLoading = ref(false);
@@ -844,12 +821,11 @@
                     playSound('click');
                 };
 
-                // Konfigurasi Latihan Ikut Topik KSSR
+                // Konfigurasi Latihan Ikut Topik KSSR (Multi-language Support)
                 const selectedYear = ref(null);
                 const selectedTopicKey = ref('');
                 const topicQuestions = ref([]);
                 const currentTopicIndex = ref(0);
-                const topicCorrectionIndex = ref(null);
 
                 const kssrTopics = {
                     tahun1: {
@@ -1117,26 +1093,27 @@
                                     { question: "Nisbah 3 kepada 5 ditulis sebagai:", options: ["3/5", "3:5", "3-5", "5:3"], correct: "3:5" },
                                     { question: "Ada 4 epal merah dan 6 epal hijau. Apakah nisbah epal merah kepada semua epal?", options: ["4:6", "4:10", "6:4", "10:4"], correct: "4:10" },
                                     { question: "Permudahkan nisbah 2 : 4.", options: ["1:2", "1:4", "2:1", "4:2"], correct: "1:2" },
-                                    { question: "Nisbah tinggi Ali kepada Abu ialah 1:2. Jika tinggi Ali 100cm, berapa tinggi Abu?", options: ["150cm", "200cm", "250cm", "300cm"], correct: "200cm" },
-                                    { question: "Sebuah kotak ada 10 bola. 3 merah, baki biru. Apakah nisbah merah kepada biru?", options: ["3:7", "3:10", "7:3", "10:3"], correct: "3:7" }
+                                    { question: "Jika nisbah murid lelaki kepada perempuan ialah 1:2, dan murid lelaki ada 5 orang, berapa murid perempuan?", options: ["5", "10", "15", "20"], correct: "10" },
+                                    { question: "Nisbah harga pen A kepada pen B ialah 2:3. Jika pen A berharga RM4, berapakah harga pen B?", options: ["RM5", "RM6", "RM8", "RM9"], correct: "RM6" }
                                 ],
                                 en: [
-                                    { question: "Ratio 3 to 5 is written as:", options: ["3/5", "3:5", "3-5", "5:3"], correct: "3:5" },
-                                    { question: "4 red apples and 6 green apples. Ratio of red to total apples is:", options: ["4:6", "4:10", "6:4", "10:4"], correct: "4:10" },
-                                    { question: "Simplify ratio 2 : 4.", options: ["1:2", "1:4", "2:1", "4:2"], correct: "1:2" },
-                                    { question: "Ratio of Ali's height to Abu's is 1:2. If Ali is 100cm, Abu's height is:", options: ["150cm", "200cm", "250cm", "300cm"], correct: "200cm" },
-                                    { question: "A box has 10 balls. 3 red, rest blue. Ratio of red to blue is:", options: ["3:7", "3:10", "7:3", "10:3"], correct: "3:7" }
+                                    { question: "Ratio of 3 to 5 is written as:", options: ["3/5", "3:5", "3-5", "5:3"], correct: "3:5" },
+                                    { question: "There are 4 red apples and 6 green apples. What is the ratio of red apples to total apples?", options: ["4:6", "4:10", "6:4", "10:4"], correct: "4:10" },
+                                    { question: "Simplify the ratio 2 : 4.", options: ["1:2", "1:4", "2:1", "4:2"], correct: "1:2" },
+                                    { question: "If ratio of boys to girls is 1:2, and there are 5 boys, how many girls are there?", options: ["5", "10", "15", "20"], correct: "10" },
+                                    { question: "Ratio of pen A price to pen B is 2:3. If pen A costs RM4, what is the price of pen B?", options: ["RM5", "RM6", "RM8", "RM9"], correct: "RM6" }
                                 ]
                             }
                         }
                     }
                 };
 
-                // Konfigurasi Latihan Bentuk Lazim
+                // Konfigurasi Bentuk Lazim
                 const config = ref({
                     operation: 'Tambah',
                     totalQuestions: 10,
-                    difficulty: 'Mudah'
+                    difficulty: 'Mudah',
+                    activeParentId: null
                 });
 
                 // Konfigurasi Bijak Sifir
@@ -1145,350 +1122,354 @@
                     totalQuestions: 10
                 });
 
-                const currentSessionType = ref('Bentuk Lazim'); // 'Bentuk Lazim' | 'Bijak Sifir' | 'Latihan Topik'
-                const questions = ref([]);
-                const currentQuestionIndex = ref(0);
-
                 const sifirQuestions = ref([]);
                 const currentSifirIndex = ref(0);
                 const sifirAnswerInput = ref('');
 
+                const currentSessionType = ref('Bentuk Lazim');
+
+                const questions = ref([]);
+                const currentQuestionIndex = ref(0);
                 const score = ref(0);
-                const timer = ref(0);
-                const timerInterval = ref(null);
-
-                const answerArray = ref({});
-                const carryArray = ref({});
-                const borrowArray = ref({});
-                const divisionInputs = ref({ quotientArray: {}, remainderArray: {}, finalRemainder: '' });
-                const activeTarget = ref({ type: 'answer', index: 0 });
-
+                const usedQuestionCombos = ref(new Set());
                 const correctionIndex = ref(null);
 
-                // Sound Effect Engine
+                const answerArray = ref([]); 
+                const carryArray = ref([]);  
+                const borrowArray = ref([]); 
+                
+                const divisionInputs = ref({
+                    quotientArray: [],
+                    remainderArray: [],
+                    finalRemainder: ''
+                });
+
+                const activeTarget = ref({ type: 'answer', index: 0 });
+                const timerSeconds = ref(0);
+                const timerInterval = ref(null);
+                const finalTimeDisplay = ref('');
+
                 const playSound = (type) => {
                     try {
-                        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                        const osc = ctx.createOscillator();
-                        const gain = ctx.createGain();
-                        osc.connect(gain);
-                        gain.connect(ctx.destination);
-
+                        const AudioContext = window.AudioContext || window.webkitAudioContext;
+                        if (!AudioContext) return;
+                        const ctx = new AudioContext();
                         if (type === 'click') {
+                            const osc = ctx.createOscillator();
+                            const gain = ctx.createGain();
+                            osc.type = 'sine';
                             osc.frequency.setValueAtTime(400, ctx.currentTime);
-                            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                            osc.frequency.exponentialRampToValueAtTime(10, ctx.currentTime + 0.1);
+                            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                            osc.connect(gain);
+                            gain.connect(ctx.destination);
                             osc.start();
-                            osc.stop(ctx.currentTime + 0.05);
+                            osc.stop(ctx.currentTime + 0.1);
                         } else if (type === 'correct') {
-                            osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-                            osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
-                            gain.gain.setValueAtTime(0.2, ctx.currentTime);
-                            osc.start();
-                            osc.stop(ctx.currentTime + 0.25);
+                            const now = ctx.currentTime;
+                            [600, 900].forEach((freq, i) => {
+                                const osc = ctx.createOscillator();
+                                const gain = ctx.createGain();
+                                osc.type = 'triangle';
+                                osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                                gain.gain.setValueAtTime(0.2, now + i * 0.08);
+                                gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.3);
+                                osc.connect(gain);
+                                gain.connect(ctx.destination);
+                                osc.start(now + i * 0.08);
+                                osc.stop(now + i * 0.08 + 0.3);
+                            });
                         } else if (type === 'wrong') {
-                            osc.frequency.setValueAtTime(220, ctx.currentTime);
-                            osc.frequency.setValueAtTime(180, ctx.currentTime + 0.1);
+                            const osc = ctx.createOscillator();
+                            const gain = ctx.createGain();
+                            osc.type = 'sawtooth';
+                            osc.frequency.setValueAtTime(150, ctx.currentTime);
+                            osc.frequency.linearRampToValueAtTime(80, ctx.currentTime + 0.3);
                             gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                            osc.connect(gain);
+                            gain.connect(ctx.destination);
                             osc.start();
-                            osc.stop(ctx.currentTime + 0.25);
+                            osc.stop(ctx.currentTime + 0.3);
                         }
-                    } catch (e) { }
+                    } catch (e) {}
                 };
 
-                // Lifecycle & Auth
                 onMounted(() => {
-                    onAuthStateChanged(fAuth, async (firebaseUser) => {
+                    onAuthStateChanged(fAuth, (firebaseUser) => {
                         if (firebaseUser) {
-                            parentUser.value = firebaseUser;
-                            listenParentData(firebaseUser.uid);
-                            if (!user.value && screen.value.startsWith('login')) {
+                            if (!user.value) {
+                                parentUser.value = firebaseUser.uid;
+                                syncParentDatabaseBranches(firebaseUser.uid);
                                 screen.value = 'parentDashboard';
                             }
                         } else {
-                            parentUser.value = null;
+                            if (!user.value) {
+                                parentUser.value = null;
+                                screen.value = 'login-selection';
+                            }
                         }
                     });
                 });
 
-                const listenParentData = (parentUid) => {
-                    const profilesRef = dbRef(fDatabase, `parents/${parentUid}/children`);
+                const syncParentDatabaseBranches = (uid) => {
+                    const profilesRef = dbRef(fDatabase, `users/${uid}/profiles`);
                     onValue(profilesRef, (snapshot) => {
-                        const val = snapshot.val();
-                        if (val) {
-                            childProfiles.value = Object.keys(val).map(k => ({ id: k, ...val[k] }));
+                        const data = snapshot.val();
+                        if (data) {
+                            childProfiles.value = Object.keys(data).map(key => ({ id: key, ...data[key] }));
                         } else {
                             childProfiles.value = [];
                         }
                     });
 
-                    const reportsRef = dbRef(fDatabase, `parents/${parentUid}/reports`);
+                    const reportsRef = dbRef(fDatabase, `users/${uid}/reports`);
                     onValue(reportsRef, (snapshot) => {
-                        const val = snapshot.val();
-                        if (val) {
-                            reportList.value = Object.values(val);
+                        const data = snapshot.val();
+                        if (data) {
+                            reportList.value = Object.keys(data).map(key => ({ id: key, ...data[key] }));
                         } else {
                             reportList.value = [];
                         }
                     });
                 };
 
-                const loginAsChild = async () => {
-                    const pin = childPinInput.value.trim();
-                    if (pin.length !== 6) return;
-                    authLoading.value = true;
-
-                    try {
-                        const globalPinRef = dbRef(fDatabase, `pins/${pin}`);
-                        const snap = await get(globalPinRef);
-                        if (snap.exists()) {
-                            const data = snap.val();
-                            user.value = data.childName.toUpperCase();
-                            listenParentData(data.parentUid);
-                            screen.value = 'mode-selection';
-                            playSound('correct');
-                        } else {
-                            alert("PIN tidak sah! Sila semak dengan ibu bapa anda.");
-                            playSound('wrong');
-                        }
-                    } catch (e) {
-                        alert("Ralat semasa log masuk PIN: " + e.message);
-                    } finally {
-                        authLoading.value = false;
-                    }
-                };
-
                 const handleGoogleLogin = async () => {
                     authLoading.value = true;
                     try {
                         await signInWithPopup(fAuth, googleProvider);
-                        screen.value = 'parentDashboard';
-                        playSound('correct');
-                    } catch (e) {
-                        alert("Gagal Log Masuk Google: " + e.message);
+                        user.value = null; 
+                    } catch (error) {
+                        alert("Google Auth Error: " + error.message);
+                        playSound('wrong');
                     } finally {
                         authLoading.value = false;
                     }
                 };
 
-                const logout = () => {
-                    signOut(fAuth);
-                    user.value = null;
-                    parentUser.value = null;
-                    screen.value = 'login-selection';
-                    childPinInput.value = '';
-                    playSound('click');
-                };
+                const loginAsChild = async () => {
+                    if (childPinInput.value.trim().length !== 6) return;
+                    authLoading.value = true;
+                    try {
+                        const globalUsersRef = dbRef(fDatabase, 'users');
+                        const snapshot = await get(globalUsersRef);
+                        let pinFound = false;
 
-                const goToModeSelection = () => {
-                    clearInterval(timerInterval.value);
-                    if (user.value) {
-                        screen.value = 'mode-selection';
-                    } else if (parentUser.value) {
-                        screen.value = 'parentDashboard';
-                    } else {
-                        screen.value = 'login-selection';
+                        if (snapshot.exists()) {
+                            const allUsers = snapshot.val();
+                            for (const parentUid in allUsers) {
+                                const profiles = allUsers[parentUid].profiles;
+                                if (profiles) {
+                                    for (const profileId in profiles) {
+                                        if (String(profiles[profileId].pin) === childPinInput.value.trim()) {
+                                            parentUser.value = null; 
+                                            user.value = profiles[profileId].name;
+                                            
+                                            const reportsRef = dbRef(fDatabase, `users/${parentUid}/reports`);
+                                            onValue(reportsRef, (repSnapshot) => {
+                                                const repData = repSnapshot.val();
+                                                if (repData) {
+                                                    reportList.value = Object.keys(repData).map(key => ({ id: key, ...repData[key] }));
+                                                } else {
+                                                    reportList.value = [];
+                                                }
+                                            });
+
+                                            config.value.activeParentId = parentUid;
+                                            playSound('correct');
+                                            screen.value = 'mode-selection';
+                                            pinFound = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (pinFound) break;
+                            }
+                        }
+
+                        if (!pinFound) {
+                            alert(lang.value === 'ms' ? "No PIN tidak sah. Sila semak dengan ibu bapa anda." : "Invalid PIN. Please check with your parents.");
+                            playSound('wrong');
+                        }
+                    } catch (e) {
+                        alert("Connection Error: " + e.message);
+                    } finally {
+                        authLoading.value = false;
                     }
-                    playSound('click');
                 };
 
-                // PENGURUSAN IBU BAPA
+                const generateUniquePin = async () => {
+                    const existingPins = new Set();
+                    try {
+                        const globalUsersRef = dbRef(fDatabase, 'users');
+                        const snapshot = await get(globalUsersRef);
+                        if (snapshot.exists()) {
+                            const allUsers = snapshot.val();
+                            for (const pUid in allUsers) {
+                                const profiles = allUsers[pUid].profiles;
+                                if (profiles) {
+                                    for (const profId in profiles) {
+                                        if (profiles[profId].pin) {
+                                            existingPins.add(String(profiles[profId].pin));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Failed to fetch existing PINs: ", e);
+                    }
+
+                    let pin;
+                    let isUnique = false;
+                    while (!isUnique) {
+                        pin = String(Math.floor(100000 + Math.random() * 900000));
+                        if (!existingPins.has(pin)) {
+                            isUnique = true;
+                        }
+                    }
+                    return pin;
+                };
+
                 const addChildProfile = async () => {
                     if (!newChildName.value.trim() || !parentUser.value) return;
                     isManagingPin.value = true;
-                    const cName = newChildName.value.trim();
-
                     try {
-                        let uniquePin = '';
-                        let exists = true;
-                        while (exists) {
-                            uniquePin = Math.floor(100000 + Math.random() * 900000).toString();
-                            const snap = await get(dbRef(fDatabase, `pins/${uniquePin}`));
-                            if (!snap.exists()) exists = false;
-                        }
-
-                        const newChildRef = push(dbRef(fDatabase, `parents/${parentUser.value.uid}/children`));
-                        await set(newChildRef, {
-                            name: cName,
-                            pin: uniquePin
-                        });
-
-                        await set(dbRef(fDatabase, `pins/${uniquePin}`), {
-                            parentUid: parentUser.value.uid,
-                            childName: cName,
-                            childId: newChildRef.key
-                        });
-
+                        const pin = await generateUniquePin(); 
+                        const profilesRef = dbRef(fDatabase, `users/${parentUser.value}/profiles`);
+                        const newProfile = {
+                            name: newChildName.value.trim().toLowerCase(),
+                            pin: pin
+                        };
+                        await push(profilesRef, newProfile);
                         newChildName.value = '';
                         playSound('correct');
                     } catch (e) {
-                        alert("Gagal menambah profil: " + e.message);
+                        alert("Failed to add profile: " + e.message);
                     } finally {
                         isManagingPin.value = false;
                     }
                 };
 
-                const regenerateChildPin = async (childId) => {
-                    const child = childProfiles.value.find(c => c.id === childId);
-                    if (!child || !parentUser.value) return;
+                const regenerateChildPin = async (profileId) => {
+                    if (!parentUser.value) return;
                     isManagingPin.value = true;
-
                     try {
-                        await remove(dbRef(fDatabase, `pins/${child.pin}`));
-
-                        let uniquePin = '';
-                        let exists = true;
-                        while (exists) {
-                            uniquePin = Math.floor(100000 + Math.random() * 900000).toString();
-                            const snap = await get(dbRef(fDatabase, `pins/${uniquePin}`));
-                            if (!snap.exists()) exists = false;
-                        }
-
-                        await set(dbRef(fDatabase, `parents/${parentUser.value.uid}/children/${childId}/pin`), uniquePin);
-                        await set(dbRef(fDatabase, `pins/${uniquePin}`), {
-                            parentUid: parentUser.value.uid,
-                            childName: child.name,
-                            childId: childId
-                        });
-
+                        const newPin = await generateUniquePin();
+                        await set(dbRef(fDatabase, `users/${parentUser.value}/profiles/${profileId}/pin`), newPin);
                         playSound('correct');
+                        alert(lang.value === 'ms' ? "PIN 6-digit baharu berjaya dijana!" : "New 6-digit PIN generated successfully!");
                     } catch (e) {
-                        alert("Gagal menjana PIN baharu: " + e.message);
+                        alert("Failed to update PIN: " + e.message);
                     } finally {
                         isManagingPin.value = false;
                     }
                 };
 
-                const deleteChildProfile = async (childId) => {
-                    const child = childProfiles.value.find(c => c.id === childId);
-                    if (!child || !parentUser.value) return;
-                    if (!confirm(`Adakah anda pasti mahu memadam profil ${child.name}?`)) return;
-
+                const deleteChildProfile = async (profileId) => {
+                    if (!parentUser.value || !confirm(lang.value === 'ms' ? "Padam profil anak ini secara kekal?" : "Permanently delete this child profile?")) return;
                     try {
-                        await remove(dbRef(fDatabase, `pins/${child.pin}`));
-                        await remove(dbRef(fDatabase, `parents/${parentUser.value.uid}/children/${childId}`));
-                        playSound('click');
+                        await remove(dbRef(fDatabase, `users/${parentUser.value}/profiles/${profileId}`));
+                        playSound('wrong');
                     } catch (e) {
-                        alert("Gagal memadam profil: " + e.message);
+                        alert("Failed to delete: " + e.message);
                     }
                 };
 
-                const getChildStats = (childName) => {
-                    if (!childName) return { total: 0, accuracy: 0 };
-                    const filtered = reportList.value.filter(r => r.childName && r.childName.toLowerCase() === childName.toLowerCase());
-                    if (filtered.length === 0) return { total: 0, accuracy: 0 };
-
-                    const totalAcc = filtered.reduce((acc, curr) => acc + (curr.accuracy || 0), 0);
-                    return {
-                        total: filtered.length,
-                        accuracy: Math.round(totalAcc / filtered.length)
-                    };
+                const getChildStats = (name) => {
+                    if (!name) return { total: 0, accuracy: 0 };
+                    const childReports = reportList.value.filter(r => r.studentName === name.toLowerCase());
+                    if (childReports.length === 0) return { total: 0, accuracy: 0 };
+                    const total = childReports.length;
+                    const avgAcc = Math.round(childReports.reduce((s, r) => s + (r.accuracy || 0), 0) / total);
+                    return { total, accuracy: avgAcc };
                 };
+
+                const clearChildReports = async () => {
+                    if (!parentUser.value || !selectedChildForReport.value) return;
+                    if (!confirm(lang.value === 'ms' ? `Adakah anda pasti mahu memadam semua sejarah rekod skor milik ${selectedChildForReport.value.toUpperCase()}?` : `Are you sure you want to delete all score history for ${selectedChildForReport.value.toUpperCase()}?`)) return;
+                    
+                    playSound('wrong');
+                    try {
+                        const targets = reportList.value.filter(r => r.studentName === selectedChildForReport.value.toLowerCase());
+                        for (const report of targets) {
+                            await remove(dbRef(fDatabase, `users/${parentUser.value}/reports/${report.id}`));
+                        }
+                        alert(lang.value === 'ms' ? "Rekod berjaya dipadamkan." : "Records deleted successfully.");
+                    } catch(e) {
+                        alert("Failed to delete records: " + e.message);
+                    }
+                };
+
+                const logout = async () => {
+                    playSound('wrong');
+                    stopTimer();
+                    await signOut(fAuth);
+                    user.value = null;
+                    parentUser.value = null;
+                    childProfiles.value = [];
+                    reportList.value = [];
+                    childPinInput.value = '';
+                    selectedChildForReport.value = '';
+                    config.value.activeParentId = null;
+                    screen.value = 'login-selection';
+                };
+
+                const filteredReportList = computed(() => {
+                    if (!user.value) return reportList.value; 
+                    return reportList.value.filter(r => r.studentName === user.value.toLowerCase());
+                });
 
                 const parentFilteredReports = computed(() => {
                     if (!selectedChildForReport.value) return [];
-                    return reportList.value.filter(r => r.childName && r.childName.toLowerCase() === selectedChildForReport.value.toLowerCase());
+                    return reportList.value.filter(r => r.studentName === selectedChildForReport.value.toLowerCase());
                 });
 
-                const clearChildReports = async () => {
-                    if (!selectedChildForReport.value || !parentUser.value) return;
-                    if (!confirm(`Padam semua rekod skor untuk ${selectedChildForReport.value.toUpperCase()}?`)) return;
-
-                    try {
-                        const reportsRef = dbRef(fDatabase, `parents/${parentUser.value.uid}/reports`);
-                        const snap = await get(reportsRef);
-                        if (snap.exists()) {
-                            const val = snap.val();
-                            const updates = {};
-                            Object.keys(val).forEach(k => {
-                                if (val[k].childName && val[k].childName.toLowerCase() === selectedChildForReport.value.toLowerCase()) {
-                                    updates[k] = null;
-                                }
-                            });
-                            await set(reportsRef, { ...val, ...updates });
-                            playSound('correct');
-                        }
-                    } catch (e) {
-                        alert("Gagal memadam rekod: " + e.message);
+                const currentQuestion = computed(() => {
+                    if (screen.value === 'correction' && correctionIndex.value !== null) {
+                        return questions.value[correctionIndex.value] || { num1: 0, num2: 0 };
                     }
-                };
+                    return questions.value[currentQuestionIndex.value] || { num1: 0, num2: 0 };
+                });
 
-                // LATIHAN IKUT TOPIK
+                const currentSifirQuestion = computed(() => {
+                    return sifirQuestions.value[currentSifirIndex.value] || { num1: 0, num2: 0 };
+                });
+
                 const currentTopicQuestion = computed(() => {
-                    return topicQuestions.value[currentTopicIndex.value] || {};
+                    return topicQuestions.value[currentTopicIndex.value] || { question: '', options: [], correct: '', topicName: '' };
                 });
 
-                const activeTopicQuestion = computed(() => {
-                    if (screen.value === 'topic-correction' && topicCorrectionIndex.value !== null) {
-                        return topicQuestions.value[topicCorrectionIndex.value] || {};
-                    }
-                    return currentTopicQuestion.value;
+                const maxColumns = computed(() => {
+                    const len1 = String(currentQuestion.value.num1).length;
+                    const len2 = String(currentQuestion.value.num2).length;
+                    return Math.max(len1, len2) + (config.value.operation === 'Tambah' || config.value.operation === 'Darab' ? 1 : 0);
                 });
 
-                const startTopicSession = () => {
-                    const topicObj = kssrTopics['tahun' + selectedYear.value][selectedTopicKey.value];
-                    if (!topicObj) return;
+                const formattedTime = computed(() => {
+                    const mins = Math.floor(timerSeconds.value / 60);
+                    const secs = timerSeconds.value % 60;
+                    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                });
 
-                    currentSessionType.value = 'Latihan Topik';
-                    const qData = topicObj.questions[lang.value] || topicObj.questions['ms'];
-                    
-                    topicQuestions.value = qData.map(q => ({
-                        ...q,
-                        topicName: topicObj.name[lang.value],
-                        studentAnswer: '',
-                        isCorrect: false,
-                        wasCorrected: false
-                    }));
+                const currentAccuracy = computed(() => {
+                    if (currentQuestionIndex.value === 0) return 100;
+                    return Math.round((score.value / currentQuestionIndex.value) * 100);
+                });
 
-                    currentTopicIndex.value = 0;
-                    score.value = 0;
-                    timer.value = 0;
-                    screen.value = 'topic-gameplay';
-                    startTimer();
-                    playSound('click');
-                };
+                const currentSessionTotalQuestions = computed(() => {
+                    if (currentSessionType.value === 'Latihan Ikut Topik') return 5;
+                    return currentSessionType.value === 'Bentuk Lazim' ? config.value.totalQuestions : sifirConfig.value.totalQuestions;
+                });
 
-                const submitTopicAnswer = (selectedOpt) => {
-                    const q = topicQuestions.value[currentTopicIndex.value];
-                    q.studentAnswer = selectedOpt;
-                    if (selectedOpt === q.correct) {
-                        q.isCorrect = true;
-                        score.value++;
-                        playSound('correct');
-                    } else {
-                        q.isCorrect = false;
-                        playSound('wrong');
+                const getDigitAt = (number, index) => {
+                    const str = String(number);
+                    const revIndex = str.length - 1 - index;
+                    if (revIndex >= 0 && revIndex < str.length) {
+                        return str[revIndex];
                     }
-
-                    if (currentTopicIndex.value + 1 < topicQuestions.value.length) {
-                        currentTopicIndex.value++;
-                    } else {
-                        endSession();
-                    }
-                };
-
-                const startTopicCorrection = (idx) => {
-                    topicCorrectionIndex.value = idx;
-                    screen.value = 'topic-correction';
-                    playSound('click');
-                };
-
-                const submitTopicCorrection = (selectedOpt) => {
-                    const q = topicQuestions.value[topicCorrectionIndex.value];
-                    if (selectedOpt === q.correct) {
-                        q.isCorrect = true;
-                        q.wasCorrected = true;
-                        playSound('correct');
-                        screen.value = 'results';
-                    } else {
-                        playSound('wrong');
-                        alert("Jawapan masih belum tepat. Sila cuba lagi!");
-                    }
-                };
-
-                // MODUL MATH BENTUK LAZIM & SIFIR
-                const startTimer = () => {
-                    clearInterval(timerInterval.value);
-                    timerInterval.value = setInterval(() => { timer.value++; }, 1000);
+                    return ''; 
                 };
 
                 const changeOperation = (op) => {
@@ -1496,349 +1477,413 @@
                     playSound('click');
                 };
 
-                const currentSessionTotalQuestions = computed(() => {
-                    if (currentSessionType.value === 'Latihan Topik') return topicQuestions.value.length;
-                    if (currentSessionType.value === 'Bijak Sifir') return sifirConfig.value.totalQuestions;
-                    return config.value.totalQuestions;
-                });
-
-                const formattedTime = computed(() => {
-                    const m = Math.floor(timer.value / 60);
-                    const s = timer.value % 60;
-                    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                });
-
-                const finalTimeDisplay = computed(() => {
-                    const m = Math.floor(timer.value / 60);
-                    const s = timer.value % 60;
-                    if (m > 0) return `${m} ${t('minutes')} ${s} ${t('seconds')}`;
-                    return `${s} ${t('seconds')}`;
-                });
-
-                const currentAccuracy = computed(() => {
-                    if (currentQuestionIndex.value === 0) return 0;
-                    return Math.round((score.value / currentQuestionIndex.value) * 100);
-                });
-
-                const generateNumbers = () => {
-                    let n1, n2;
-                    const op = config.value.operation;
-                    const diff = config.value.difficulty;
-
-                    let min = 10, max = 99;
-                    if (diff === 'Sederhana') { min = 100; max = 999; }
-                    if (diff === 'Pro') { min = 1000; max = 9999; }
-
-                    if (op === 'Tambah' || op === 'Tolak') {
-                        n1 = Math.floor(Math.random() * (max - min + 1)) + min;
-                        n2 = Math.floor(Math.random() * (max - min + 1)) + min;
-                        if (op === 'Tolak' && n1 < n2) [n1, n2] = [n2, n1];
-                    } else if (op === 'Darab') {
-                        if (diff === 'Mudah') { n1 = Math.floor(Math.random() * 89) + 10; n2 = Math.floor(Math.random() * 8) + 2; }
-                        else if (diff === 'Sederhana') { n1 = Math.floor(Math.random() * 899) + 100; n2 = Math.floor(Math.random() * 8) + 2; }
-                        else { n1 = Math.floor(Math.random() * 899) + 100; n2 = Math.floor(Math.random() * 89) + 10; }
-                    } else if (op === 'Bahagi') {
-                        n2 = Math.floor(Math.random() * 8) + 2;
-                        let quot = Math.floor(Math.random() * (diff === 'Mudah' ? 20 : diff === 'Sederhana' ? 100 : 500)) + 5;
-                        let rem = Math.floor(Math.random() * n2);
-                        n1 = (n2 * quot) + rem;
-                    }
-                    return { num1: n1, num2: n2 };
-                };
-
-                const startSession = () => {
-                    currentSessionType.value = 'Bentuk Lazim';
-                    questions.value = [];
-                    for (let i = 0; i < config.value.totalQuestions; i++) {
-                        questions.value.push({
-                            ...generateNumbers(),
-                            isCorrect: false,
-                            studentAnsStr: '',
-                            correctAnsStr: '',
-                            wasCorrected: false
-                        });
-                    }
-                    currentQuestionIndex.value = 0;
-                    score.value = 0;
-                    timer.value = 0;
-                    resetInputs();
-                    screen.value = 'gameplay';
-                    startTimer();
+                const openReports = () => {
                     playSound('click');
+                    screen.value = 'reports';
                 };
 
-                const startSifirSession = () => {
-                    currentSessionType.value = 'Bijak Sifir';
-                    sifirQuestions.value = [];
-                    const s = sifirConfig.value.selectedSifir;
-                    for (let i = 0; i < sifirConfig.value.totalQuestions; i++) {
-                        const multiplier = Math.floor(Math.random() * 12) + 1;
-                        sifirQuestions.value.push({
-                            num1: multiplier,
-                            num2: s,
-                            correct: multiplier * s
-                        });
-                    }
-                    currentSifirIndex.value = 0;
-                    sifirAnswerInput.value = '';
+                // GENERASI SOALAN LATIHAN IKUT TOPIK
+                const startTopicSession = () => {
+                    if (!selectedYear.value || !selectedTopicKey.value) return;
+                    const topicObj = kssrTopics['tahun' + selectedYear.value][selectedTopicKey.value];
+                    if (!topicObj || !topicObj.questions) return;
+
+                    const langQuestions = topicObj.questions[lang.value] || topicObj.questions['ms'];
+                    let rawQuestions = [...langQuestions];
+                    rawQuestions.sort(() => Math.random() - 0.5);
+
+                    topicQuestions.value = rawQuestions.slice(0, 5).map(q => {
+                        let shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+                        return {
+                            ...q,
+                            options: shuffledOptions,
+                            topicName: topicObj.name[lang.value]
+                        };
+                    });
+
+                    currentSessionType.value = 'Latihan Ikut Topik';
+                    currentTopicIndex.value = 0;
                     score.value = 0;
-                    timer.value = 0;
-                    screen.value = 'sifir-gameplay';
+                    playSound('correct');
+                    screen.value = 'topic-gameplay';
                     startTimer();
-                    playSound('click');
                 };
 
-                const submitSifirAnswer = () => {
-                    if (!sifirAnswerInput.value) return;
-                    const q = sifirQuestions.value[currentSifirIndex.value];
-                    if (parseInt(sifirAnswerInput.value) === q.correct) {
-                        score.value++;
+                const submitTopicAnswer = (selectedOpt) => {
+                    const q = currentTopicQuestion.value;
+                    if (selectedOpt === q.correct) {
+                        score.value += 1;
                         playSound('correct');
                     } else {
                         playSound('wrong');
                     }
 
-                    if (currentSifirIndex.value + 1 < sifirConfig.value.totalQuestions) {
-                        currentSifirIndex.value++;
-                        sifirAnswerInput.value = '';
+                    if (currentTopicIndex.value < 4) {
+                        currentTopicIndex.value += 1;
                     } else {
                         endSession();
                     }
                 };
 
-                const currentQuestion = computed(() => {
-                    if (screen.value === 'correction' && correctionIndex.value !== null) {
-                        return questions.value[correctionIndex.value] || {};
+                // GENERASI SOALAN BENTUK LAZIM
+                const generateQuestions = () => {
+                    questions.value = [];
+                    usedQuestionCombos.value.clear();
+                    let attempts = 0;
+                    while (questions.value.length < config.value.totalQuestions && attempts < 1500) {
+                        attempts++;
+                        let num1 = 0, num2 = 0;
+                        const diff = config.value.difficulty;
+                        const op = config.value.operation;
+
+                        if (op === 'Tambah' || op === 'Tolak') {
+                            if (diff === 'Mudah') { num1 = Math.floor(Math.random() * 90) + 10; num2 = Math.floor(Math.random() * 9) + 1; } 
+                            else if (diff === 'Sederhana') { num1 = Math.floor(Math.random() * 900) + 100; num2 = Math.floor(Math.random() * 90) + 10; } 
+                            else { num1 = Math.floor(Math.random() * 9000) + 1000; num2 = Math.floor(Math.random() * 900) + 100; }
+                            if (op === 'Tolak' && num1 < num2) { let temp = num1; num1 = num2; num2 = temp; }
+                        } else if (op === 'Darab') {
+                            if (diff === 'Mudah') { num1 = Math.floor(Math.random() * 9) + 1; num2 = Math.floor(Math.random() * 9) + 1; } 
+                            else if (diff === 'Sederhana') { num1 = Math.floor(Math.random() * 90) + 10; num2 = Math.floor(Math.random() * 9) + 1; } 
+                            else { num1 = Math.floor(Math.random() * 900) + 100; num2 = Math.floor(Math.random() * 9) + 1; }
+                        } else if (op === 'Bahagi') {
+                            if (diff === 'Mudah') {
+                                num2 = Math.floor(Math.random() * 8) + 2; let quotient = Math.floor(Math.random() * 4) + 11; num1 = num2 * quotient;
+                                if (num1 > 99) { quotient = Math.floor(99 / num2); num1 = num2 * quotient; }
+                            } else if (diff === 'Sederhana') {
+                                num2 = Math.floor(Math.random() * 8) + 2; num1 = Math.floor(Math.random() * 89) + 10;
+                                if (num1 % num2 === 0) { num1 = (num1 + 1) > 99 ? num1 - 1 : num1 + 1; }
+                            } else {
+                                num2 = Math.floor(Math.random() * 8) + 2; num1 = Math.floor(Math.random() * 899) + 100;
+                                if (num1 % num2 === 0) { num1 = (num1 + 1) > 999 ? num1 - 1 : num1 + 1; }
+                            }
+                        }
+
+                        const key = op === 'Tambah' || op === 'Darab' ? [num1, num2].sort((a,b)=>a-b).join('-') : `${num1}-${num2}`;
+                        if (!usedQuestionCombos.value.has(key)) {
+                            usedQuestionCombos.value.add(key);
+                            questions.value.push({ num1, num2, isCorrect: false, studentAnsStr: '', correctAnsStr: '', wasCorrected: false });
+                        }
                     }
-                    return questions.value[currentQuestionIndex.value] || {};
-                });
-
-                const currentSifirQuestion = computed(() => {
-                    return sifirQuestions.value[currentSifirIndex.value] || {};
-                });
-
-                const maxColumns = computed(() => {
-                    if (!currentQuestion.value.num1) return 2;
-                    const len1 = String(currentQuestion.value.num1).length;
-                    const len2 = String(currentQuestion.value.num2).length;
-                    return Math.max(len1, len2) + (config.value.operation === 'Tambah' ? 1 : 0);
-                });
-
-                const getDigitAt = (num, colFromRight) => {
-                    if (!num) return '';
-                    const str = String(num);
-                    const idx = str.length - 1 - colFromRight;
-                    return idx >= 0 ? str[idx] : '';
                 };
 
-                const resetInputs = () => {
-                    answerArray.value = {};
-                    carryArray.value = {};
-                    borrowArray.value = {};
-                    divisionInputs.value = { quotientArray: {}, remainderArray: {}, finalRemainder: '' };
+                // GENERASI SOALAN SIFIR
+                const generateSifirQuestions = () => {
+                    sifirQuestions.value = [];
+                    const selected = sifirConfig.value.selectedSifir;
+                    const totalReq = sifirConfig.value.totalQuestions;
+
+                    let multipliers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+                    multipliers.sort(() => Math.random() - 0.5);
+
+                    while (multipliers.length < totalReq) {
+                        let extra = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].sort(() => Math.random() - 0.5);
+                        multipliers = multipliers.concat(extra);
+                    }
+
+                    const finalMultipliers = multipliers.slice(0, totalReq);
+
+                    sifirQuestions.value = finalMultipliers.map(m => ({
+                        num1: selected,
+                        num2: m,
+                        correctAns: selected * m
+                    }));
+                };
+
+                const startSession = () => {
+                    if (!user.value) user.value = "Utama";
+                    currentSessionType.value = 'Bentuk Lazim';
+                    playSound('correct');
+                    generateQuestions();
+                    currentQuestionIndex.value = 0;
+                    score.value = 0;
+                    correctionIndex.value = null;
+                    setupQuestionLayout();
+                    screen.value = 'gameplay';
+                    startTimer();
+                };
+
+                const startSifirSession = () => {
+                    if (!user.value) user.value = "Utama";
+                    currentSessionType.value = 'Bijak Sifir';
+                    playSound('correct');
+                    generateSifirQuestions();
+                    currentSifirIndex.value = 0;
+                    score.value = 0;
+                    sifirAnswerInput.value = '';
+                    screen.value = 'sifir-gameplay';
+                    startTimer();
+                };
+
+                const setupQuestionLayout = () => {
+                    const op = config.value.operation;
                     activeTarget.value = { type: 'answer', index: 0 };
+                    answerArray.value = Array(maxColumns.value).fill('');
+                    carryArray.value = Array(maxColumns.value).fill('');
+                    borrowArray.value = Array(maxColumns.value).fill('');
+
+                    if (op === 'Bahagi') {
+                        const len = String(currentQuestion.value.num1).length;
+                        divisionInputs.value = { quotientArray: Array(len).fill(''), remainderArray: Array(len).fill(''), finalRemainder: '' };
+                        activeTarget.value = { type: 'div_quotient_arr', index: 0 };
+                    }
                 };
 
-                const triggerBorrow = (colIdx) => {
-                    const digit = getDigitAt(currentQuestion.value.num1, colIdx);
-                    if (digit === '') return;
-                    if (borrowArray.value[colIdx] !== undefined) {
-                        delete borrowArray.value[colIdx];
-                    } else {
-                        borrowArray.value[colIdx] = '';
-                    }
+                const startCorrection = (index) => {
                     playSound('click');
+                    correctionIndex.value = index;
+                    screen.value = 'correction';
+                    setupQuestionLayout();
+                };
+
+                const exitCorrection = () => {
+                    playSound('click');
+                    correctionIndex.value = null;
+                    screen.value = 'results';
+                };
+
+                const triggerBorrow = (idx) => {
+                    if (config.value.operation !== 'Tolak') return;
+                    playSound('click');
+                    activeTarget.value = { type: 'borrow', index: idx };
                 };
 
                 const pressKey = (key) => {
                     playSound('click');
+
                     if (screen.value === 'sifir-gameplay') {
-                        if (key === 'C') sifirAnswerInput.value = '';
-                        else if (key === 'BACKSPACE') sifirAnswerInput.value = sifirAnswerInput.value.slice(0, -1);
-                        else if (sifirAnswerInput.value.length < 5) sifirAnswerInput.value += key;
+                        if (key === 'C') {
+                            sifirAnswerInput.value = '';
+                            return;
+                        }
+                        if (key === 'BACKSPACE') {
+                            sifirAnswerInput.value = sifirAnswerInput.value.slice(0, -1);
+                            return;
+                        }
+                        if (sifirAnswerInput.value.length < 4) {
+                            sifirAnswerInput.value += key;
+                        }
                         return;
                     }
 
-                    const tType = activeTarget.value.type;
-                    const tIdx = activeTarget.value.index;
+                    const target = activeTarget.value;
+                    const op = config.value.operation;
+                    const digitCount = String(currentQuestion.value.num1).length;
+                    
+                    if (key === 'C') { clearActiveTarget(); return; }
+                    if (key === 'BACKSPACE') { backspaceActiveTarget(); return; }
 
-                    if (tType === 'answer' || tType === 'carry' || tType === 'borrow') {
-                        let targetObj = tType === 'answer' ? answerArray.value : tType === 'carry' ? carryArray.value : borrowArray.value;
-                        if (key === 'C') targetObj[tIdx] = '';
-                        else if (key === 'BACKSPACE') targetObj[tIdx] = (targetObj[tIdx] || '').slice(0, -1);
-                        else targetObj[tIdx] = (targetObj[tIdx] || '') + key;
-                    } else if (tType === 'div_quotient_arr') {
-                        if (key === 'C') divisionInputs.value.quotientArray[tIdx] = '';
-                        else if (key === 'BACKSPACE') divisionInputs.value.quotientArray[tIdx] = '';
-                        else divisionInputs.value.quotientArray[tIdx] = key;
-                    } else if (tType === 'div_remainder_arr') {
-                        if (key === 'C') divisionInputs.value.remainderArray[tIdx] = '';
-                        else if (key === 'BACKSPACE') divisionInputs.value.remainderArray[tIdx] = '';
-                        else divisionInputs.value.remainderArray[tIdx] = key;
-                    } else if (tType === 'div_final_remainder') {
-                        if (key === 'C') divisionInputs.value.finalRemainder = '';
-                        else if (key === 'BACKSPACE') divisionInputs.value.finalRemainder = divisionInputs.value.finalRemainder.slice(0, -1);
-                        else divisionInputs.value.finalRemainder += key;
+                    if (target.type === 'answer') {
+                        answerArray.value[target.index] = key;
+                        if (target.index < maxColumns.value - 1) {
+                            let needsCarry = false;
+                            if (op === 'Tambah') {
+                                const d1 = parseInt(getDigitAt(currentQuestion.value.num1, target.index)) || 0;
+                                const d2 = parseInt(getDigitAt(currentQuestion.value.num2, target.index)) || 0;
+                                const c = parseInt(carryArray.value[target.index]) || 0;
+                                if ((d1 + d2 + c) > 9) needsCarry = true;
+                            } else if (op === 'Darab') {
+                                const d1 = parseInt(getDigitAt(currentQuestion.value.num1, target.index)) || 0;
+                                const num2Val = parseInt(currentQuestion.value.num2) || 0;
+                                const c = parseInt(carryArray.value[target.index]) || 0;
+                                if ((d1 * num2Val + c) > 9) needsCarry = true;
+                            }
+                            if (needsCarry) activeTarget.value = { type: 'carry', index: target.index + 1 };
+                            else activeTarget.value = { type: 'answer', index: target.index + 1 };
+                        }
+                    } else if (target.type === 'carry') {
+                        carryArray.value[target.index] = key;
+                        activeTarget.value = { type: 'answer', index: target.index };
+                    } else if (target.type === 'borrow') {
+                        let currentVal = String(borrowArray.value[target.index] || '');
+                        if (currentVal.length < 2) borrowArray.value[target.index] = currentVal + key;
+                    } else if (target.type === 'div_quotient_arr') {
+                        divisionInputs.value.quotientArray[target.index] = key;
+                        if (target.index < digitCount - 1) activeTarget.value = { type: 'div_remainder_arr', index: target.index };
+                        else activeTarget.value = { type: 'div_final_remainder', index: 0 };
+                    } else if (target.type === 'div_remainder_arr') {
+                        divisionInputs.value.remainderArray[target.index] = key;
+                        if (target.index + 1 < digitCount) activeTarget.value = { type: 'div_quotient_arr', index: target.index + 1 };
+                    } else if (target.type === 'div_final_remainder') {
+                        divisionInputs.value.finalRemainder = key;
+                    }
+                };
+
+                const clearActiveTarget = () => {
+                    const target = activeTarget.value;
+                    if (target.type === 'answer') answerArray.value[target.index] = '';
+                    if (target.type === 'carry') carryArray.value[target.index] = '';
+                    if (target.type === 'borrow') borrowArray.value[target.index] = '';
+                    if (target.type === 'div_quotient_arr') divisionInputs.value.quotientArray[target.index] = '';
+                    if (target.type === 'div_remainder_arr') divisionInputs.value.remainderArray[target.index] = '';
+                    if (target.type === 'div_final_remainder') divisionInputs.value.finalRemainder = '';
+                };
+
+                const backspaceActiveTarget = () => {
+                    const target = activeTarget.value;
+                    const op = config.value.operation;
+
+                    if (target.type === 'answer') {
+                        answerArray.value[target.index] = '';
+                        if (target.index > 0) {
+                            if (op === 'Tambah' || op === 'Darab') activeTarget.value = { type: 'carry', index: target.index };
+                            else activeTarget.value = { type: 'answer', index: target.index - 1 };
+                        }
+                    }
+                    if (target.type === 'carry') { carryArray.value[target.index] = ''; activeTarget.value = { type: 'answer', index: target.index - 1 }; }
+                    if (target.type === 'borrow') { let val = String(borrowArray.value[target.index] || ''); borrowArray.value[target.index] = val.substring(0, val.length - 1); }
+                    if (target.type === 'div_quotient_arr') { divisionInputs.value.quotientArray[target.index] = ''; if (target.index > 0) activeTarget.value = { type: 'div_remainder_arr', index: target.index - 1 }; }
+                    if (target.type === 'div_remainder_arr') { divisionInputs.value.remainderArray[target.index] = ''; activeTarget.value = { type: 'div_quotient_arr', index: target.index }; }
+                    if (target.type === 'div_final_remainder') { divisionInputs.value.finalRemainder = ''; const len = String(currentQuestion.value.num1).length; activeTarget.value = { type: 'div_quotient_arr', index: len - 1 }; }
+                };
+
+                const submitSifirAnswer = () => {
+                    const q = currentSifirQuestion.value;
+                    const userAns = parseInt(sifirAnswerInput.value, 10);
+
+                    if (userAns === q.correctAns) {
+                        score.value += 1;
+                        playSound('correct');
+                    } else {
+                        playSound('wrong');
+                    }
+
+                    sifirAnswerInput.value = '';
+
+                    if (currentSifirIndex.value < sifirConfig.value.totalQuestions - 1) {
+                        currentSifirIndex.value += 1;
+                    } else {
+                        endSession();
                     }
                 };
 
                 const submitAnswer = () => {
-                    const q = currentQuestion.value;
                     const op = config.value.operation;
-
-                    let isCorrect = false;
-                    let studentAnsStr = '';
-                    let correctAnsStr = '';
+                    const q = currentQuestion.value;
+                    let isCorrect = false; let studentAnsStr = ''; let correctAnsStr = '';
 
                     if (op === 'Tambah' || op === 'Tolak' || op === 'Darab') {
-                        let studentAns = '';
-                        for (let i = maxColumns.value - 1; i >= 0; i--) {
-                            if (answerArray.value[i]) studentAns += answerArray.value[i];
-                        }
-                        const studentVal = parseInt(studentAns) || 0;
-                        studentAnsStr = studentVal.toString();
-
-                        let expected = 0;
-                        if (op === 'Tambah') expected = q.num1 + q.num2;
-                        if (op === 'Tolak') expected = q.num1 - q.num2;
-                        if (op === 'Darab') expected = q.num1 * q.num2;
-                        correctAnsStr = expected.toString();
-
-                        isCorrect = studentVal === expected;
+                        const submittedString = [...answerArray.value].reverse().join('').trim();
+                        const submittedAns = parseInt(submittedString, 10) || 0;
+                        studentAnsStr = submittedString || '0';
+                        let actualAns = 0;
+                        if (op === 'Tambah') actualAns = q.num1 + q.num2;
+                        if (op === 'Tolak') actualAns = q.num1 - q.num2;
+                        if (op === 'Darab') actualAns = q.num1 * q.num2;
+                        correctAnsStr = String(actualAns);
+                        if (submittedAns === actualAns) isCorrect = true;
                     } else if (op === 'Bahagi') {
-                        let quotStr = '';
-                        const str1 = String(q.num1);
-                        for (let i = 0; i < str1.length; i++) {
-                            quotStr += divisionInputs.value.quotientArray[i] || '0';
-                        }
-                        const studentQuot = parseInt(quotStr) || 0;
-                        const studentRem = parseInt(divisionInputs.value.finalRemainder) || 0;
-
-                        const expectedQuot = Math.floor(q.num1 / q.num2);
-                        const expectedRem = q.num1 % q.num2;
-
-                        studentAnsStr = `${studentQuot}` + (studentRem > 0 ? ` baki ${studentRem}` : '');
-                        correctAnsStr = `${expectedQuot}` + (expectedRem > 0 ? ` baki ${expectedRem}` : '');
-
-                        isCorrect = (studentQuot === expectedQuot && studentRem === expectedRem);
+                        const actualQuotient = Math.floor(q.num1 / q.num2);
+                        const actualRemainder = q.num1 % q.num2;
+                        const submittedQuotientStr = divisionInputs.value.quotientArray.join('').trim();
+                        const sQuotient = parseInt(submittedQuotientStr, 10) || 0;
+                        const sRemainder = parseInt(divisionInputs.value.finalRemainder, 10) || 0;
+                        studentAnsStr = `${sQuotient}${sRemainder > 0 ? ' Baki ' + sRemainder : ''}`;
+                        correctAnsStr = `${actualQuotient}${actualRemainder > 0 ? ' Baki ' + actualRemainder : ''}`;
+                        if (sQuotient === actualQuotient && sRemainder === actualRemainder) isCorrect = true;
                     }
 
-                    if (screen.value === 'gameplay') {
-                        q.isCorrect = isCorrect;
-                        q.studentAnsStr = studentAnsStr;
-                        q.correctAnsStr = correctAnsStr;
-
+                    if (screen.value === 'correction') {
                         if (isCorrect) {
-                            score.value++;
-                            playSound('correct');
+                            playSound('correct'); 
+                            alert(lang.value === 'ms' ? "Syabas! Pembetulan anda betul! 🎉" : "Great job! Your correction is correct! 🎉");
+                            const idx = correctionIndex.value;
+                            questions.value[idx].isCorrect = true;
+                            questions.value[idx].studentAnsStr = studentAnsStr;
+                            questions.value[idx].wasCorrected = true; 
+                            exitCorrection();
                         } else {
-                            playSound('wrong');
+                            playSound('wrong'); 
+                            alert(lang.value === 'ms' ? "Alamak, jawapan pembetulan masih kurang tepat. Cuba lagi ya! 💪" : "Oops, the correction is still incorrect. Try again! 💪");
                         }
+                        return;
+                    }
 
-                        if (currentQuestionIndex.value + 1 < config.value.totalQuestions) {
-                            currentQuestionIndex.value++;
-                            resetInputs();
-                        } else {
-                            endSession();
-                        }
-                    } else if (screen.value === 'correction') {
-                        if (isCorrect) {
-                            q.isCorrect = true;
-                            q.wasCorrected = true;
-                            q.studentAnsStr = studentAnsStr;
-                            playSound('correct');
-                            screen.value = 'results';
-                        } else {
-                            playSound('wrong');
-                            alert("Jawapan masih belum tepat. Sila semak semula pengiraan anda!");
-                        }
+                    questions.value[currentQuestionIndex.value].isCorrect = isCorrect;
+                    questions.value[currentQuestionIndex.value].studentAnsStr = studentAnsStr;
+                    questions.value[currentQuestionIndex.value].correctAnsStr = correctAnsStr;
+
+                    if (isCorrect) { score.value += 1; playSound('correct'); } 
+                    else { playSound('wrong'); }
+
+                    if (currentQuestionIndex.value < config.value.totalQuestions - 1) {
+                        currentQuestionIndex.value += 1;
+                        setupQuestionLayout();
+                    } else {
+                        endSession();
                     }
                 };
 
-                const startCorrection = (idx) => {
-                    correctionIndex.value = idx;
-                    resetInputs();
-                    screen.value = 'correction';
-                    playSound('click');
-                };
-
-                const exitCorrection = () => {
-                    screen.value = 'results';
-                    playSound('click');
-                };
-
-                const retryCurrentSession = () => {
-                    if (currentSessionType.value === 'Latihan Topik') startTopicSession();
-                    else if (currentSessionType.value === 'Bijak Sifir') startSifirSession();
-                    else startSession();
-                };
+                const startTimer = () => { timerSeconds.value = 0; timerInterval.value = setInterval(() => { timerSeconds.value += 1; }, 1000); };
+                const stopTimer = () => { if (timerInterval.value) { clearInterval(timerInterval.value); timerInterval.value = null; } };
 
                 const endSession = async () => {
-                    clearInterval(timerInterval.value);
-                    screen.value = 'results';
+                    stopTimer();
+                    const mins = Math.floor(timerSeconds.value / 60); const secs = timerSeconds.value % 60;
+                    let durationStr = `${secs}s`; if (mins > 0) durationStr = `${mins}m ${secs}s`;
+                    finalTimeDisplay.value = mins > 0 ? `${mins} ${t('minutes')} ${secs} ${t('seconds')}` : `${secs} ${t('seconds')}`;
 
-                    let opName = config.value.operation;
-                    let diffName = config.value.difficulty;
+                    const now = new Date();
+                    const dateStr = `${now.getDate()}/${now.getMonth()+1} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+                    
+                    let totalQ = currentSessionTotalQuestions.value;
+                    let opName = '';
+                    let diffName = '';
 
-                    if (currentSessionType.value === 'Bijak Sifir') {
-                        opName = `${t('table')} ${sifirConfig.value.selectedSifir}`;
-                        diffName = t('timesTables');
-                    } else if (currentSessionType.value === 'Latihan Topik') {
-                        const topicObj = kssrTopics['tahun' + selectedYear.value][selectedTopicKey.value];
-                        opName = topicObj.name[lang.value];
-                        diffName = `${t('year')} ${selectedYear.value}`;
+                    if (currentSessionType.value === 'Latihan Ikut Topik') {
+                        opName = `${t('topicPractice')} Y${selectedYear.value}`;
+                        diffName = kssrTopics['tahun' + selectedYear.value][selectedTopicKey.value].name[lang.value];
+                    } else if (currentSessionType.value === 'Bentuk Lazim') {
+                        opName = `${t('standardMath')} (${t('op' + (config.value.operation === 'Tambah' ? 'Add' : config.value.operation === 'Tolak' ? 'Sub' : config.value.operation === 'Darab' ? 'Mul' : 'Div'))})`;
+                        diffName = t('diff_' + config.value.difficulty);
+                    } else {
+                        opName = `${t('timesTables')} (${sifirConfig.value.selectedSifir})`;
+                        diffName = 'Hafalan';
                     }
 
-                    const acc = Math.round((score.value / currentSessionTotalQuestions.value) * 100);
-                    const now = new Date();
-                    const dateStr = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
-
-                    const reportData = {
-                        childName: user.value ? user.value.toLowerCase() : 'penceroboh',
+                    const newRecord = {
+                        studentName: user.value.toLowerCase(),
                         operation: opName,
                         difficulty: diffName,
                         score: score.value,
-                        total: currentSessionTotalQuestions.value,
-                        accuracy: acc,
-                        durationStr: finalTimeDisplay.value,
-                        date: dateStr,
-                        timestamp: Date.now()
+                        total: totalQ,
+                        accuracy: Math.round((score.value / totalQ) * 100),
+                        durationSecs: timerSeconds.value,
+                        durationStr: durationStr,
+                        date: dateStr
                     };
 
-                    if (parentUser.value) {
+                    const activeUid = parentUser.value || config.value.activeParentId;
+                    if (activeUid) {
                         try {
-                            const newRepRef = push(dbRef(fDatabase, `parents/${parentUser.value.uid}/reports`));
-                            await set(newRepRef, reportData);
-                        } catch (e) {
-                            console.error("Gagal menyimpan rekod keputusan:", e);
-                        }
+                            const reportsRef = dbRef(fDatabase, `users/${activeUid}/reports`);
+                            await push(reportsRef, newRecord);
+                        } catch (e) { console.log("Database write error:", e); }
                     }
+                    screen.value = 'results';
                 };
 
-                const openReports = () => {
-                    screen.value = 'reports';
+                const retryCurrentSession = () => {
+                    if (currentSessionType.value === 'Latihan Ikut Topik') startTopicSession();
+                    else if (currentSessionType.value === 'Bentuk Lazim') startSession();
+                    else startSifirSession();
+                };
+
+                const goToModeSelection = () => {
                     playSound('click');
+                    if (user.value) screen.value = 'mode-selection';
+                    else if (parentUser.value) screen.value = 'parentDashboard';
+                    else screen.value = 'login-selection';
                 };
-
-                const filteredReportList = computed(() => {
-                    if (!user.value) return [];
-                    return reportList.value.filter(r => r.childName && r.childName.toLowerCase() === user.value.toLowerCase());
-                });
 
                 return {
-                    user, parentUser, screen, lang, childPinInput, authLoading, isManagingPin, newChildName,
-                    selectedChildForReport, childProfiles, reportList, t, toggleLang,
-                    selectedYear, selectedTopicKey, kssrTopics, topicQuestions, currentTopicIndex, activeTopicQuestion,
-                    startTopicSession, submitTopicAnswer, startTopicCorrection, submitTopicCorrection,
-                    config, sifirConfig, currentSessionType, questions, currentQuestionIndex,
-                    sifirQuestions, currentSifirIndex, sifirAnswerInput, score, timer,
-                    answerArray, carryArray, borrowArray, divisionInputs, activeTarget, correctionIndex,
-                    currentSessionTotalQuestions, formattedTime, finalTimeDisplay, currentAccuracy,
-                    currentQuestion, currentSifirQuestion, maxColumns, getDigitAt,
-                    loginAsChild, handleGoogleLogin, logout, goToModeSelection,
-                    addChildProfile, regenerateChildPin, deleteChildProfile, getChildStats, parentFilteredReports, clearChildReports,
-                    changeOperation, startSession, startSifirSession, submitSifirAnswer, triggerBorrow, pressKey, submitAnswer,
-                    startCorrection, exitCorrection, retryCurrentSession, openReports, filteredReportList, playSound
+                    user, parentUser, screen, lang, t, toggleLang, childPinInput, authLoading, isManagingPin,
+                    newChildName, childProfiles, reportList, filteredReportList, parentFilteredReports, selectedChildForReport, config, sifirConfig, score, currentQuestionIndex,
+                    currentQuestion, currentSifirQuestion, currentSifirIndex, sifirAnswerInput, maxColumns, answerArray, carryArray, borrowArray, divisionInputs, activeTarget,
+                    formattedTime, currentAccuracy, currentSessionTotalQuestions, currentSessionType, finalTimeDisplay, questions, correctionIndex,
+                    selectedYear, selectedTopicKey, kssrTopics, currentTopicQuestion, currentTopicIndex, startTopicSession, submitTopicAnswer,
+                    handleGoogleLogin, loginAsChild, addChildProfile, regenerateChildPin, deleteChildProfile, getChildStats,
+                    logout, getDigitAt, changeOperation, startSession, startSifirSession, submitSifirAnswer, triggerBorrow, pressKey, 
+                    submitAnswer, retryCurrentSession, goToModeSelection, playSound, openReports, startCorrection, exitCorrection, clearChildReports
                 };
             }
         }).mount('#app');
