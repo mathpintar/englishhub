@@ -43,12 +43,20 @@
         
         <header class="bg-emerald-500 text-white p-4 flex justify-between items-center shadow-md rounded-b-2xl shrink-0">
             <h1 @click="goToModeSelection" class="text-2xl font-bold tracking-wide font-kids cursor-pointer select-none">✏️ MathPintar</h1>
-            <div v-if="user || parentUser" class="flex items-center gap-2">
-                <button v-if="user && (screen === 'menu' || screen === 'mode-selection' || screen === 'sifir-menu' || screen === 'topic-year-select')" @click="openReports" class="bg-emerald-600 hover:bg-emerald-700 px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1">📊 Rekod</button>
-                <button v-if="parentUser && (screen === 'parentDashboard' || screen === 'parentManage' || screen === 'parentReports')" @click="logout" class="bg-red-500 hover:bg-red-600 px-2.5 py-1 rounded-lg text-xs font-bold transition-all transform active:scale-95">Keluar</button>
-                <div v-if="user" class="flex items-center gap-2">
-                    <span class="text-sm font-bold bg-emerald-600 px-3 py-1 rounded-full text-yellow-200 max-w-[100px] truncate">👤 {{ user }}</span>
-                    <button @click="logout" class="bg-red-500 hover:bg-red-600 px-2 py-1 rounded-lg text-xs font-bold transition-all transform active:scale-95">Keluar</button>
+            
+            <div class="flex items-center gap-2">
+                <!-- BUTANG PENUKAR BAHASA -->
+                <button @click="toggleLang" class="bg-emerald-700 hover:bg-emerald-800 text-yellow-300 font-black px-2 py-1 rounded-lg text-xs transition-all border border-emerald-400">
+                    🌐 {{ lang === 'ms' ? 'BM | EN' : 'EN | BM' }}
+                </button>
+
+                <div v-if="user || parentUser" class="flex items-center gap-2">
+                    <button v-if="user && (screen === 'menu' || screen === 'mode-selection' || screen === 'sifir-menu' || screen === 'topic-year-select')" @click="openReports" class="bg-emerald-600 hover:bg-emerald-700 px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1">📊 {{ t('records') }}</button>
+                    <button v-if="parentUser && (screen === 'parentDashboard' || screen === 'parentManage' || screen === 'parentReports')" @click="logout" class="bg-red-500 hover:bg-red-600 px-2.5 py-1 rounded-lg text-xs font-bold transition-all transform active:scale-95">{{ t('logout') }}</button>
+                    <div v-if="user" class="flex items-center gap-2">
+                        <span class="text-sm font-bold bg-emerald-600 px-3 py-1 rounded-full text-yellow-200 max-w-[100px] truncate">👤 {{ user }}</span>
+                        <button @click="logout" class="bg-red-500 hover:bg-red-600 px-2 py-1 rounded-lg text-xs font-bold transition-all transform active:scale-95">{{ t('logout') }}</button>
+                    </div>
                 </div>
             </div>
         </header>
@@ -60,81 +68,80 @@
                 <div class="bg-gradient-to-b from-emerald-400 to-emerald-500 p-5 rounded-3xl border-4 border-emerald-300 shadow-inner text-white">
                     <span class="text-5xl block mb-1">🧠</span>
                     <h2 class="text-3xl font-black font-kids">MathPintar</h2>
-                    <p class="text-xs opacity-90 mt-1">Jom jadi bijak Matematik & Kuasai Sifir!</p>
+                    <p class="text-xs opacity-90 mt-1">{{ t('tagline') }}</p>
                 </div>
 
                 <div class="space-y-3 pt-1">
                     <button @click="screen = 'login-child'" class="w-full bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black text-lg py-3.5 rounded-2xl shadow-md border-b-4 border-yellow-600 transition-all flex justify-center items-center gap-2">
-                        👦 MASUK SEBAGAI ANAK (PIN)
+                        👦 {{ t('loginChild') }}
                     </button>
                     <button @click="screen = 'login-parent'" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-black text-base py-3 rounded-2xl shadow-md border-b-4 border-slate-900 transition-all flex justify-center items-center gap-2">
-                        🔑 LOG MASUK IBU BAPA / GURU
+                        🔑 {{ t('loginParent') }}
                     </button>
                 </div>
             </div>
 
             <div v-if="screen === 'login-child'" class="w-full space-y-6 text-center my-auto">
                 <div class="text-left">
-                    <button @click="screen = 'login-selection'" class="text-emerald-600 font-bold text-sm">⬅️ Kembali</button>
+                    <button @click="screen = 'login-selection'" class="text-emerald-600 font-bold text-sm">⬅️ {{ t('back') }}</button>
                 </div>
                 <div class="bg-yellow-100 p-5 rounded-3xl border-4 border-yellow-400 shadow-inner">
-                    <h2 class="text-2xl font-black text-emerald-600 font-kids">Sila Masukkan No PIN Anda</h2>
-                    <p class="text-xs text-slate-600 mt-1">Dapatkan 6-digit PIN daripada akaun ibu bapa anda.</p>
+                    <h2 class="text-2xl font-black text-emerald-600 font-kids">{{ t('enterPin') }}</h2>
+                    <p class="text-xs text-slate-600 mt-1">{{ t('getPinHint') }}</p>
                 </div>
                 <div class="space-y-3">
-                    <input type="text" v-model="childPinInput" placeholder="Contoh: 123456" class="w-full p-4 text-3xl border-4 border-emerald-400 rounded-2xl focus:outline-none focus:border-yellow-400 text-center font-mono font-black tracking-widest transition-colors" maxLength="6" @keyup.enter="loginAsChild">
+                    <input type="text" v-model="childPinInput" :placeholder="t('pinPlaceholder')" class="w-full p-4 text-3xl border-4 border-emerald-400 rounded-2xl focus:outline-none focus:border-yellow-400 text-center font-mono font-black tracking-widest transition-colors" maxLength="6" @keyup.enter="loginAsChild">
                 </div>
                 <button @click="loginAsChild" :disabled="childPinInput.trim().length !== 6 || authLoading" class="w-full bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-black text-xl py-4 rounded-2xl shadow-lg border-b-8 border-emerald-700 transition-all uppercase">
-                    {{ authLoading ? 'Menyemak...' : '🚀 MASUK PERMAINAN' }}
+                    {{ authLoading ? t('checking') : t('enterGame') }}
                 </button>
             </div>
 
             <div v-if="screen === 'login-parent'" class="w-full space-y-6 text-center my-auto">
                 <div class="text-left">
-                    <button @click="screen = 'login-selection'" class="text-emerald-600 font-bold text-sm">⬅️ Kembali</button>
+                    <button @click="screen = 'login-selection'" class="text-emerald-600 font-bold text-sm">⬅️ {{ t('back') }}</button>
                 </div>
                 <div class="bg-slate-100 p-6 rounded-3xl border-2 border-slate-200 space-y-4">
-                    <h2 class="text-2xl font-black text-slate-700 font-kids">Log Masuk Ibu Bapa / Guru</h2>
-                    <p class="text-sm text-slate-500">Gunakan akaun Google anda untuk mengakses dashboard pengurusan keluarga & prestasi anak.</p>
+                    <h2 class="text-2xl font-black text-slate-700 font-kids">{{ t('parentLoginTitle') }}</h2>
+                    <p class="text-sm text-slate-500">{{ t('parentLoginDesc') }}</p>
                 </div>
                 
                 <button @click="handleGoogleLogin" :disabled="authLoading" class="w-full bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-700 font-bold text-md py-3 px-4 rounded-xl shadow-md border border-slate-300 transition-all flex justify-center items-center gap-3">
                     <svg class="w-5 h-5" viewBox="0 0 24 24">
                         <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l3.227-3.11C18.281 1.045 15.49 0 12.24 0 5.58 0 0 5.37 0 12s5.58 12 12.24 12c6.96 0 11.57-4.854 11.57-11.79 0-.795-.085-1.4-.195-1.925H12.24z"/>
                     </svg>
-                    {{ authLoading ? 'Memproses...' : 'Log Masuk Dengan Google' }}
+                    {{ authLoading ? t('processing') : t('loginGoogle') }}
                 </button>
             </div>
 
             <!-- PAPARAN PILIHAN MOD MODUL (SELEPAS LOG MASUK PIN) -->
             <div v-if="user && screen === 'mode-selection'" class="w-full space-y-4 my-auto text-center">
                 <div class="bg-emerald-50 border-2 border-emerald-200 p-4 rounded-2xl">
-                    <p class="text-lg font-bold text-slate-700">Selamat Datang, <span class="text-emerald-600 font-black text-xl uppercase">{{ user }}</span>! 👋</p>
-                    <p class="text-xs text-slate-500">Sila pilih modul latihan anda hari ini:</p>
+                    <p class="text-lg font-bold text-slate-700">{{ t('welcome') }}, <span class="text-emerald-600 font-black text-xl uppercase">{{ user }}</span>! 👋</p>
+                    <p class="text-xs text-slate-500">{{ t('selectModuleHint') }}</p>
                 </div>
 
                 <div class="space-y-3">
-                    <!-- BUTTON BARU: LATIHAN IKUT TOPIK -->
                     <button @click="screen = 'topic-year-select'; playSound('click');" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white p-4 rounded-3xl shadow-lg border-b-8 border-indigo-700 transition-all flex items-center justify-between transform active:scale-95">
                         <div class="text-left">
-                            <span class="text-xl font-black block font-kids">📚 Latihan Ikut Topik</span>
-                            <span class="text-xs text-indigo-100 font-medium">Silibu KSSR Tahun 1 hingga 6 (5 Soalan)</span>
+                            <span class="text-xl font-black block font-kids">📚 {{ t('topicPractice') }}</span>
+                            <span class="text-xs text-indigo-100 font-medium">{{ t('topicPracticeSub') }}</span>
                         </div>
                         <span class="text-3xl">➡️</span>
                     </button>
 
                     <button @click="screen = 'menu'; playSound('click');" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white p-4 rounded-3xl shadow-lg border-b-8 border-emerald-700 transition-all flex items-center justify-between transform active:scale-95">
                         <div class="text-left">
-                            <span class="text-xl font-black block font-kids">📐 Math Bentuk Lazim</span>
-                            <span class="text-xs text-emerald-100 font-medium">Latihan Tambah, Tolak, Darab & Bahagi</span>
+                            <span class="text-xl font-black block font-kids">📐 {{ t('standardMath') }}</span>
+                            <span class="text-xs text-emerald-100 font-medium">{{ t('standardMathSub') }}</span>
                         </div>
                         <span class="text-3xl">➡️</span>
                     </button>
 
                     <button @click="screen = 'sifir-menu'; playSound('click');" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-900 p-4 rounded-3xl shadow-lg border-b-8 border-amber-600 transition-all flex items-center justify-between transform active:scale-95">
                         <div class="text-left">
-                            <span class="text-xl font-black block font-kids">⚡ Bijak Sifir</span>
-                            <span class="text-xs text-amber-900 font-medium">Latihan Hafalan Sifir 2 hingga 12</span>
+                            <span class="text-xl font-black block font-kids">⚡ {{ t('timesTables') }}</span>
+                            <span class="text-xs text-amber-900 font-medium">{{ t('timesTablesSub') }}</span>
                         </div>
                         <span class="text-3xl">➡️</span>
                     </button>
@@ -144,45 +151,45 @@
             <!-- PILIHAN TAHUN & TOPIK KSSR -->
             <div v-if="user && screen === 'topic-year-select'" class="w-full space-y-4 my-auto">
                 <div class="flex justify-between items-center">
-                    <button @click="screen = 'mode-selection'; playSound('click');" class="text-indigo-600 font-bold text-sm">⬅️ Pilih Modul</button>
-                    <span class="text-xs font-bold bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full">📚 Latihan Ikut Topik</span>
+                    <button @click="screen = 'mode-selection'; playSound('click');" class="text-indigo-600 font-bold text-sm">⬅️ {{ t('selectModule') }}</button>
+                    <span class="text-xs font-bold bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full">📚 {{ t('topicPractice') }}</span>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="font-bold text-slate-700 text-sm block">1. Pilih Tahun (KSSR):</label>
+                    <label class="font-bold text-slate-700 text-sm block">1. {{ t('selectYear') }}:</label>
                     <div class="grid grid-cols-3 gap-2">
                         <button v-for="y in [1, 2, 3, 4, 5, 6]" :key="y" @click="selectedYear = y; selectedTopicKey = ''; playSound('click');" :class="selectedYear === y ? 'bg-indigo-600 text-white border-indigo-800 font-black scale-105 shadow-md' : 'bg-slate-100 border-slate-300 hover:bg-slate-200 text-slate-700'" class="py-2 font-bold text-base rounded-xl border-b-4 transition-all">
-                            Tahun {{ y }}
+                            {{ t('year') }} {{ y }}
                         </button>
                     </div>
                 </div>
 
                 <div v-if="selectedYear" class="space-y-2">
-                    <label class="font-bold text-slate-700 text-sm block">2. Pilih Topik Silibus:</label>
+                    <label class="font-bold text-slate-700 text-sm block">2. {{ t('selectSyllabusTopic') }}:</label>
                     <div class="space-y-2 max-h-[220px] overflow-y-auto pr-1">
                         <button v-for="(topic, key) in kssrTopics['tahun' + selectedYear]" :key="key" @click="selectedTopicKey = key; playSound('click');" :class="selectedTopicKey === key ? 'bg-amber-400 border-amber-600 text-slate-900 font-black' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'" class="w-full p-3 text-left font-bold text-sm rounded-xl border-b-4 transition-all flex justify-between items-center">
-                            <span>{{ topic.name }}</span>
+                            <span>{{ topic.name[lang] }}</span>
                             <span v-if="selectedTopicKey === key">✔️</span>
                         </button>
                     </div>
                 </div>
 
                 <button v-if="selectedYear && selectedTopicKey" @click="startTopicSession" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-black text-xl py-3.5 rounded-2xl shadow-lg border-b-8 border-indigo-700 transition-all transform active:scale-95 uppercase tracking-wider mt-2">
-                    🚀 MULA LATIHAN (5 SOALAN)
+                    🚀 {{ t('startPractice5') }}
                 </button>
             </div>
 
             <!-- GAMEPLAY LATIHAN TOPIK (MCQ / MULTIPLE CHOICE) -->
             <div v-if="screen === 'topic-gameplay'" class="w-full flex flex-col justify-between items-center space-y-4 my-auto">
                 <div class="w-full bg-slate-100 p-3 rounded-2xl border-2 border-slate-200 flex justify-between items-center text-xs font-bold text-slate-600">
-                    <div>Soalan: <span class="text-indigo-600 text-sm">{{ currentTopicIndex + 1 }}</span> / 5</div>
+                    <div>{{ t('question') }}: <span class="text-indigo-600 text-sm">{{ currentTopicIndex + 1 }}</span> / 5</div>
                     <div class="text-center font-mono text-sm bg-slate-800 text-yellow-400 px-3 py-1 rounded-full shadow-inner">⏱️ {{ formattedTime }}</div>
-                    <div>Skor: <span class="text-blue-600 text-sm">{{ score }}</span></div>
+                    <div>{{ t('score') }}: <span class="text-blue-600 text-sm">{{ score }}</span></div>
                 </div>
 
                 <div class="w-full bg-indigo-50 p-6 rounded-3xl border-4 border-indigo-200 shadow-inner flex flex-col items-center justify-center min-h-[160px] text-center">
                     <span class="text-xs font-bold bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full mb-3">
-                        Tahun {{ selectedYear }} • {{ currentTopicQuestion.topicName }}
+                        {{ t('year') }} {{ selectedYear }} • {{ currentTopicQuestion.topicName }}
                     </span>
                     <h3 class="text-xl font-bold text-slate-800 leading-snug">{{ currentTopicQuestion.question }}</h3>
                 </div>
@@ -200,24 +207,24 @@
             <!-- PAPARAN MENU MATH BENTUK LAZIM -->
             <div v-if="user && screen === 'menu'" class="w-full space-y-5 my-auto">
                 <div class="flex justify-between items-center">
-                    <button @click="screen = 'mode-selection'; playSound('click');" class="text-emerald-600 font-bold text-sm">⬅️ Pilih Modul</button>
-                    <span class="text-xs font-bold bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">Math Bentuk Lazim</span>
+                    <button @click="screen = 'mode-selection'; playSound('click');" class="text-emerald-600 font-bold text-sm">⬅️ {{ t('selectModule') }}</button>
+                    <span class="text-xs font-bold bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">{{ t('standardMath') }}</span>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="font-bold text-slate-700 text-sm block">1. Pilih Operasi:</label>
+                    <label class="font-bold text-slate-700 text-sm block">1. {{ t('selectOperation') }}:</label>
                     <div class="grid grid-cols-2 gap-3">
                         <button v-for="op in ['Tambah', 'Tolak', 'Darab', 'Bahagi']" :key="op" @click="changeOperation(op)" :class="config.operation === op ? 'bg-emerald-500 text-white border-emerald-600 shadow-md' : 'bg-slate-100 border-slate-300 hover:bg-slate-200 text-slate-700'" class="py-3 px-4 font-bold text-lg rounded-xl border-b-4 transition-all transform active:scale-95">
-                            <span v-if="op==='Tambah'">➕ Tambah</span>
-                            <span v-if="op==='Tolak'">➖ Tolak</span>
-                            <span v-if="op==='Darab'">✖️ Darab</span>
-                            <span v-if="op==='Bahagi'">➗ Bahagi</span>
+                            <span v-if="op==='Tambah'">➕ {{ t('opAdd') }}</span>
+                            <span v-if="op==='Tolak'">➖ {{ t('opSub') }}</span>
+                            <span v-if="op==='Darab'">✖️ {{ t('opMul') }}</span>
+                            <span v-if="op==='Bahagi'">➗ {{ t('opDiv') }}</span>
                         </button>
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="font-bold text-slate-700 text-sm block">2. Bilangan Soalan:</label>
+                    <label class="font-bold text-slate-700 text-sm block">2. {{ t('numQuestions') }}:</label>
                     <div class="grid grid-cols-3 gap-2">
                         <button v-for="num in [10, 20, 30, 40]" :key="num" @click="config.totalQuestions = num; playSound('click');" :class="config.totalQuestions === num ? 'bg-yellow-400 border-yellow-500 font-black text-slate-900' : 'bg-slate-100 border-slate-300 text-slate-700'" class="py-2 text-center font-bold rounded-xl border-b-4 transition-all">
                             {{ num }}
@@ -226,59 +233,59 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="font-bold text-slate-700 text-sm block">3. Tahap Kesukaran:</label>
+                    <label class="font-bold text-slate-700 text-sm block">3. {{ t('difficulty') }}:</label>
                     <div class="grid grid-cols-3 gap-2">
                         <button v-for="level in ['Mudah', 'Sederhana', 'Pro']" :key="level" @click="config.difficulty = level; playSound('click');" :class="config.difficulty === level ? 'bg-purple-500 text-white border-purple-600 font-black' : 'bg-slate-100 border-slate-300 text-slate-700'" class="py-2 text-center font-bold rounded-xl border-b-4 transition-all">
-                            {{ level }}
+                            {{ t('diff_' + level) }}
                         </button>
                     </div>
                 </div>
 
                 <button @click="startSession" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xl py-4 rounded-2xl shadow-lg border-b-8 border-emerald-700 transition-all transform active:scale-95 uppercase tracking-wider">
-                    📝 MULA LATIHAN
+                    📝 {{ t('startPractice') }}
                 </button>
             </div>
 
             <!-- PAPARAN MENU BIJAK SIFIR -->
             <div v-if="user && screen === 'sifir-menu'" class="w-full space-y-5 my-auto">
                 <div class="flex justify-between items-center">
-                    <button @click="screen = 'mode-selection'; playSound('click');" class="text-amber-600 font-bold text-sm">⬅️ Pilih Modul</button>
-                    <span class="text-xs font-bold bg-amber-100 text-amber-800 px-3 py-1 rounded-full">⚡ Bijak Sifir</span>
+                    <button @click="screen = 'mode-selection'; playSound('click');" class="text-amber-600 font-bold text-sm">⬅️ {{ t('selectModule') }}</button>
+                    <span class="text-xs font-bold bg-amber-100 text-amber-800 px-3 py-1 rounded-full">⚡ {{ t('timesTables') }}</span>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="font-bold text-slate-700 text-sm block">1. Pilih Sifir (2 - 12):</label>
+                    <label class="font-bold text-slate-700 text-sm block">1. {{ t('selectTable') }} (2 - 12):</label>
                     <div class="grid grid-cols-4 gap-2">
                         <button v-for="s in [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]" :key="s" @click="sifirConfig.selectedSifir = s; playSound('click');" :class="sifirConfig.selectedSifir === s ? 'bg-amber-500 text-white border-amber-600 font-black scale-105 shadow-md' : 'bg-slate-100 border-slate-300 hover:bg-slate-200 text-slate-700'" class="py-2.5 font-bold text-lg rounded-xl border-b-4 transition-all">
-                            Sifir {{ s }}
+                            {{ t('table') }} {{ s }}
                         </button>
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="font-bold text-slate-700 text-sm block">2. Bilangan Soalan:</label>
+                    <label class="font-bold text-slate-700 text-sm block">2. {{ t('numQuestions') }}:</label>
                     <div class="grid grid-cols-3 gap-2">
                         <button v-for="num in [10, 20, 30]" :key="num" @click="sifirConfig.totalQuestions = num; playSound('click');" :class="sifirConfig.totalQuestions === num ? 'bg-yellow-400 border-yellow-500 font-black text-slate-900' : 'bg-slate-100 border-slate-300 text-slate-700'" class="py-2 text-center font-bold text-lg rounded-xl border-b-4 transition-all">
-                            {{ num }} Soalan
+                            {{ num }} {{ t('questionsSuffix') }}
                         </button>
                     </div>
                 </div>
 
                 <button @click="startSifirSession" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-black text-xl py-4 rounded-2xl shadow-lg border-b-8 border-amber-700 transition-all transform active:scale-95 uppercase tracking-wider">
-                    🚀 MULA LATIHAN SIFIR
+                    🚀 {{ t('startTablePractice') }}
                 </button>
             </div>
 
             <!-- GAMEPLAY BIJAK SIFIR -->
             <div v-if="screen === 'sifir-gameplay'" class="w-full flex flex-col justify-between items-center space-y-4 my-auto">
                 <div class="w-full bg-slate-100 p-3 rounded-2xl border-2 border-slate-200 flex justify-between items-center text-xs font-bold text-slate-600">
-                    <div>Soalan: <span class="text-amber-600 text-sm">{{ currentSifirIndex + 1 }}</span> / {{ sifirConfig.totalQuestions }}</div>
+                    <div>{{ t('question') }}: <span class="text-amber-600 text-sm">{{ currentSifirIndex + 1 }}</span> / {{ sifirConfig.totalQuestions }}</div>
                     <div class="text-center font-mono text-sm bg-slate-800 text-yellow-400 px-3 py-1 rounded-full shadow-inner">⏱️ {{ formattedTime }}</div>
-                    <div>Skor: <span class="text-blue-600 text-sm">{{ score }}</span></div>
+                    <div>{{ t('score') }}: <span class="text-blue-600 text-sm">{{ score }}</span></div>
                 </div>
 
                 <div class="w-full bg-gradient-to-b from-amber-100 to-amber-200 p-8 rounded-3xl border-4 border-amber-400 shadow-inner flex flex-col items-center justify-center min-h-[220px]">
-                    <div class="text-xs font-bold text-amber-800 uppercase tracking-widest mb-2">Sifir {{ sifirConfig.selectedSifir }}</div>
+                    <div class="text-xs font-bold text-amber-800 uppercase tracking-widest mb-2">{{ t('table') }} {{ sifirConfig.selectedSifir }}</div>
                     <div class="text-5xl font-black font-kids text-slate-800 flex items-center gap-3">
                         <span>{{ currentSifirQuestion.num1 }}</span>
                         <span class="text-amber-600">×</span>
@@ -289,7 +296,7 @@
                 </div>
 
                 <button @click="submitSifirAnswer" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-black text-lg py-3.5 rounded-2xl shadow-md border-b-4 border-amber-700 transition-all transform active:scale-95 uppercase">
-                    Hantar Jawapan ➡️
+                    {{ t('submitAnswer') }} ➡️
                 </button>
             </div>
 
@@ -297,39 +304,39 @@
             <div v-if="parentUser && screen === 'parentDashboard'" class="w-full space-y-6 my-auto">
                 <div class="bg-purple-600 text-white p-5 rounded-3xl border-4 border-purple-400 shadow-inner text-center">
                     <span class="text-5xl block mb-2">👨‍👩‍👦</span>
-                    <h2 class="text-2xl font-black font-kids">Akaun Utama Penjaga</h2>
-                    <p class="text-xs opacity-90 mt-1">Sila pilih menu pengurusan di bawah</p>
+                    <h2 class="text-2xl font-black font-kids">{{ t('parentDashboardTitle') }}</h2>
+                    <p class="text-xs opacity-90 mt-1">{{ t('parentDashboardDesc') }}</p>
                 </div>
                 <div class="space-y-4">
                     <button @click="screen = 'parentManage'; playSound('click');" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-black text-lg py-4 rounded-2xl shadow-md border-b-4 border-indigo-700 transition-all flex justify-center items-center gap-2">
-                        ⚙️ URUS AKAUN KELUARGA
+                        ⚙️ {{ t('manageFamily') }}
                     </button>
                     <button @click="screen = 'parentReports'; selectedChildForReport = ''; playSound('click');" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-black text-lg py-4 rounded-2xl shadow-md border-b-4 border-pink-700 transition-all flex justify-center items-center gap-2">
-                        📊 REKOD PRESTASI
+                        📊 {{ t('performanceRecords') }}
                     </button>
                 </div>
             </div>
 
             <div v-if="parentUser && screen === 'parentManage'" class="w-full space-y-5 text-left">
                 <div class="flex justify-between items-center">
-                    <button @click="screen = 'parentDashboard'; playSound('click');" class="text-purple-600 font-bold text-sm">⬅️ Kembali ke Menu</button>
-                    <span class="text-xs font-bold bg-purple-100 text-purple-700 px-3 py-1 rounded-full">Urus Keluarga</span>
+                    <button @click="screen = 'parentDashboard'; playSound('click');" class="text-purple-600 font-bold text-sm">⬅️ {{ t('backToMenu') }}</button>
+                    <span class="text-xs font-bold bg-purple-100 text-purple-700 px-3 py-1 rounded-full">{{ t('manageFamily') }}</span>
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border-2 border-purple-200 shadow-sm space-y-3">
-                    <h3 class="font-black text-sm text-slate-700 flex items-center gap-1">➕ Tambah Profil Anak</h3>
+                    <h3 class="font-black text-sm text-slate-700 flex items-center gap-1">➕ {{ t('addChildProfile') }}</h3>
                     <div class="flex gap-2">
-                        <input type="text" v-model="newChildName" placeholder="Nama anak (cth: Alyaa)" class="flex-grow p-2.5 border-2 border-slate-300 rounded-xl text-sm focus:outline-none focus:border-purple-500 uppercase font-bold" maxLength="12">
+                        <input type="text" v-model="newChildName" :placeholder="t('childNamePlaceholder')" class="flex-grow p-2.5 border-2 border-slate-300 rounded-xl text-sm focus:outline-none focus:border-purple-500 uppercase font-bold" maxLength="12">
                         <button @click="addChildProfile" :disabled="!newChildName.trim() || isManagingPin" class="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold text-xs px-4 rounded-xl shadow-sm transition-all">
-                            {{ isManagingPin ? 'Menjana PIN...' : 'Tambah' }}
+                            {{ isManagingPin ? t('generatingPin') : t('addBtn') }}
                         </button>
                     </div>
                 </div>
 
                 <div class="space-y-3">
-                    <h3 class="font-black text-sm text-slate-700 px-1">👦 Senarai Profil & PIN Anak</h3>
+                    <h3 class="font-black text-sm text-slate-700 px-1">👦 {{ t('childProfilesList') }}</h3>
                     <div v-if="childProfiles.length === 0" class="text-center p-6 text-xs text-slate-400 font-bold bg-slate-50 rounded-xl border border-dashed border-slate-300">
-                        Tiada profil anak diwujudkan lagi. Sila tambah di atas.
+                        {{ t('noProfilesCreated') }}
                     </div>
                     <div v-else class="space-y-3">
                         <div v-for="child in childProfiles" :key="child.id" class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2">
@@ -339,13 +346,13 @@
                                     <span class="ml-2 bg-yellow-100 text-yellow-800 text-[11px] font-mono px-2 py-0.5 rounded-md font-bold">PIN: {{ child.pin }}</span>
                                 </div>
                                 <div class="flex gap-1.5">
-                                    <button @click="regenerateChildPin(child.id)" :disabled="isManagingPin" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-2 py-1 rounded disabled:opacity-50">Jana PIN Baru</button>
-                                    <button @click="deleteChildProfile(child.id)" class="text-[10px] bg-red-50 text-red-500 font-bold px-2 py-1 rounded hover:bg-red-100">Padam</button>
+                                    <button @click="regenerateChildPin(child.id)" :disabled="isManagingPin" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-2 py-1 rounded disabled:opacity-50">{{ t('genNewPin') }}</button>
+                                    <button @click="deleteChildProfile(child.id)" class="text-[10px] bg-red-50 text-red-500 font-bold px-2 py-1 rounded hover:bg-red-100">{{ t('deleteBtn') }}</button>
                                 </div>
                             </div>
                             <div class="bg-slate-50 p-2 rounded-lg text-[11px] grid grid-cols-2 gap-1 text-slate-600 font-medium">
-                                <div>Sesi Selesai: <span class="font-bold text-slate-800">{{ getChildStats(child.name).total }}</span></div>
-                                <div>Purata Skor: <span class="font-bold text-emerald-600">{{ getChildStats(child.name).accuracy }}%</span></div>
+                                <div>{{ t('sessionsCompleted') }}: <span class="font-bold text-slate-800">{{ getChildStats(child.name).total }}</span></div>
+                                <div>{{ t('avgScore') }}: <span class="font-bold text-emerald-600">{{ getChildStats(child.name).accuracy }}%</span></div>
                             </div>
                         </div>
                     </div>
@@ -354,14 +361,14 @@
 
             <div v-if="parentUser && screen === 'parentReports'" class="w-full space-y-4 text-left">
                 <div class="flex justify-between items-center">
-                    <button @click="screen = 'parentDashboard'; selectedChildForReport = ''; playSound('click');" class="text-pink-600 font-bold text-sm">⬅️ Kembali ke Menu</button>
-                    <span class="text-xs font-bold bg-pink-100 text-pink-700 px-3 py-1 rounded-full">Rekod Prestasi</span>
+                    <button @click="screen = 'parentDashboard'; selectedChildForReport = ''; playSound('click');" class="text-pink-600 font-bold text-sm">⬅️ {{ t('backToMenu') }}</button>
+                    <span class="text-xs font-bold bg-pink-100 text-pink-700 px-3 py-1 rounded-full">{{ t('performanceRecords') }}</span>
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border-2 border-pink-200 shadow-sm space-y-2">
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wide">Sila Pilih Nama Anak:</label>
+                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wide">{{ t('selectChildName') }}:</label>
                     <select v-model="selectedChildForReport" @change="playSound('click')" class="w-full p-2.5 border-2 border-slate-300 rounded-xl bg-white text-sm font-bold uppercase focus:outline-none focus:border-pink-500">
-                        <option value="">-- PILIH NAMA ANAK --</option>
+                        <option value="">-- {{ t('selectChildName') }} --</option>
                         <option v-for="child in childProfiles" :key="child.id" :value="child.name.toLowerCase()">
                             👦 {{ child.name.toUpperCase() }}
                         </option>
@@ -371,11 +378,11 @@
                 <div v-if="selectedChildForReport" class="space-y-4">
                     <div class="grid grid-cols-2 gap-2 text-center">
                         <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 shadow-sm">
-                            <span class="text-[11px] text-slate-500 block font-bold">Jumlah Sesi</span>
+                            <span class="text-[11px] text-slate-500 block font-bold">{{ t('totalSessions') }}</span>
                             <span class="text-xl font-black text-emerald-600">{{ getChildStats(selectedChildForReport).total }}</span>
                         </div>
                         <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 shadow-sm">
-                            <span class="text-[11px] text-slate-500 block font-bold">Purata Skor</span>
+                            <span class="text-[11px] text-slate-500 block font-bold">{{ t('avgScore') }}</span>
                             <span class="text-xl font-black text-blue-600">{{ getChildStats(selectedChildForReport).accuracy }}%</span>
                         </div>
                     </div>
@@ -384,9 +391,9 @@
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-600 font-black border-b border-slate-200 uppercase tracking-wider">
-                                    <th class="p-3">Operasi / Tahap</th>
-                                    <th class="p-3 text-center">Skor</th>
-                                    <th class="p-3 text-right">Masa</th>
+                                    <th class="p-3">{{ t('tableOpLevel') }}</th>
+                                    <th class="p-3 text-center">{{ t('tableScore') }}</th>
+                                    <th class="p-3 text-right">{{ t('tableTime') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -406,7 +413,7 @@
                                 </tr>
                                 <tr v-if="parentFilteredReports.length === 0">
                                     <td colspan="3" class="p-8 text-center text-slate-400 font-bold">
-                                        📭 Tiada rekod skor untuk anak ini lagi.
+                                        📭 {{ t('noRecordsForChild') }}
                                     </td>
                                 </tr>
                             </tbody>
@@ -415,7 +422,7 @@
 
                     <div class="flex justify-end" v-if="parentFilteredReports.length > 0">
                         <button @click="clearChildReports" class="text-[11px] font-bold text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg border border-red-200 transition-colors">
-                            🗑️ Padam Rekod Skor Anak Ini
+                            🗑️ {{ t('deleteRecordsBtn') }}
                         </button>
                     </div>
                 </div>
@@ -424,11 +431,11 @@
             <!-- GAMEPLAY BENTUK LAZIM -->
             <div v-if="screen === 'gameplay' || screen === 'correction'" class="w-full flex flex-col justify-between items-center space-y-4">
                 <div class="w-full bg-slate-100 p-3 rounded-2xl border-2 border-slate-200 flex justify-between items-center text-xs font-bold text-slate-600">
-                    <div v-if="screen === 'gameplay'">Soalan: <span class="text-emerald-600 text-sm">{{ currentQuestionIndex + 1 }}</span> / {{ config.totalQuestions }}</div>
-                    <div v-else class="text-red-600 text-sm bg-red-50 px-2 py-0.5 rounded-lg border border-red-200 animate-pulse">🛠️ MOD PEMBETULAN (Soalan {{ correctionIndex + 1 }})</div>
+                    <div v-if="screen === 'gameplay'">{{ t('question') }}: <span class="text-emerald-600 text-sm">{{ currentQuestionIndex + 1 }}</span> / {{ config.totalQuestions }}</div>
+                    <div v-else class="text-red-600 text-sm bg-red-50 px-2 py-0.5 rounded-lg border border-red-200 animate-pulse">🛠️ {{ t('correctionMode') }} ({{ t('question') }} {{ correctionIndex + 1 }})</div>
                     <div v-if="screen === 'gameplay'" class="text-center font-mono text-sm bg-slate-800 text-yellow-400 px-3 py-1 rounded-full shadow-inner">⏱️ {{ formattedTime }}</div>
-                    <div v-if="screen === 'gameplay'">Skor: <span class="text-blue-600 text-sm">{{ score }}</span> ({{ currentAccuracy }}%)</div>
-                    <button v-else @click="exitCorrection" class="bg-slate-700 text-white px-2.5 py-1 rounded-md text-[11px]">Batal</button>
+                    <div v-if="screen === 'gameplay'">{{ t('score') }}: <span class="text-blue-600 text-sm">{{ score }}</span> ({{ currentAccuracy }}%)</div>
+                    <button v-else @click="exitCorrection" class="bg-slate-700 text-white px-2.5 py-1 rounded-md text-[11px]">{{ t('cancelBtn') }}</button>
                 </div>
 
                 <div class="w-full flex-grow bg-amber-50 p-6 rounded-3xl border-4 border-amber-200 shadow-inner min-h-[300px] flex justify-center items-center relative math-font">
@@ -477,7 +484,7 @@
                                     <input v-if="idx < String(currentQuestion.num1).length - 1 && divisionInputs.quotientArray[idx] !== '' && divisionInputs.quotientArray[idx] !== undefined" type="text" readonly :value="divisionInputs.remainderArray[idx] !== undefined ? divisionInputs.remainderArray[idx] : ''" @click="activeTarget = {type: 'div_remainder_arr', index: idx}; playSound('click');" :class="activeTarget.type === 'div_remainder_arr' && activeTarget.index === idx ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-blue-400 border-solid bg-white text-blue-600'" class="w-7 h-7 text-xs text-center border-2 rounded absolute right-0 top-1 font-bold focus:outline-none cursor-pointer" placeholder="b">
                                 </div>
                                 <div v-if="idx === String(currentQuestion.num1).length - 1 && divisionInputs.quotientArray[idx] !== '' && divisionInputs.quotientArray[idx] !== undefined" class="absolute bottom-[-50px] flex flex-col items-center">
-                                    <span class="text-[9px] text-red-500 font-bold uppercase tracking-tight">Baki Akhir</span>
+                                    <span class="text-[9px] text-red-500 font-bold uppercase tracking-tight">{{ t('finalRemainder') }}</span>
                                     <input type="text" readonly :value="divisionInputs.finalRemainder" @click="activeTarget = {type: 'div_final_remainder', index: 0}; playSound('click');" :class="activeTarget.type === 'div_final_remainder' ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-9 h-8 text-center border-2 rounded-lg text-base font-bold focus:outline-none cursor-pointer">
                                 </div>
                             </div>
@@ -485,7 +492,7 @@
                     </div>
                 </div>
                 <button @click="submitAnswer" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-black text-lg py-3.5 rounded-2xl shadow-md border-b-4 border-blue-700 transition-all transform active:scale-95 active:border-b-0 uppercase">
-                    {{ screen === 'gameplay' ? 'Hantar Jawapan Helaian ➡️' : 'Semak Pembetulan ✔️' }}
+                    {{ screen === 'gameplay' ? t('submitSheet') + ' ➡️' : t('checkCorrection') + ' ✔️' }}
                 </button>
             </div>
 
@@ -493,26 +500,26 @@
             <div v-if="screen === 'results'" class="w-full space-y-5 py-2 my-auto">
                 <div class="bg-gradient-to-b from-yellow-300 to-amber-400 p-5 rounded-3xl shadow-xl border-4 border-white text-slate-900 relative">
                     <span class="text-5xl block mb-1">🎉</span>
-                    <h2 class="text-2xl font-black uppercase tracking-wide font-kids text-amber-950">Hebat, {{ user }}!</h2>
-                    <p class="font-bold text-amber-900 text-xs">Anda telah menamatkan latihan.</p>
+                    <h2 class="text-2xl font-black uppercase tracking-wide font-kids text-amber-950">{{ t('greatJob') }}, {{ user }}!</h2>
+                    <p class="font-bold text-amber-900 text-xs">{{ t('completedPractice') }}</p>
                 </div>
                 <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md p-4 space-y-2 font-bold text-sm text-left">
                     <div class="flex justify-between border-b pb-1">
-                        <span class="text-slate-500">Gred Betul:</span>
+                        <span class="text-slate-500">{{ t('correctGrade') }}:</span>
                         <span class="text-emerald-600 font-black">{{ score }} / {{ currentSessionTotalQuestions }}</span>
                     </div>
                     <div class="flex justify-between border-b pb-1">
-                        <span class="text-slate-500">Peratusan Skor:</span>
+                        <span class="text-slate-500">{{ t('scorePercent') }}:</span>
                         <span class="text-blue-600 font-black">{{ Math.round((score / currentSessionTotalQuestions) * 100) }}%</span>
                     </div>
                     <div class="flex justify-between pt-0.5">
-                        <span class="text-slate-500">Masa Diambil:</span>
+                        <span class="text-slate-500">{{ t('timeTaken') }}:</span>
                         <span class="text-purple-600 font-mono">{{ finalTimeDisplay }}</span>
                     </div>
                 </div>
 
                 <div v-if="currentSessionType === 'Bentuk Lazim'" class="space-y-2 text-left">
-                    <h3 class="font-bold text-slate-700 text-sm px-1">📝 Senarai Semakan Soalan & Pembetulan:</h3>
+                    <h3 class="font-bold text-slate-700 text-sm px-1">📝 {{ t('checklistQuestions') }}:</h3>
                     <div class="space-y-2 max-h-[220px] overflow-y-auto border border-slate-200 rounded-xl p-2 bg-slate-50">
                         <div v-for="(q, index) in questions" :key="'rev-'+index" class="bg-white p-2.5 rounded-lg border border-slate-200 flex justify-between items-center text-sm shadow-sm">
                             <div class="flex items-center gap-2">
@@ -522,34 +529,34 @@
                                     <span class="font-mono font-bold text-slate-800 ml-1">
                                         {{ q.num1 }} {{ config.operation === 'Tambah' ? '+' : config.operation === 'Tolak' ? '-' : config.operation === 'Darab' ? '×' : '÷' }} {{ q.num2 }} = {{ q.studentAnsStr }}
                                     </span>
-                                    <div v-if="!q.isCorrect" class="text-[11px] text-red-500 font-medium">Jawapan betul: {{ q.correctAnsStr }}</div>
-                                    <div v-else-if="q.wasCorrected" class="text-[11px] text-emerald-600 font-bold flex items-center gap-0.5">✨ Selesai dibetulkan!</div>
+                                    <div v-if="!q.isCorrect" class="text-[11px] text-red-500 font-medium">{{ t('correctAnswer') }}: {{ q.correctAnsStr }}</div>
+                                    <div v-else-if="q.wasCorrected" class="text-[11px] text-emerald-600 font-bold flex items-center gap-0.5">✨ {{ t('correctedSuccess') }}</div>
                                 </div>
                             </div>
-                            <button v-if="!q.isCorrect" @click="startCorrection(index)" class="bg-red-500 hover:bg-red-600 text-white font-bold text-xs px-2.5 py-1.5 rounded-lg border-b-2 border-red-700 transition-all transform active:scale-95 shrink-0">🛠️ Betulkan</button>
+                            <button v-if="!q.isCorrect" @click="startCorrection(index)" class="bg-red-500 hover:bg-red-600 text-white font-bold text-xs px-2.5 py-1.5 rounded-lg border-b-2 border-red-700 transition-all transform active:scale-95 shrink-0">🛠️ {{ t('correctItBtn') }}</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 pt-2">
-                    <button @click="retryCurrentSession" class="bg-amber-400 hover:bg-amber-500 text-slate-900 font-black text-base py-3 rounded-xl border-b-4 border-amber-600 transition-transform active:scale-95">🔁 Ulang Lagi</button>
-                    <button @click="goToModeSelection" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black text-base py-3 rounded-xl border-b-4 border-emerald-700 transition-transform active:scale-95">🏠 Menu Utama</button>
+                    <button @click="retryCurrentSession" class="bg-amber-400 hover:bg-amber-500 text-slate-900 font-black text-base py-3 rounded-xl border-b-4 border-amber-600 transition-transform active:scale-95">🔁 {{ t('retryBtn') }}</button>
+                    <button @click="goToModeSelection" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black text-base py-3 rounded-xl border-b-4 border-emerald-700 transition-transform active:scale-95">🏠 {{ t('mainMenuBtn') }}</button>
                 </div>
             </div>
 
             <!-- REKOD PRESTASI ANAK -->
             <div v-if="user && screen === 'reports'" class="w-full space-y-4 text-left">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-2xl font-black text-slate-800 font-kids">📊 Laporan Prestasi</h2>
-                    <button @click="goToModeSelection" class="bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded-xl text-sm font-bold transition-all">Kembali</button>
+                    <h2 class="text-2xl font-black text-slate-800 font-kids">📊 {{ t('performanceReports') }}</h2>
+                    <button @click="goToModeSelection" class="bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded-xl text-sm font-bold transition-all">{{ t('back') }}</button>
                 </div>
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-inner overflow-hidden max-h-[350px] overflow-y-auto">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
                             <tr class="bg-slate-100 text-slate-600 font-black border-b border-slate-200 uppercase tracking-wider">
-                                <th class="p-3">Operasi</th>
-                                <th class="p-3 text-center">Skor</th>
-                                <th class="p-3 text-right">Masa</th>
+                                <th class="p-3">{{ t('tableOpLevel') }}</th>
+                                <th class="p-3 text-center">{{ t('tableScore') }}</th>
+                                <th class="p-3 text-right">{{ t('tableTime') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -611,6 +618,7 @@
                 const user = ref(null);               
                 const parentUser = ref(null);         
                 const screen = ref('login-selection');
+                const lang = ref('ms'); // Sistem Bahasa ('ms' | 'en')
                 
                 const childPinInput = ref('');
                 const authLoading = ref(false);
@@ -622,164 +630,480 @@
                 const childProfiles = ref([]);
                 const reportList = ref([]);
 
-                // Konfigurasi Latihan Ikut Topik KSSR
+                // DICTIONARY TERJEMAHAN (I18N)
+                const i18n = {
+                    ms: {
+                        tagline: "Jom jadi bijak Matematik & Kuasai Sifir!",
+                        loginChild: "MASUK SEBAGAI ANAK (PIN)",
+                        loginParent: "LOG MASUK IBU BAPA / GURU",
+                        back: "Kembali",
+                        enterPin: "Sila Masukkan No PIN Anda",
+                        getPinHint: "Dapatkan 6-digit PIN daripada akaun ibu bapa anda.",
+                        pinPlaceholder: "Contoh: 123456",
+                        checking: "Menyemak...",
+                        enterGame: "🚀 MASUK PERMAINAN",
+                        parentLoginTitle: "Log Masuk Ibu Bapa / Guru",
+                        parentLoginDesc: "Gunakan akaun Google anda untuk mengakses dashboard pengurusan keluarga & prestasi anak.",
+                        processing: "Memproses...",
+                        loginGoogle: "Log Masuk Dengan Google",
+                        welcome: "Selamat Datang",
+                        selectModuleHint: "Sila pilih modul latihan anda hari ini:",
+                        topicPractice: "Latihan Ikut Topik",
+                        topicPracticeSub: "Silibus KSSR Tahun 1 hingga 6 (5 Soalan)",
+                        standardMath: "Math Bentuk Lazim",
+                        standardMathSub: "Latihan Tambah, Tolak, Darab & Bahagi",
+                        timesTables: "Bijak Sifir",
+                        timesTablesSub: "Latihan Hafalan Sifir 2 hingga 12",
+                        selectModule: "Pilih Modul",
+                        selectYear: "Pilih Tahun (KSSR)",
+                        year: "Tahun",
+                        selectSyllabusTopic: "Pilih Topik Silibus",
+                        startPractice5: "🚀 MULA LATIHAN (5 SOALAN)",
+                        question: "Soalan",
+                        score: "Skor",
+                        selectOperation: "Pilih Operasi",
+                        opAdd: "Tambah",
+                        opSub: "Tolak",
+                        opMul: "Darab",
+                        opDiv: "Bahagi",
+                        numQuestions: "Bilangan Soalan",
+                        difficulty: "Tahap Kesukaran",
+                        diff_Mudah: "Mudah",
+                        diff_Sederhana: "Sederhana",
+                        diff_Pro: "Pro",
+                        startPractice: "📝 MULA LATIHAN",
+                        selectTable: "Pilih Sifir",
+                        table: "Sifir",
+                        questionsSuffix: "Soalan",
+                        startTablePractice: "🚀 MULA LATIHAN SIFIR",
+                        submitAnswer: "Hantar Jawapan",
+                        parentDashboardTitle: "Akaun Utama Penjaga",
+                        parentDashboardDesc: "Sila pilih menu pengurusan di bawah",
+                        manageFamily: "URUS AKAUN KELUARGA",
+                        performanceRecords: "REKOD PRESTASI",
+                        backToMenu: "Kembali ke Menu",
+                        addChildProfile: "Tambah Profil Anak",
+                        childNamePlaceholder: "Nama anak (cth: Alyaa)",
+                        generatingPin: "Menjana PIN...",
+                        addBtn: "Tambah",
+                        childProfilesList: "Senarai Profil & PIN Anak",
+                        noProfilesCreated: "Tiada profil anak diwujudkan lagi. Sila tambah di atas.",
+                        genNewPin: "Jana PIN Baru",
+                        deleteBtn: "Padam",
+                        sessionsCompleted: "Sesi Selesai",
+                        avgScore: "Purata Skor",
+                        selectChildName: "Sila Pilih Nama Anak",
+                        totalSessions: "Jumlah Sesi",
+                        tableOpLevel: "Operasi / Tahap",
+                        tableScore: "Skor",
+                        tableTime: "Masa",
+                        noRecordsForChild: "Tiada rekod skor untuk anak ini lagi.",
+                        deleteRecordsBtn: "Padam Rekod Skor Anak Ini",
+                        correctionMode: "MOD PEMBETULAN",
+                        cancelBtn: "Batal",
+                        finalRemainder: "Baki Akhir",
+                        submitSheet: "Hantar Jawapan Helaian",
+                        checkCorrection: "Semak Pembetulan",
+                        greatJob: "Hebat",
+                        completedPractice: "Anda telah menamatkan latihan.",
+                        correctGrade: "Gred Betul",
+                        scorePercent: "Peratusan Skor",
+                        timeTaken: "Masa Diambil",
+                        checklistQuestions: "Senarai Semakan Soalan & Pembetulan",
+                        correctAnswer: "Jawapan betul",
+                        correctedSuccess: "Selesai dibetulkan!",
+                        correctItBtn: "Betulkan",
+                        retryBtn: "Ulang Lagi",
+                        mainMenuBtn: "Menu Utama",
+                        performanceReports: "Laporan Prestasi",
+                        records: "Rekod",
+                        logout: "Keluar",
+                        minutes: "minit",
+                        seconds: "saat"
+                    },
+                    en: {
+                        tagline: "Be smart in Math & Master Multiplication!",
+                        loginChild: "ENTER AS CHILD (PIN)",
+                        loginParent: "PARENT / TEACHER LOGIN",
+                        back: "Back",
+                        enterPin: "Please Enter Your PIN",
+                        getPinHint: "Get your 6-digit PIN from your parent's account.",
+                        pinPlaceholder: "E.g.: 123456",
+                        checking: "Checking...",
+                        enterGame: "🚀 ENTER GAME",
+                        parentLoginTitle: "Parent / Teacher Login",
+                        parentLoginDesc: "Use your Google account to access family management & performance dashboard.",
+                        processing: "Processing...",
+                        loginGoogle: "Sign In With Google",
+                        welcome: "Welcome",
+                        selectModuleHint: "Please select your practice module today:",
+                        topicPractice: "Topic Practice",
+                        topicPracticeSub: "KSSR Syllabus Year 1 to 6 (5 Questions)",
+                        standardMath: "Standard Form Math",
+                        standardMathSub: "Practice Addition, Subtraction, Multiplication & Division",
+                        timesTables: "Times Tables",
+                        timesTablesSub: "Memorization Practice for Tables 2 to 12",
+                        selectModule: "Select Module",
+                        selectYear: "Select Year (KSSR)",
+                        year: "Year",
+                        selectSyllabusTopic: "Select Syllabus Topic",
+                        startPractice5: "🚀 START PRACTICE (5 QUESTIONS)",
+                        question: "Question",
+                        score: "Score",
+                        selectOperation: "Select Operation",
+                        opAdd: "Addition",
+                        opSub: "Subtraction",
+                        opMul: "Multiplication",
+                        opDiv: "Division",
+                        numQuestions: "Number of Questions",
+                        difficulty: "Difficulty Level",
+                        diff_Mudah: "Easy",
+                        diff_Sederhana: "Medium",
+                        diff_Pro: "Pro",
+                        startPractice: "📝 START PRACTICE",
+                        selectTable: "Select Table",
+                        table: "Table",
+                        questionsSuffix: "Questions",
+                        startTablePractice: "🚀 START TABLE PRACTICE",
+                        submitAnswer: "Submit Answer",
+                        parentDashboardTitle: "Parent Main Account",
+                        parentDashboardDesc: "Please select a management menu below",
+                        manageFamily: "MANAGE FAMILY ACCOUNTS",
+                        performanceRecords: "PERFORMANCE RECORDS",
+                        backToMenu: "Back to Menu",
+                        addChildProfile: "Add Child Profile",
+                        childNamePlaceholder: "Child's name (e.g. Alyaa)",
+                        generatingPin: "Generating PIN...",
+                        addBtn: "Add",
+                        childProfilesList: "Child Profiles & PIN List",
+                        noProfilesCreated: "No child profiles created yet. Please add above.",
+                        genNewPin: "Generate New PIN",
+                        deleteBtn: "Delete",
+                        sessionsCompleted: "Completed Sessions",
+                        avgScore: "Average Score",
+                        selectChildName: "Please Select Child Name",
+                        totalSessions: "Total Sessions",
+                        tableOpLevel: "Operation / Level",
+                        tableScore: "Score",
+                        tableTime: "Time",
+                        noRecordsForChild: "No score records for this child yet.",
+                        deleteRecordsBtn: "Delete Score Records For This Child",
+                        correctionMode: "CORRECTION MODE",
+                        cancelBtn: "Cancel",
+                        finalRemainder: "Final Remainder",
+                        submitSheet: "Submit Answer Sheet",
+                        checkCorrection: "Check Correction",
+                        greatJob: "Great Job",
+                        completedPractice: "You have completed the practice.",
+                        correctGrade: "Correct Grade",
+                        scorePercent: "Score Percentage",
+                        timeTaken: "Time Taken",
+                        checklistQuestions: "Questions Review & Corrections",
+                        correctAnswer: "Correct answer",
+                        correctedSuccess: "Successfully corrected!",
+                        correctItBtn: "Correct It",
+                        retryBtn: "Retry",
+                        mainMenuBtn: "Main Menu",
+                        performanceReports: "Performance Reports",
+                        records: "Records",
+                        logout: "Logout",
+                        minutes: "minutes",
+                        seconds: "seconds"
+                    }
+                };
+
+                const t = (key) => {
+                    return i18n[lang.value][key] || key;
+                };
+
+                const toggleLang = () => {
+                    lang.value = lang.value === 'ms' ? 'en' : 'ms';
+                    playSound('click');
+                };
+
+                // Konfigurasi Latihan Ikut Topik KSSR (Multi-language Support)
                 const selectedYear = ref(null);
                 const selectedTopicKey = ref('');
                 const topicQuestions = ref([]);
                 const currentTopicIndex = ref(0);
 
-                // DATA SOALAN SILIBUS KSSR TAHUN 1 - TAHUN 6 (SETIAP TOPIK 5 SOALAN TANPA BERULANG)
                 const kssrTopics = {
                     tahun1: {
                         nombor: {
-                            name: "Nombor hingga 100",
-                            questions: [
-                                { question: "Apakah nombor selepas 49?", options: ["48", "50", "51", "60"], correct: "50" },
-                                { question: "Pilih nombor yang paling besar.", options: ["12", "89", "45", "78"], correct: "89" },
-                                { question: "Antara berikut, yang manakah nombor dalam perkataan bagi 67?", options: ["Enam puluh tujuh", "Tujuh puluh enam", "Enam puluh", "Enam puluh lapan"], correct: "Enam puluh tujuh" },
-                                { question: "Nilai tempat bagi digit 5 dalam nombor 52 ialah:", options: ["Sa", "Puluh", "Ratus", "Ribu"], correct: "Puluh" },
-                                { question: "Lengkapkan urutan nombor: 10, 20, 30, __, 50.", options: ["35", "40", "45", "60"], correct: "40" }
-                            ]
+                            name: { ms: "Nombor hingga 100", en: "Numbers up to 100" },
+                            questions: {
+                                ms: [
+                                    { question: "Apakah nombor selepas 49?", options: ["48", "50", "51", "60"], correct: "50" },
+                                    { question: "Pilih nombor yang paling besar.", options: ["12", "89", "45", "78"], correct: "89" },
+                                    { question: "Antara berikut, yang manakah nombor dalam perkataan bagi 67?", options: ["Enam puluh tujuh", "Tujuh puluh enam", "Enam puluh", "Enam puluh lapan"], correct: "Enam puluh tujuh" },
+                                    { question: "Nilai tempat bagi digit 5 dalam nombor 52 ialah:", options: ["Sa", "Puluh", "Ratus", "Ribu"], correct: "Puluh" },
+                                    { question: "Lengkapkan urutan nombor: 10, 20, 30, __, 50.", options: ["35", "40", "45", "60"], correct: "40" }
+                                ],
+                                en: [
+                                    { question: "What number comes after 49?", options: ["48", "50", "51", "60"], correct: "50" },
+                                    { question: "Choose the largest number.", options: ["12", "89", "45", "78"], correct: "89" },
+                                    { question: "Which of the following is 67 in words?", options: ["Sixty-seven", "Seventy-six", "Sixty", "Sixty-eight"], correct: "Sixty-seven" },
+                                    { question: "The place value of digit 5 in 52 is:", options: ["Ones", "Tens", "Hundreds", "Thousands"], correct: "Tens" },
+                                    { question: "Complete the sequence: 10, 20, 30, __, 50.", options: ["35", "40", "45", "60"], correct: "40" }
+                                ]
+                            }
                         },
                         tambah_tolak: {
-                            name: "Tambah dan Tolak",
-                            questions: [
-                                { question: "Berapakah 8 + 7?", options: ["13", "14", "15", "16"], correct: "15" },
-                                { question: "Berapakah 19 - 6?", options: ["11", "12", "13", "14"], correct: "13" },
-                                { question: "Ahmad ada 5 biji guli. Ibu beri lagi 6 biji. Berapa guli Ahmad?", options: ["10", "11", "12", "13"], correct: "11" },
-                                { question: "Siti beli 14 cawan. 4 cawan pecah. Berapa cawan yang tinggal?", options: ["8", "9", "10", "11"], correct: "10" },
-                                { question: "Cari jawapan bagi 25 + 10.", options: ["30", "35", "40", "45"], correct: "35" }
-                            ]
+                            name: { ms: "Tambah dan Tolak", en: "Addition and Subtraction" },
+                            questions: {
+                                ms: [
+                                    { question: "Berapakah 8 + 7?", options: ["13", "14", "15", "16"], correct: "15" },
+                                    { question: "Berapakah 19 - 6?", options: ["11", "12", "13", "14"], correct: "13" },
+                                    { question: "Ahmad ada 5 biji guli. Ibu beri lagi 6 biji. Berapa guli Ahmad?", options: ["10", "11", "12", "13"], correct: "11" },
+                                    { question: "Siti beli 14 cawan. 4 cawan pecah. Berapa cawan yang tinggal?", options: ["8", "9", "10", "11"], correct: "10" },
+                                    { question: "Cari jawapan bagi 25 + 10.", options: ["30", "35", "40", "45"], correct: "35" }
+                                ],
+                                en: [
+                                    { question: "What is 8 + 7?", options: ["13", "14", "15", "16"], correct: "15" },
+                                    { question: "What is 19 - 6?", options: ["11", "12", "13", "14"], correct: "13" },
+                                    { question: "Ahmad has 5 marbles. Mother gives him 6 more. How many marbles does he have?", options: ["10", "11", "12", "13"], correct: "11" },
+                                    { question: "Siti bought 14 cups. 4 broke. How many cups are left?", options: ["8", "9", "10", "11"], correct: "10" },
+                                    { question: "Find the answer for 25 + 10.", options: ["30", "35", "40", "45"], correct: "35" }
+                                ]
+                            }
                         },
                         wang: {
-                            name: "Wang Ringgit",
-                            questions: [
-                                { question: "RM1 bersamaan dengan berapa sen?", options: ["10 sen", "50 sen", "100 sen", "200 sen"], correct: "100 sen" },
-                                { question: "Dua keping duit 50 sen menjadi:", options: ["50 sen", "RM1", "RM2", "RM5"], correct: "RM1" },
-                                { question: "Harga sebatang pensel ialah 80 sen. Pembeli memberi RM1. Berapakah baki duitnya?", options: ["10 sen", "20 sen", "30 sen", "40 sen"], correct: "20 sen" },
-                                { question: "Antara berikut, nilai wang manakah paling tinggi?", options: ["RM1", "RM5", "RM10", "50 sen"], correct: "RM10" },
-                                { question: "50 sen + 20 sen = ?", options: ["60 sen", "70 sen", "80 sen", "90 sen"], correct: "70 sen" }
-                            ]
+                            name: { ms: "Wang Ringgit", en: "Money" },
+                            questions: {
+                                ms: [
+                                    { question: "RM1 bersamaan dengan berapa sen?", options: ["10 sen", "50 sen", "100 sen", "200 sen"], correct: "100 sen" },
+                                    { question: "Dua keping duit 50 sen menjadi:", options: ["50 sen", "RM1", "RM2", "RM5"], correct: "RM1" },
+                                    { question: "Harga sebatang pensel ialah 80 sen. Pembeli memberi RM1. Berapakah baki duitnya?", options: ["10 sen", "20 sen", "30 sen", "40 sen"], correct: "20 sen" },
+                                    { question: "Antara berikut, nilai wang manakah paling tinggi?", options: ["RM1", "RM5", "RM10", "50 sen"], correct: "RM10" },
+                                    { question: "50 sen + 20 sen = ?", options: ["60 sen", "70 sen", "80 sen", "90 sen"], correct: "70 sen" }
+                                ],
+                                en: [
+                                    { question: "RM1 is equal to how many cents?", options: ["10 cents", "50 cents", "100 cents", "200 cents"], correct: "100 cents" },
+                                    { question: "Two 50 cent coins equal to:", options: ["50 cents", "RM1", "RM2", "RM5"], correct: "RM1" },
+                                    { question: "A pencil costs 80 cents. You pay RM1. What is the change?", options: ["10 cents", "20 cents", "30 cents", "40 cents"], correct: "20 cents" },
+                                    { question: "Which money value is the highest?", options: ["RM1", "RM5", "RM10", "50 cents"], correct: "RM10" },
+                                    { question: "50 cents + 20 cents = ?", options: ["60 cents", "70 cents", "80 cents", "90 cents"], correct: "70 cents" }
+                                ]
+                            }
                         }
                     },
                     tahun2: {
                         darab_bahagi: {
-                            name: "Darab dan Bahagi",
-                            questions: [
-                                { question: "3 × 4 = ?", options: ["7", "10", "12", "15"], correct: "12" },
-                                { question: "15 ÷ 3 = ?", options: ["3", "4", "5", "6"], correct: "5" },
-                                { question: "5 × 5 = ?", options: ["20", "25", "30", "35"], correct: "25" },
-                                { question: "20 ÷ 4 = ?", options: ["4", "5", "6", "10"], correct: "5" },
-                                { question: "Ada 4 kumpulan budak. Setiap kumpulan ada 2 orang. Berapa orang semuanya?", options: ["6", "8", "10", "12"], correct: "8" }
-                            ]
+                            name: { ms: "Darab dan Bahagi", en: "Multiplication & Division" },
+                            questions: {
+                                ms: [
+                                    { question: "3 × 4 = ?", options: ["7", "10", "12", "15"], correct: "12" },
+                                    { question: "15 ÷ 3 = ?", options: ["3", "4", "5", "6"], correct: "5" },
+                                    { question: "5 × 5 = ?", options: ["20", "25", "30", "35"], correct: "25" },
+                                    { question: "20 ÷ 4 = ?", options: ["4", "5", "6", "10"], correct: "5" },
+                                    { question: "Ada 4 kumpulan budak. Setiap kumpulan ada 2 orang. Berapa orang semuanya?", options: ["6", "8", "10", "12"], correct: "8" }
+                                ],
+                                en: [
+                                    { question: "3 × 4 = ?", options: ["7", "10", "12", "15"], correct: "12" },
+                                    { question: "15 ÷ 3 = ?", options: ["3", "4", "5", "6"], correct: "5" },
+                                    { question: "5 × 5 = ?", options: ["20", "25", "30", "35"], correct: "25" },
+                                    { question: "20 ÷ 4 = ?", options: ["4", "5", "6", "10"], correct: "5" },
+                                    { question: "There are 4 groups of kids. Each group has 2 kids. How many altogether?", options: ["6", "8", "10", "12"], correct: "8" }
+                                ]
+                            }
                         },
                         pecahan: {
-                            name: "Pecahan dan Perpuluhan",
-                            questions: [
-                                { question: "Satu daripada dua bahagian yang sama besar dipanggil:", options: ["Satu perdua", "Satu pertiga", "Satu perempat", "Tiga perempat"], correct: "Satu perdua" },
-                                { question: "Pecahan bagi kawasan berlorek half/separuh ialah:", options: ["1/2", "1/4", "3/4", "2/2"], correct: "1/2" },
-                                { question: "Tiga perempat ditulis dalam angka sebagai:", options: ["1/4", "2/4", "3/4", "4/3"], correct: "3/4" },
-                                { question: "Tulis 0.5 dalam bentuk pecahan ringkas.", options: ["1/4", "1/2", "3/4", "1/5"], correct: "1/2" },
-                                { question: "Pilih nilai perpuluhan yang mewakili lima persepuluh.", options: ["0.1", "0.5", "0.05", "5.0"], correct: "0.5" }
-                            ]
+                            name: { ms: "Pecahan dan Perpuluhan", en: "Fractions and Decimals" },
+                            questions: {
+                                ms: [
+                                    { question: "Satu daripada dua bahagian yang sama besar dipanggil:", options: ["Satu perdua", "Satu pertiga", "Satu perempat", "Tiga perempat"], correct: "Satu perdua" },
+                                    { question: "Pecahan bagi kawasan separuh ialah:", options: ["1/2", "1/4", "3/4", "2/2"], correct: "1/2" },
+                                    { question: "Tiga perempat ditulis dalam angka sebagai:", options: ["1/4", "2/4", "3/4", "4/3"], correct: "3/4" },
+                                    { question: "Tulis 0.5 dalam bentuk pecahan ringkas.", options: ["1/4", "1/2", "3/4", "1/5"], correct: "1/2" },
+                                    { question: "Pilih nilai perpuluhan yang mewakili lima persepuluh.", options: ["0.1", "0.5", "0.05", "5.0"], correct: "0.5" }
+                                ],
+                                en: [
+                                    { question: "One out of two equal parts is called:", options: ["One half", "One third", "One quarter", "Three quarters"], correct: "One half" },
+                                    { question: "Fraction representing half is:", options: ["1/2", "1/4", "3/4", "2/2"], correct: "1/2" },
+                                    { question: "Three quarters is written in numbers as:", options: ["1/4", "2/4", "3/4", "4/3"], correct: "3/4" },
+                                    { question: "Write 0.5 in simple fraction form.", options: ["1/4", "1/2", "3/4", "1/5"], correct: "1/2" },
+                                    { question: "Choose the decimal value representing five tenths.", options: ["0.1", "0.5", "0.05", "5.0"], correct: "0.5" }
+                                ]
+                            }
                         },
                         masa: {
-                            name: "Masa dan Waktu",
-                            questions: [
-                                { question: "1 jam bersamaan berapa minit?", options: ["30 minit", "45 minit", "60 minit", "100 minit"], correct: "60 minit" },
-                                { question: "Pukul berapa apabila jarum pendek di angka 3 dan jarum panjang di angka 12?", options: ["Pukul 3:00", "Pukul 12:00", "Pukul 3:30", "Pukul 12:15"], correct: "Pukul 3:00" },
-                                { question: "Setengah jam bersamaan dengan berapa minit?", options: ["15 minit", "30 minit", "45 minit", "60 minit"], correct: "30 minit" },
-                                { question: "1 hari ada berapa jam?", options: ["12 jam", "24 jam", "48 jam", "60 jam"], correct: "24 jam" },
-                                { question: "Jarum panjang bergerak dari 12 ke 6 menunjukkan selang masa:", options: ["15 minit", "30 minit", "45 minit", "60 minit"], correct: "30 minit" }
-                            ]
+                            name: { ms: "Masa dan Waktu", en: "Time" },
+                            questions: {
+                                ms: [
+                                    { question: "1 jam bersamaan berapa minit?", options: ["30 minit", "45 minit", "60 minit", "100 minit"], correct: "60 minit" },
+                                    { question: "Pukul berapa apabila jarum pendek di angka 3 dan jarum panjang di angka 12?", options: ["Pukul 3:00", "Pukul 12:00", "Pukul 3:30", "Pukul 12:15"], correct: "Pukul 3:00" },
+                                    { question: "Setengah jam bersamaan dengan berapa minit?", options: ["15 minit", "30 minit", "45 minit", "60 minit"], correct: "30 minit" },
+                                    { question: "1 hari ada berapa jam?", options: ["12 jam", "24 jam", "48 jam", "60 jam"], correct: "24 jam" },
+                                    { question: "Jarum panjang bergerak dari 12 ke 6 menunjukkan selang masa:", options: ["15 minit", "30 minit", "45 minit", "60 minit"], correct: "30 minit" }
+                                ],
+                                en: [
+                                    { question: "1 hour is equal to how many minutes?", options: ["30 minutes", "45 minutes", "60 minutes", "100 minutes"], correct: "60 minutes" },
+                                    { question: "What time is it when short hand points to 3 and long hand to 12?", options: ["3:00 o'clock", "12:00 o'clock", "3:30 o'clock", "12:15 o'clock"], correct: "3:00 o'clock" },
+                                    { question: "Half an hour equals how many minutes?", options: ["15 minutes", "30 minutes", "45 minutes", "60 minutes"], correct: "30 minutes" },
+                                    { question: "1 day has how many hours?", options: ["12 hours", "24 hours", "48 hours", "60 hours"], correct: "24 hours" },
+                                    { question: "Minute hand moving from 12 to 6 shows a time interval of:", options: ["15 minutes", "30 minutes", "45 minutes", "60 minutes"], correct: "30 minutes" }
+                                ]
+                            }
                         }
                     },
                     tahun3: {
                         nombor_3: {
-                            name: "Nombor hingga 10 000",
-                            questions: [
-                                { question: "Bundarkan 4,567 kepada ratus terdekat.", options: ["4,500", "4,600", "5,000", "4,570"], correct: "4,600" },
-                                { question: "Nilai digit 8 dalam 8,312 ialah:", options: ["8", "80", "800", "8,000"], correct: "8,000" },
-                                { question: "Cari jumlah bagi 3,450 + 1,230.", options: ["4,680", "4,688", "4,580", "4,780"], correct: "4,680" },
-                                { question: "Berapakah 7,890 - 2,450?", options: ["5,440", "5,450", "5,430", "5,540"], correct: "5,440" },
-                                { question: "Pilih urutan nombor tertib menaik.", options: ["1200, 1100, 1000", "1000, 1200, 1100", "1000, 1100, 1200", "1200, 1000, 1100"], correct: "1000, 1100, 1200" }
-                            ]
+                            name: { ms: "Nombor hingga 10 000", en: "Numbers up to 10 000" },
+                            questions: {
+                                ms: [
+                                    { question: "Bundarkan 4,567 kepada ratus terdekat.", options: ["4,500", "4,600", "5,000", "4,570"], correct: "4,600" },
+                                    { question: "Nilai digit 8 dalam 8,312 ialah:", options: ["8", "80", "800", "8,000"], correct: "8,000" },
+                                    { question: "Cari jumlah bagi 3,450 + 1,230.", options: ["4,680", "4,688", "4,580", "4,780"], correct: "4,680" },
+                                    { question: "Berapakah 7,890 - 2,450?", options: ["5,440", "5,450", "5,430", "5,540"], correct: "5,440" },
+                                    { question: "Pilih urutan nombor tertib menaik.", options: ["1200, 1100, 1000", "1000, 1200, 1100", "1000, 1100, 1200", "1200, 1000, 1100"], correct: "1000, 1100, 1200" }
+                                ],
+                                en: [
+                                    { question: "Round off 4,567 to the nearest hundred.", options: ["4,500", "4,600", "5,000", "4,570"], correct: "4,600" },
+                                    { question: "Digit value of 8 in 8,312 is:", options: ["8", "80", "800", "8,000"], correct: "8,000" },
+                                    { question: "Find sum of 3,450 + 1,230.", options: ["4,680", "4,688", "4,580", "4,780"], correct: "4,680" },
+                                    { question: "What is 7,890 - 2,450?", options: ["5,440", "5,450", "5,430", "5,540"], correct: "5,440" },
+                                    { question: "Choose ascending order sequence.", options: ["1200, 1100, 1000", "1000, 1200, 1100", "1000, 1100, 1200", "1200, 1000, 1100"], correct: "1000, 1100, 1200" }
+                                ]
+                            }
                         },
                         panjang: {
-                            name: "Ukuran dan Sukatan",
-                            questions: [
-                                { question: "1 meter bersamaan berapa sentimeter (cm)?", options: ["10 cm", "100 cm", "1000 cm", "50 cm"], correct: "100 cm" },
-                                { question: "1 kilogram (kg) bersamaan berapa gram (g)?", options: ["10 g", "100 g", "1000 g", "500 g"], correct: "1000 g" },
-                                { question: "Unit yang sesuai untuk mengukur jisim sebiji tembikai ialah:", options: ["Gram (g)", "Kilogram (kg)", "Meter (m)", "Liter (l)"], correct: "Kilogram (kg)" },
-                                { question: "1 liter (l) bersamaan berapa mililiter (ml)?", options: ["10 ml", "100 ml", "500 ml", "1000 ml"], correct: "1000 ml" },
-                                { question: "3 m tukarkan kepada cm menjadi:", options: ["30 cm", "300 cm", "3000 cm", "30000 cm"], correct: "300 cm" }
-                            ]
+                            name: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+                            questions: {
+                                ms: [
+                                    { question: "1 meter bersamaan berapa sentimeter (cm)?", options: ["10 cm", "100 cm", "1000 cm", "50 cm"], correct: "100 cm" },
+                                    { question: "1 kilogram (kg) bersamaan berapa gram (g)?", options: ["10 g", "100 g", "1000 g", "500 g"], correct: "1000 g" },
+                                    { question: "Unit yang sesuai untuk mengukur jisim sebiji tembikai ialah:", options: ["Gram (g)", "Kilogram (kg)", "Meter (m)", "Liter (l)"], correct: "Kilogram (kg)" },
+                                    { question: "1 liter (l) bersamaan berapa mililiter (ml)?", options: ["10 ml", "100 ml", "500 ml", "1000 ml"], correct: "1000 ml" },
+                                    { question: "3 m tukarkan kepada cm menjadi:", options: ["30 cm", "300 cm", "3000 cm", "30000 cm"], correct: "300 cm" }
+                                ],
+                                en: [
+                                    { question: "1 meter equals how many centimeters (cm)?", options: ["10 cm", "100 cm", "1000 cm", "50 cm"], correct: "100 cm" },
+                                    { question: "1 kilogram (kg) equals how many grams (g)?", options: ["10 g", "100 g", "1000 g", "500 g"], correct: "1000 g" },
+                                    { question: "Suitable unit to measure mass of a watermelon is:", options: ["Gram (g)", "Kilogram (kg)", "Meter (m)", "Litre (l)"], correct: "Kilogram (kg)" },
+                                    { question: "1 litre (l) equals how many millilitres (ml)?", options: ["10 ml", "100 ml", "500 ml", "1000 ml"], correct: "1000 ml" },
+                                    { question: "Convert 3 m to cm:", options: ["30 cm", "300 cm", "3000 cm", "30000 cm"], correct: "300 cm" }
+                                ]
+                            }
                         }
                     },
                     tahun4: {
                         nombor_4: {
-                            name: "Nombor hingga 100 000",
-                            questions: [
-                                { question: "Antara berikut, nombor manakah nombor perdana?", options: ["4", "9", "13", "15"], correct: "13" },
-                                { question: "Bundarkan 56,782 kepada ribu terdekat.", options: ["56,000", "57,000", "56,800", "60,000"], correct: "57,000" },
-                                { question: "45,000 + 12,300 = ?", options: ["57,300", "57,000", "58,300", "56,300"], correct: "57,300" },
-                                { question: "Cari hasil darab 1,200 × 10.", options: ["12,000", "120,000", "1,200", "120"], correct: "12,000" },
-                                { question: "Apakah nombor perdana yang terkeil?", options: ["0", "1", "2", "3"], correct: "2" }
-                            ]
+                            name: { ms: "Nombor hingga 100 000", en: "Numbers up to 100 000" },
+                            questions: {
+                                ms: [
+                                    { question: "Antara berikut, nombor manakah nombor perdana?", options: ["4", "9", "13", "15"], correct: "13" },
+                                    { question: "Bundarkan 56,782 kepada ribu terdekat.", options: ["56,000", "57,000", "56,800", "60,000"], correct: "57,000" },
+                                    { question: "45,000 + 12,300 = ?", options: ["57,300", "57,000", "58,300", "56,300"], correct: "57,300" },
+                                    { question: "Cari hasil darab 1,200 × 10.", options: ["12,000", "120,000", "1,200", "120"], correct: "12,000" },
+                                    { question: "Apakah nombor perdana yang terkecil?", options: ["0", "1", "2", "3"], correct: "2" }
+                                ],
+                                en: [
+                                    { question: "Which of the following is a prime number?", options: ["4", "9", "13", "15"], correct: "13" },
+                                    { question: "Round off 56,782 to the nearest thousand.", options: ["56,000", "57,000", "56,800", "60,000"], correct: "57,000" },
+                                    { question: "45,000 + 12,300 = ?", options: ["57,300", "57,000", "58,300", "56,300"], correct: "57,300" },
+                                    { question: "Find product of 1,200 × 10.", options: ["12,000", "120,000", "1,200", "120"], correct: "12,000" },
+                                    { question: "What is the smallest prime number?", options: ["0", "1", "2", "3"], correct: "2" }
+                                ]
+                            }
                         },
                         masa_4: {
-                            name: "Masa dan Waktu (Abad/Dekad)",
-                            questions: [
-                                { question: "1 dekad bersamaan berapa tahun?", options: ["5 tahun", "10 tahun", "50 tahun", "100 tahun"], correct: "10 tahun" },
-                                { question: "1 abad bersamaan berapa tahun?", options: ["10 tahun", "50 tahun", "100 tahun", "1000 tahun"], correct: "100 tahun" },
-                                { question: "3 dekad = __ tahun.", options: ["13 tahun", "30 tahun", "300 tahun", "3 tahun"], correct: "30 tahun" },
-                                { question: "2 abad 5 dekad bersamaan berapa tahun?", options: ["25 tahun", "250 tahun", "205 tahun", "2500 tahun"], correct: "250 tahun" },
-                                { question: "1 minggu ada berapa hari?", options: ["5 hari", "6 hari", "7 hari", "8 hari"], correct: "7 hari" }
-                            ]
+                            name: { ms: "Masa dan Waktu (Abad/Dekad)", en: "Time (Century/Decade)" },
+                            questions: {
+                                ms: [
+                                    { question: "1 dekad bersamaan berapa tahun?", options: ["5 tahun", "10 tahun", "50 tahun", "100 tahun"], correct: "10 tahun" },
+                                    { question: "1 abad bersamaan berapa tahun?", options: ["10 tahun", "50 tahun", "100 tahun", "1000 tahun"], correct: "100 tahun" },
+                                    { question: "3 dekad = __ tahun.", options: ["13 tahun", "30 tahun", "300 tahun", "3 tahun"], correct: "30 tahun" },
+                                    { question: "2 abad 5 dekad bersamaan berapa tahun?", options: ["25 tahun", "250 tahun", "205 tahun", "2500 tahun"], correct: "250 tahun" },
+                                    { question: "1 minggu ada berapa hari?", options: ["5 hari", "6 hari", "7 hari", "8 hari"], correct: "7 hari" }
+                                ],
+                                en: [
+                                    { question: "1 decade equals how many years?", options: ["5 years", "10 years", "50 years", "100 years"], correct: "10 years" },
+                                    { question: "1 century equals how many years?", options: ["10 years", "50 years", "100 years", "1000 years"], correct: "100 years" },
+                                    { question: "3 decades = __ years.", options: ["13 years", "30 years", "300 years", "3 years"], correct: "30 years" },
+                                    { question: "2 centuries 5 decades equals how many years?", options: ["25 years", "250 years", "205 years", "2500 years"], correct: "250 years" },
+                                    { question: "1 week has how many days?", options: ["5 days", "6 days", "7 days", "8 days"], correct: "7 days" }
+                                ]
+                            }
                         }
                     },
                     tahun5: {
                         nombor_5: {
-                            name: "Nombor hingga 1 000 000",
-                            questions: [
-                                { question: "Nilai tempat bagi digit 7 dalam 745,210 ialah:", options: ["Ribu", "Puluh Ribu", "Ratus Ribu", "Juta"], correct: "Ratus Ribu" },
-                                { question: "Tulis 'Tiga ratus ribu lima puluh' dalam angka.", options: ["300,050", "300,500", "30,050", "3,000,050"], correct: "300,050" },
-                                { question: "Berapakah 500,000 + 250,000?", options: ["650,000", "750,000", "850,000", "700,000"], correct: "750,000" },
-                                { question: "Berapakah 1,000,000 - 400,000?", options: ["500,000", "600,000", "700,000", "800,000"], correct: "600,000" },
-                                { question: "1/2 juta dalam bentuk nombor bulat ialah:", options: ["50,000", "500,000", "5,000", "250,000"], correct: "500,000" }
-                            ]
+                            name: { ms: "Nombor hingga 1 000 000", en: "Numbers up to 1 000 000" },
+                            questions: {
+                                ms: [
+                                    { question: "Nilai tempat bagi digit 7 dalam 745,210 ialah:", options: ["Ribu", "Puluh Ribu", "Ratus Ribu", "Juta"], correct: "Ratus Ribu" },
+                                    { question: "Tulis 'Tiga ratus ribu lima puluh' dalam angka.", options: ["300,050", "300,500", "30,050", "3,000,050"], correct: "300,050" },
+                                    { question: "Berapakah 500,000 + 250,000?", options: ["650,000", "750,000", "850,000", "700,000"], correct: "750,000" },
+                                    { question: "Berapakah 1,000,000 - 400,000?", options: ["500,000", "600,000", "700,000", "800,000"], correct: "600,000" },
+                                    { question: "1/2 juta dalam bentuk nombor bulat ialah:", options: ["50,000", "500,000", "5,000", "250,000"], correct: "500,000" }
+                                ],
+                                en: [
+                                    { question: "Place value of digit 7 in 745,210 is:", options: ["Thousands", "Ten Thousands", "Hundred Thousands", "Millions"], correct: "Hundred Thousands" },
+                                    { question: "Write 'Three hundred thousand fifty' in figures.", options: ["300,050", "300,500", "30,050", "3,000,050"], correct: "300,050" },
+                                    { question: "What is 500,000 + 250,000?", options: ["650,000", "750,000", "850,000", "700,000"], correct: "750,000" },
+                                    { question: "What is 1,000,000 - 400,000?", options: ["500,000", "600,000", "700,000", "800,000"], correct: "600,000" },
+                                    { question: "1/2 million as a whole number is:", options: ["50,000", "500,000", "5,000", "250,000"], correct: "500,000" }
+                                ]
+                            }
                         },
                         peratus: {
-                            name: "Peratus dan Pecahan",
-                            questions: [
-                                { question: "Tukarkan 1/2 kepada peratus.", options: ["25%", "50%", "75%", "100%"], correct: "50%" },
-                                { question: "Tukarkan 3/4 kepada peratus.", options: ["50%", "60%", "75%", "80%"], correct: "75%" },
-                                { question: "Berapakah 20% daripada RM100?", options: ["RM10", "RM20", "RM30", "RM50"], correct: "RM20" },
-                                { question: "Tukarkan 0.25 kepada peratus.", options: ["2.5%", "25%", "250%", "0.25%"], correct: "25%" },
-                                { question: "Cari nilai 10% daripada 500.", options: ["5", "50", "500", "10"], correct: "50" }
-                            ]
+                            name: { ms: "Peratus dan Pecahan", en: "Percentage and Fractions" },
+                            questions: {
+                                ms: [
+                                    { question: "Tukarkan 1/2 kepada peratus.", options: ["25%", "50%", "75%", "100%"], correct: "50%" },
+                                    { question: "Tukarkan 3/4 kepada peratus.", options: ["50%", "60%", "75%", "80%"], correct: "75%" },
+                                    { question: "Berapakah 20% daripada RM100?", options: ["RM10", "RM20", "RM30", "RM50"], correct: "RM20" },
+                                    { question: "Tukarkan 0.25 kepada peratus.", options: ["2.5%", "25%", "250%", "0.25%"], correct: "25%" },
+                                    { question: "Cari nilai 10% daripada 500.", options: ["5", "50", "500", "10"], correct: "50" }
+                                ],
+                                en: [
+                                    { question: "Convert 1/2 to percentage.", options: ["25%", "50%", "75%", "100%"], correct: "50%" },
+                                    { question: "Convert 3/4 to percentage.", options: ["50%", "60%", "75%", "80%"], correct: "75%" },
+                                    { question: "What is 20% of RM100?", options: ["RM10", "RM20", "RM30", "RM50"], correct: "RM20" },
+                                    { question: "Convert 0.25 to percentage.", options: ["2.5%", "25%", "250%", "0.25%"], correct: "25%" },
+                                    { question: "Find 10% of 500.", options: ["5", "50", "500", "10"], correct: "50" }
+                                ]
+                            }
                         }
                     },
                     tahun6: {
                         juta: {
-                            name: "Nombor Bulat dan Juta",
-                            questions: [
-                                { question: "Tukarkan 1.5 juta kepada nombor bulat.", options: ["150,000", "1,500,000", "15,000,000", "1,005,000"], correct: "1,500,000" },
-                                { question: "3/4 juta bersamaan dengan:", options: ["340,000", "750,000", "500,000", "250,000"], correct: "750,000" },
-                                { question: "Tulis 2,500,000 dalam nombor perpuluhan juta.", options: ["0.25 juta", "2.5 juta", "25 juta", "2.05 juta"], correct: "2.5 juta" },
-                                { question: "Berapakah 0.2 juta + 0.3 juta?", options: ["50,000", "500,000", "5,000,000", "500"], correct: "500,000" },
-                                { question: "1/5 juta bersamaan dengan:", options: ["100,000", "200,000", "250,000", "500,000"], correct: "200,000" }
-                            ]
+                            name: { ms: "Nombor Bulat dan Juta", en: "Whole Numbers and Millions" },
+                            questions: {
+                                ms: [
+                                    { question: "Tukarkan 1.5 juta kepada nombor bulat.", options: ["150,000", "1,500,000", "15,000,000", "1,005,000"], correct: "1,500,000" },
+                                    { question: "3/4 juta bersamaan dengan:", options: ["340,000", "750,000", "500,000", "250,000"], correct: "750,000" },
+                                    { question: "Tulis 2,500,000 dalam nombor perpuluhan juta.", options: ["0.25 juta", "2.5 juta", "25 juta", "2.05 juta"], correct: "2.5 juta" },
+                                    { question: "Berapakah 0.2 juta + 0.3 juta?", options: ["50,000", "500,000", "5,000,000", "500"], correct: "500,000" },
+                                    { question: "1/5 juta bersamaan dengan:", options: ["100,000", "200,000", "250,000", "500,000"], correct: "200,000" }
+                                ],
+                                en: [
+                                    { question: "Convert 1.5 million to whole number.", options: ["150,000", "1,500,000", "15,000,000", "1,005,000"], correct: "1,500,000" },
+                                    { question: "3/4 million is equal to:", options: ["340,000", "750,000", "500,000", "250,000"], correct: "750,000" },
+                                    { question: "Write 2,500,000 as decimal million.", options: ["0.25 million", "2.5 million", "25 million", "2.05 million"], correct: "2.5 million" },
+                                    { question: "What is 0.2 million + 0.3 million?", options: ["50,000", "500,000", "5,000,000", "500"], correct: "500,000" },
+                                    { question: "1/5 million equals:", options: ["100,000", "200,000", "250,000", "500,000"], correct: "200,000" }
+                                ]
+                            }
                         },
                         nisbah: {
-                            name: "Nisbah dan Kadaran",
-                            questions: [
-                                { question: "Nisbah 3 kepada 5 ditulis sebagai:", options: ["3/5", "3:5", "3-5", "5:3"], correct: "3:5" },
-                                { question: "Ada 4 epal merah dan 6 epal hijau. Apakah nisbah epal merah kepada semua epal?", options: ["4:6", "4:10", "6:4", "10:4"], correct: "4:10" },
-                                { question: "Permudahkan nisbah 2 : 4.", options: ["1:2", "1:4", "2:1", "4:2"], correct: "1:2" },
-                                { question: "Jika nisbah murid lelaki kepada perempuan ialah 1:2, dan murid lelaki ada 5 orang, berapa murid perempuan?", options: ["5", "10", "15", "20"], correct: "10" },
-                                { question: "Nisbah harga pen A kepada pen B ialah 2:3. Jika pen A berharga RM4, berapakah harga pen B?", options: ["RM5", "RM6", "RM8", "RM9"], correct: "RM6" }
-                            ]
+                            name: { ms: "Nisbah dan Kadaran", en: "Ratio and Proportion" },
+                            questions: {
+                                ms: [
+                                    { question: "Nisbah 3 kepada 5 ditulis sebagai:", options: ["3/5", "3:5", "3-5", "5:3"], correct: "3:5" },
+                                    { question: "Ada 4 epal merah dan 6 epal hijau. Apakah nisbah epal merah kepada semua epal?", options: ["4:6", "4:10", "6:4", "10:4"], correct: "4:10" },
+                                    { question: "Permudahkan nisbah 2 : 4.", options: ["1:2", "1:4", "2:1", "4:2"], correct: "1:2" },
+                                    { question: "Jika nisbah murid lelaki kepada perempuan ialah 1:2, dan murid lelaki ada 5 orang, berapa murid perempuan?", options: ["5", "10", "15", "20"], correct: "10" },
+                                    { question: "Nisbah harga pen A kepada pen B ialah 2:3. Jika pen A berharga RM4, berapakah harga pen B?", options: ["RM5", "RM6", "RM8", "RM9"], correct: "RM6" }
+                                ],
+                                en: [
+                                    { question: "Ratio of 3 to 5 is written as:", options: ["3/5", "3:5", "3-5", "5:3"], correct: "3:5" },
+                                    { question: "There are 4 red apples and 6 green apples. What is the ratio of red apples to total apples?", options: ["4:6", "4:10", "6:4", "10:4"], correct: "4:10" },
+                                    { question: "Simplify the ratio 2 : 4.", options: ["1:2", "1:4", "2:1", "4:2"], correct: "1:2" },
+                                    { question: "If ratio of boys to girls is 1:2, and there are 5 boys, how many girls are there?", options: ["5", "10", "15", "20"], correct: "10" },
+                                    { question: "Ratio of pen A price to pen B is 2:3. If pen A costs RM4, what is the price of pen B?", options: ["RM5", "RM6", "RM8", "RM9"], correct: "RM6" }
+                                ]
+                            }
                         }
                     }
                 };
@@ -917,7 +1241,7 @@
                         await signInWithPopup(fAuth, googleProvider);
                         user.value = null; 
                     } catch (error) {
-                        alert("Ralat Pengesahan Google: " + error.message);
+                        alert("Google Auth Error: " + error.message);
                         playSound('wrong');
                     } finally {
                         authLoading.value = false;
@@ -965,11 +1289,11 @@
                         }
 
                         if (!pinFound) {
-                            alert("No PIN tidak sah. Sila semak dengan ibu bapa anda.");
+                            alert(lang.value === 'ms' ? "No PIN tidak sah. Sila semak dengan ibu bapa anda." : "Invalid PIN. Please check with your parents.");
                             playSound('wrong');
                         }
                     } catch (e) {
-                        alert("Ralat sambungan: " + e.message);
+                        alert("Connection Error: " + e.message);
                     } finally {
                         authLoading.value = false;
                     }
@@ -994,7 +1318,7 @@
                             }
                         }
                     } catch (e) {
-                        console.error("Gagal membaca senarai PIN sedia ada: ", e);
+                        console.error("Failed to fetch existing PINs: ", e);
                     }
 
                     let pin;
@@ -1022,7 +1346,7 @@
                         newChildName.value = '';
                         playSound('correct');
                     } catch (e) {
-                        alert("Gagal menambah profil: " + e.message);
+                        alert("Failed to add profile: " + e.message);
                     } finally {
                         isManagingPin.value = false;
                     }
@@ -1035,21 +1359,21 @@
                         const newPin = await generateUniquePin();
                         await set(dbRef(fDatabase, `users/${parentUser.value}/profiles/${profileId}/pin`), newPin);
                         playSound('correct');
-                        alert("PIN 6-digit baharu berjaya dijana!");
+                        alert(lang.value === 'ms' ? "PIN 6-digit baharu berjaya dijana!" : "New 6-digit PIN generated successfully!");
                     } catch (e) {
-                        alert("Gagal menukar PIN: " + e.message);
+                        alert("Failed to update PIN: " + e.message);
                     } finally {
                         isManagingPin.value = false;
                     }
                 };
 
                 const deleteChildProfile = async (profileId) => {
-                    if (!parentUser.value || !confirm("Padam profil anak ini secara kekal?")) return;
+                    if (!parentUser.value || !confirm(lang.value === 'ms' ? "Padam profil anak ini secara kekal?" : "Permanently delete this child profile?")) return;
                     try {
                         await remove(dbRef(fDatabase, `users/${parentUser.value}/profiles/${profileId}`));
                         playSound('wrong');
                     } catch (e) {
-                        alert("Gagal memadam: " + e.message);
+                        alert("Failed to delete: " + e.message);
                     }
                 };
 
@@ -1064,7 +1388,7 @@
 
                 const clearChildReports = async () => {
                     if (!parentUser.value || !selectedChildForReport.value) return;
-                    if (!confirm(`Adakah anda pasti mahu memadam semua sejarah rekod skor milik ${selectedChildForReport.value.toUpperCase()}?`)) return;
+                    if (!confirm(lang.value === 'ms' ? `Adakah anda pasti mahu memadam semua sejarah rekod skor milik ${selectedChildForReport.value.toUpperCase()}?` : `Are you sure you want to delete all score history for ${selectedChildForReport.value.toUpperCase()}?`)) return;
                     
                     playSound('wrong');
                     try {
@@ -1072,9 +1396,9 @@
                         for (const report of targets) {
                             await remove(dbRef(fDatabase, `users/${parentUser.value}/reports/${report.id}`));
                         }
-                        alert("Rekod berjaya dipadamkan.");
+                        alert(lang.value === 'ms' ? "Rekod berjaya dipadamkan." : "Records deleted successfully.");
                     } catch(e) {
-                        alert("Gagal memadam rekod: " + e.message);
+                        alert("Failed to delete records: " + e.message);
                     }
                 };
 
@@ -1158,23 +1482,22 @@
                     screen.value = 'reports';
                 };
 
-                // GENERASI SOALAN LATIHAN IKUT TOPIK (5 SOALAN TANPA BERULANG)
+                // GENERASI SOALAN LATIHAN IKUT TOPIK
                 const startTopicSession = () => {
                     if (!selectedYear.value || !selectedTopicKey.value) return;
                     const topicObj = kssrTopics['tahun' + selectedYear.value][selectedTopicKey.value];
                     if (!topicObj || !topicObj.questions) return;
 
-                    // Buat Salinan & Rawakkan Soalan Supaya Tiada Soalan Berulang
-                    let rawQuestions = [...topicObj.questions];
+                    const langQuestions = topicObj.questions[lang.value] || topicObj.questions['ms'];
+                    let rawQuestions = [...langQuestions];
                     rawQuestions.sort(() => Math.random() - 0.5);
 
-                    // Ambil 5 Soalan Khas & Rawakkan Pilihan Jawapan
                     topicQuestions.value = rawQuestions.slice(0, 5).map(q => {
                         let shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
                         return {
                             ...q,
                             options: shuffledOptions,
-                            topicName: topicObj.name
+                            topicName: topicObj.name[lang.value]
                         };
                     });
 
@@ -1243,7 +1566,7 @@
                     }
                 };
 
-                // GENERASI SOALAN SIFIR (TIADA SOALAN BERULANG)
+                // GENERASI SOALAN SIFIR
                 const generateSifirQuestions = () => {
                     sifirQuestions.value = [];
                     const selected = sifirConfig.value.selectedSifir;
@@ -1461,14 +1784,16 @@
 
                     if (screen.value === 'correction') {
                         if (isCorrect) {
-                            playSound('correct'); alert("Syabas! Pembetulan anda betul! 🎉");
+                            playSound('correct'); 
+                            alert(lang.value === 'ms' ? "Syabas! Pembetulan anda betul! 🎉" : "Great job! Your correction is correct! 🎉");
                             const idx = correctionIndex.value;
                             questions.value[idx].isCorrect = true;
                             questions.value[idx].studentAnsStr = studentAnsStr;
                             questions.value[idx].wasCorrected = true; 
                             exitCorrection();
                         } else {
-                            playSound('wrong'); alert("Alamak, jawapan pembetulan masih kurang tepat. Cuba lagi ya! 💪");
+                            playSound('wrong'); 
+                            alert(lang.value === 'ms' ? "Alamak, jawapan pembetulan masih kurang tepat. Cuba lagi ya! 💪" : "Oops, the correction is still incorrect. Try again! 💪");
                         }
                         return;
                     }
@@ -1495,7 +1820,7 @@
                     stopTimer();
                     const mins = Math.floor(timerSeconds.value / 60); const secs = timerSeconds.value % 60;
                     let durationStr = `${secs}s`; if (mins > 0) durationStr = `${mins}m ${secs}s`;
-                    finalTimeDisplay.value = mins > 0 ? `${mins} minit ${secs} saat` : `${secs} saat`;
+                    finalTimeDisplay.value = mins > 0 ? `${mins} ${t('minutes')} ${secs} ${t('seconds')}` : `${secs} ${t('seconds')}`;
 
                     const now = new Date();
                     const dateStr = `${now.getDate()}/${now.getMonth()+1} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
@@ -1505,13 +1830,13 @@
                     let diffName = '';
 
                     if (currentSessionType.value === 'Latihan Ikut Topik') {
-                        opName = `Topik Thn ${selectedYear.value}`;
-                        diffName = kssrTopics['tahun' + selectedYear.value][selectedTopicKey.value].name;
+                        opName = `${t('topicPractice')} Y${selectedYear.value}`;
+                        diffName = kssrTopics['tahun' + selectedYear.value][selectedTopicKey.value].name[lang.value];
                     } else if (currentSessionType.value === 'Bentuk Lazim') {
-                        opName = `Bentuk Lazim (${config.value.operation})`;
-                        diffName = config.value.difficulty;
+                        opName = `${t('standardMath')} (${t('op' + (config.value.operation === 'Tambah' ? 'Add' : config.value.operation === 'Tolak' ? 'Sub' : config.value.operation === 'Darab' ? 'Mul' : 'Div'))})`;
+                        diffName = t('diff_' + config.value.difficulty);
                     } else {
-                        opName = `Bijak Sifir (${sifirConfig.value.selectedSifir})`;
+                        opName = `${t('timesTables')} (${sifirConfig.value.selectedSifir})`;
                         diffName = 'Hafalan';
                     }
 
@@ -1551,7 +1876,7 @@
                 };
 
                 return {
-                    user, parentUser, screen, childPinInput, authLoading, isManagingPin,
+                    user, parentUser, screen, lang, t, toggleLang, childPinInput, authLoading, isManagingPin,
                     newChildName, childProfiles, reportList, filteredReportList, parentFilteredReports, selectedChildForReport, config, sifirConfig, score, currentQuestionIndex,
                     currentQuestion, currentSifirQuestion, currentSifirIndex, sifirAnswerInput, maxColumns, answerArray, carryArray, borrowArray, divisionInputs, activeTarget,
                     formattedTime, currentAccuracy, currentSessionTotalQuestions, currentSessionType, finalTimeDisplay, questions, correctionIndex,
