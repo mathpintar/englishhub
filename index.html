@@ -1,1416 +1,1089 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ms" class="h-full overflow-hidden select-none touch-none">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Bijak Kids - Preschool ABC Learning</title>
-  
-  <!-- Canvas Confetti Library -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Google Fonts for Kids -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Mali:wght@600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --pastel-bg: #FFF9E6;
-      --pastel-pink: #FFB7B2;
-      --pastel-blue: #A2E8DD;
-      --pastel-yellow: #FFE599;
-      --pastel-purple: #D7BDE2;
-      --pastel-green: #B5EAD7;
-      --pastel-orange: #FFDAC1;
-      --primary-red: #FF6B6B;
-      --primary-blue: #4D96FF;
-      --primary-green: #6BCB77;
-      --primary-yellow: #FFD93D;
-      --primary-purple: #9B59B6;
-      --text-dark: #4A4A4A;
-      --card-radius: 28px;
-      --btn-radius: 50px;
-      --shadow-soft: 0 10px 25px rgba(0,0,0,0.08);
-      --shadow-btn: 0 6px 0px rgba(0,0,0,0.15);
-    }
-
-    * {
-      box-sizing: border-box;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Fredoka', 'Mali', sans-serif;
-      background-color: var(--pastel-bg);
-      color: var(--text-dark);
-      overflow-x: hidden;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Fullscreen Screen Containers */
-    .screen {
-      display: none;
-      flex-direction: column;
-      min-height: 100vh;
-      width: 100%;
-      padding: 20px;
-      position: relative;
-      animation: fadeIn 0.4s ease-out forwards;
-    }
-
-    .screen.active {
-      display: flex;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.98); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    /* Floating Pastel Background Shapes */
-    .bg-shape {
-      position: absolute;
-      border-radius: 50%;
-      z-index: -1;
-      opacity: 0.6;
-      filter: blur(20px);
-    }
-    .shape-1 { width: 200px; height: 200px; background: var(--pastel-pink); top: -50px; left: -50px; }
-    .shape-2 { width: 250px; height: 250px; background: var(--pastel-blue); bottom: -50px; right: -50px; }
-    .shape-3 { width: 180px; height: 180px; background: var(--pastel-yellow); top: 40%; right: -60px; }
-
-    /* Button Styles */
-    .btn {
-      font-family: 'Fredoka', sans-serif;
-      font-weight: 700;
-      border: none;
-      border-radius: var(--btn-radius);
-      padding: 16px 32px;
-      font-size: 1.4rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      box-shadow: var(--shadow-btn);
-      transition: all 0.15s ease;
-      color: white;
-      text-decoration: none;
-    }
-
-    .btn:active {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0px rgba(0,0,0,0.15);
-    }
-
-    .btn-red { background-color: var(--primary-red); }
-    .btn-blue { background-color: var(--primary-blue); }
-    .btn-green { background-color: var(--primary-green); }
-    .btn-yellow { background-color: var(--primary-yellow); color: var(--text-dark); }
-    .btn-purple { background-color: var(--primary-purple); }
-
-    .btn-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      padding: 0;
-      font-size: 1.5rem;
-    }
-
-    /* Top Nav Bar */
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      z-index: 10;
-    }
-
-    .bar-right {
-      display: flex;
-      gap: 12px;
-    }
-
-    /* Cards */
-    .card {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(10px);
-      border-radius: var(--card-radius);
-      padding: 24px;
-      box-shadow: var(--shadow-soft);
-      border: 4px solid white;
-    }
-
-    /* 1. Language Selection Screen */
-    #lang-screen {
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
-
-    .app-title {
-      font-size: 3.5rem;
-      color: var(--primary-red);
-      text-shadow: 3px 3px 0px var(--primary-yellow);
-      margin-bottom: 10px;
-    }
-
-    .subtitle {
-      font-size: 1.5rem;
-      color: #777;
-      margin-bottom: 40px;
-    }
-
-    .lang-box {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .lang-card {
-      background: white;
-      padding: 25px 40px;
-      border-radius: 30px;
-      cursor: pointer;
-      box-shadow: var(--shadow-soft);
-      border: 4px solid transparent;
-      transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .lang-card:hover, .lang-card.active-lang {
-      border-color: var(--primary-blue);
-      transform: scale(1.05);
-    }
-
-    .lang-card img {
-      width: 80px;
-      height: 60px;
-      border-radius: 12px;
-      object-fit: cover;
-    }
-
-    /* 2. Welcome & Name Screen */
-    #name-screen {
-      justify-content: center;
-      align-items: center;
-    }
-
-    .name-card {
-      width: 100%;
-      max-width: 450px;
-      text-align: center;
-    }
-
-    .input-name {
-      width: 100%;
-      padding: 18px;
-      font-size: 1.6rem;
-      border-radius: 20px;
-      border: 3px solid var(--pastel-blue);
-      text-align: center;
-      margin: 20px 0;
-      font-family: inherit;
-      outline: none;
-      color: var(--text-dark);
-      font-weight: 700;
-    }
-
-    /* 3. Home Screen */
-    .user-greeting {
-      font-size: 2rem;
-      color: var(--primary-purple);
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .main-topics {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
-      margin-top: 20px;
-    }
-
-    .topic-card {
-      background: white;
-      border-radius: 30px;
-      padding: 30px;
-      text-align: center;
-      cursor: pointer;
-      box-shadow: var(--shadow-soft);
-      transition: all 0.2s;
-      border: 4px solid var(--pastel-yellow);
-    }
-
-    .topic-card:active {
-      transform: scale(0.98);
-    }
-
-    .topic-icon {
-      font-size: 4rem;
-      margin-bottom: 15px;
-      display: inline-block;
-    }
-
-    /* Subtopic Modal / Screen */
-    .subtopic-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-top: 30px;
-    }
-
-    /* 4. ABC Tracing Screen */
-    .tracing-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      max-width: 800px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    .alphabet-nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      margin-bottom: 10px;
-    }
-
-    .letter-display {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: var(--primary-blue);
-      background: white;
-      padding: 8px 24px;
-      border-radius: 20px;
-      box-shadow: var(--shadow-soft);
-    }
-
-    .canvas-wrapper {
-      position: relative;
-      background: white;
-      border-radius: 30px;
-      box-shadow: var(--shadow-soft);
-      border: 6px solid var(--pastel-blue);
-      touch-action: none;
-    }
-
-    canvas {
-      border-radius: 24px;
-      display: block;
-      cursor: crosshair;
-    }
-
-    .vocab-card {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      background: white;
-      padding: 15px 30px;
-      border-radius: 25px;
-      box-shadow: var(--shadow-soft);
-      width: 100%;
-      justify-content: space-between;
-    }
-
-    .vocab-info {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .vocab-emoji {
-      font-size: 3.5rem;
-    }
-
-    .vocab-text {
-      text-align: left;
-    }
-
-    .vocab-word {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--primary-red);
-    }
-
-    /* 5. Learn ABC (Quiz) Screen */
-    .quiz-container {
-      max-width: 600px;
-      margin: 0 auto;
-      width: 100%;
-      text-align: center;
-    }
-
-    .quiz-question {
-      font-size: 2.2rem;
-      margin: 15px 0;
-      color: var(--primary-purple);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-    }
-
-    .quiz-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-top: 20px;
-    }
-
-    .option-card {
-      background: white;
-      border-radius: 28px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: var(--shadow-soft);
-      border: 4px solid var(--pastel-blue);
-      transition: all 0.2s ease;
-      min-height: 140px;
-    }
-
-    .option-card:active {
-      transform: scale(0.95);
-    }
-
-    .option-emoji {
-      font-size: 4rem;
-      line-height: 1;
-    }
-
-    .option-label {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-top: 8px;
-      color: var(--text-dark);
-    }
-
-    /* Shaking animation for wrong answer */
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-12px); }
-      40%, 80% { transform: translateX(12px); }
-    }
-    .shake {
-      animation: shake 0.5s ease-in-out;
-      border-color: var(--primary-red) !important;
-      background-color: #FFEBEE !important;
-    }
-
-    /* Progress & Badges Widget */
-    .progress-bar-container {
-      width: 100%;
-      background: #E0E0E0;
-      height: 20px;
-      border-radius: 10px;
-      overflow: hidden;
-      margin: 15px 0;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--primary-green);
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-
-    .badges-container {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 20px;
-      gap: 10px;
-    }
-
-    .badge-card {
-      background: white;
-      padding: 15px;
-      border-radius: 20px;
-      text-align: center;
-      opacity: 0.4;
-      transition: all 0.3s ease;
-      flex: 1;
-      box-shadow: var(--shadow-soft);
-    }
-
-    .badge-card.unlocked {
-      opacity: 1;
-      transform: translateY(-5px);
-      border: 3px solid var(--primary-yellow);
-    }
-
-    .badge-icon {
-      font-size: 2rem;
-    }
-
-    .badge-name {
-      font-size: 0.9rem;
-      font-weight: bold;
-      margin-top: 5px;
-    }
-
-    /* Letters Selector Grid */
-    .letters-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
-      gap: 12px;
-      margin-top: 20px;
-      max-height: 60vh;
-      overflow-y: auto;
-      padding: 10px;
-    }
-
-    .letter-btn {
-      background: white;
-      border: 3px solid var(--pastel-blue);
-      border-radius: 18px;
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: var(--primary-blue);
-      padding: 12px 0;
-      cursor: pointer;
-      box-shadow: 0 4px 0 var(--pastel-blue);
-      transition: all 0.15s;
-    }
-
-    .letter-btn:active {
-      transform: translateY(3px);
-      box-shadow: none;
-    }
-
-    .letter-btn.completed {
-      background: var(--pastel-green);
-      border-color: var(--primary-green);
-      color: white;
-      box-shadow: 0 4px 0 var(--primary-green);
-    }
-
-    /* Modal / Overlay */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-      padding: 20px;
-    }
-
-    .modal-card {
-      background: white;
-      border-radius: 30px;
-      padding: 30px;
-      max-width: 450px;
-      width: 100%;
-      text-align: center;
-      box-shadow: var(--shadow-soft);
-      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    @keyframes popIn {
-      from { transform: scale(0.7); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    /* Settings List */
-    .setting-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 0;
-      border-bottom: 1px solid #EEE;
-    }
-
-    .setting-item label {
-      font-size: 1.2rem;
-      font-weight: 600;
-    }
-
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 34px;
-    }
-
-    .switch input { opacity: 0; width: 0; height: 0; }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #ccc;
-      transition: .4s;
-      border-radius: 34px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 26px; width: 26px;
-      left: 4px; bottom: 4px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider { background-color: var(--primary-green); }
-    input:checked + .slider:before { transform: translateX(26px); }
-
-    /* Helper Utilities */
-    .text-center { text-align: center; }
-    .mt-20 { margin-top: 20px; }
-    .hidden { display: none !important; }
-
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MathPintar - Latihan Matematik Bentuk Lazim</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Share+Tech+Mono&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #f0fdf4;
+            -webkit-text-size-adjust: 100%;
+        }
+        .font-kids {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .math-font {
+            font-family: 'Share Tech Mono', monospace;
+        }
+        .strikethrough {
+            position: relative;
+        }
+        .strikethrough::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 4px;
+            background: #ef4444;
+            transform: rotate(-25deg);
+        }
+        [v-cloak] { display: none; }
+    </style>
 </head>
-<body>
+<body class="text-slate-800 h-full w-full flex justify-center items-center p-0 m-0 overflow-hidden bg-slate-100">
 
-  <!-- Floating Background Elements -->
-  <div class="bg-shape shape-1"></div>
-  <div class="bg-shape shape-2"></div>
-  <div class="bg-shape shape-3"></div>
-
-  <!-- 1. LANGUAGE SELECTION SCREEN -->
-  <div id="screen-lang" class="screen active">
-    <div class="app-title">Bijak Kids</div>
-    <div class="subtitle">Sila Pilih Bahasa / Choose Language</div>
-
-    <div class="lang-box">
-      <div class="lang-card" onclick="selectLanguage('bm')">
-        <span style="font-size: 4rem;">🇲🇾</span>
-        <div style="font-size: 1.5rem; font-weight: bold; color: var(--text-dark);">Bahasa Melayu</div>
-      </div>
-      <div class="lang-card" onclick="selectLanguage('en')">
-        <span style="font-size: 4rem;">🇬🇧</span>
-        <div style="font-size: 1.5rem; font-weight: bold; color: var(--text-dark);">English</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 2. NAME ENTRY SCREEN -->
-  <div id="screen-name" class="screen">
-    <div class="name-card card" style="margin: auto;">
-      <h2 id="txt-enter-name" style="font-size: 2rem; color: var(--primary-purple);">Masukkan Nama</h2>
-      <input type="text" id="input-child-name" class="input-name" placeholder="Nama..." maxlength="15" autocomplete="off">
-      <button class="btn btn-green" style="width: 100%;" onclick="saveNameAndProceed()">
-        <span id="txt-btn-continue">Mula / Continue</span> <i class="fa-solid fa-arrow-right"></i>
-      </button>
-    </div>
-  </div>
-
-  <!-- 3. HOME SCREEN -->
-  <div id="screen-home" class="screen">
-    <div class="top-bar">
-      <div class="user-greeting">
-        <i class="fa-solid fa-face-smile" style="color: var(--primary-yellow);"></i>
-        <span id="home-greeting">Hai!</span>
-      </div>
-      <div class="bar-right">
-        <button class="btn btn-purple btn-icon" onclick="openProgressModal()"><i class="fa-solid fa-trophy"></i></button>
-        <button class="btn btn-yellow btn-icon" onclick="openSettings()"><i class="fa-solid fa-gear"></i></button>
-      </div>
-    </div>
-
-    <h2 id="txt-main-topic" style="font-size: 1.8rem; margin-bottom: 15px;">Topik Utama</h2>
-
-    <div class="main-topics">
-      <div class="topic-card" onclick="openSubtopicSelect()">
-        <span class="topic-icon">🟡</span>
-        <h3 style="font-size: 2rem; color: var(--primary-blue);">ABC</h3>
-        <p id="txt-topic-abc-sub" style="color: #777; margin-top: 5px;">Huruf & Abjad</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- SUBTOPIC SELECTION MODAL SCREEN -->
-  <div id="screen-subtopics" class="screen">
-    <div class="top-bar">
-      <button class="btn btn-red btn-icon" onclick="showScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i></button>
-      <h2 style="font-size: 2rem; color: var(--primary-purple);">ABC</h2>
-      <div style="width: 60px;"></div>
-    </div>
-
-    <div class="subtopic-grid">
-      <div class="topic-card" onclick="startTracingMode()">
-        <span class="topic-icon">✏️</span>
-        <h3 id="txt-sub-tracing" style="font-size: 1.8rem; color: var(--primary-green);">ABC Tracing</h3>
-        <p id="txt-sub-tracing-desc" style="color: #777; margin-top: 5px;">Belajar Tulis Huruf</p>
-      </div>
-
-      <div class="topic-card" onclick="startLearnMode()">
-        <span class="topic-icon">🧩</span>
-        <h3 id="txt-sub-learn" style="font-size: 1.8rem; color: var(--primary-red);">Learn ABC</h3>
-        <p id="txt-sub-learn-desc" style="color: #777; margin-top: 5px;">Padan Gambar & Huruf</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- 4. ABC TRACING SCREEN -->
-  <div id="screen-tracing" class="screen">
-    <div class="top-bar">
-      <button class="btn btn-red btn-icon" onclick="showScreen('screen-subtopics')"><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="letter-display" id="tracing-letter-title">A a</div>
-      <button class="btn btn-yellow btn-icon" onclick="speakCurrentVocab()"><i class="fa-solid fa-volume-high"></i></button>
-    </div>
-
-    <div class="tracing-container">
-      <div class="alphabet-nav">
-        <button class="btn btn-blue btn-icon" onclick="prevTracingLetter()"><i class="fa-solid fa-chevron-left"></i></button>
+    <div id="app" class="w-full max-w-md h-full bg-white shadow-xl flex flex-col justify-between relative overflow-hidden" v-cloak>
         
-        <div class="canvas-wrapper">
-          <canvas id="tracing-canvas" width="300" height="300"></canvas>
-        </div>
+        <header class="bg-emerald-500 text-white p-4 flex justify-between items-center shadow-md rounded-b-2xl shrink-0">
+            <h1 @click="goToMenu" class="text-2xl font-bold tracking-wide font-kids cursor-pointer select-none">✏️ MathPintar</h1>
+            <div v-if="user || parentUser" class="flex items-center gap-2">
+                <button v-if="user && screen === 'menu'" @click="openReports" class="bg-emerald-600 hover:bg-emerald-700 px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1">📊 Rekod</button>
+                <button v-if="parentUser && (screen === 'parentDashboard' || screen === 'parentManage' || screen === 'parentReports')" @click="logout" class="bg-red-500 hover:bg-red-600 px-2.5 py-1 rounded-lg text-xs font-bold transition-all transform active:scale-95">Keluar</button>
+                <div v-if="user" class="flex items-center gap-2">
+                    <span class="text-sm font-bold bg-emerald-600 px-3 py-1 rounded-full text-yellow-200 max-w-[100px] truncate">👤 {{ user }}</span>
+                    <button @click="logout" class="bg-red-500 hover:bg-red-600 px-2 py-1 rounded-lg text-xs font-bold transition-all transform active:scale-95">Keluar</button>
+                </div>
+            </div>
+        </header>
 
-        <button class="btn btn-blue btn-icon" onclick="nextTracingLetter()"><i class="fa-solid fa-chevron-right"></i></button>
-      </div>
+        <main class="flex-grow p-4 flex flex-col justify-start items-center w-full overflow-y-auto touch-pan-y">
 
-      <div style="display: flex; gap: 15px;">
-        <button class="btn btn-yellow" onclick="resetCanvas()"><i class="fa-solid fa-rotate-right"></i> <span id="txt-reset">Reset</span></button>
-      </div>
+            <div v-if="screen === 'login-selection'" class="w-full space-y-6 text-center my-auto">
+                <div class="bg-gradient-to-b from-emerald-400 to-emerald-500 p-6 rounded-3xl border-4 border-emerald-300 shadow-inner text-white">
+                    <span class="text-6xl block mb-2">🧠</span>
+                    <h2 class="text-3xl font-black font-kids">MathPintar</h2>
+                    <p class="text-sm opacity-90 mt-1">Jom jadi bijak Matematik dengan bentuk lazim!</p>
+                </div>
+                <div class="space-y-4 pt-4">
+                    <button @click="screen = 'login-child'" class="w-full bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black text-xl py-4 rounded-2xl shadow-md border-b-4 border-yellow-600 transition-all flex justify-center items-center gap-2">
+                        👦 MASUK SEBAGAI ANAK (PIN)
+                    </button>
+                    <button @click="screen = 'login-parent'" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-black text-lg py-3.5 rounded-2xl shadow-md border-b-4 border-slate-900 transition-all flex justify-center items-center gap-2">
+                        🔑 LOG MASUK IBU BAPA / GURU
+                    </button>
+                </div>
+            </div>
 
-      <!-- Vocabulary Card -->
-      <div class="vocab-card">
-        <div class="vocab-info">
-          <span class="vocab-emoji" id="vocab-emoji">🐔</span>
-          <div class="vocab-text">
-            <div class="vocab-word" id="vocab-word">Ayam</div>
-            <div style="color: #888; font-size: 1rem;" id="vocab-lang-tag">Bahasa Melayu</div>
-          </div>
-        </div>
-        <button class="btn btn-purple btn-icon" onclick="speakCurrentVocab()"><i class="fa-solid fa-volume-high"></i></button>
-      </div>
+            <div v-if="screen === 'login-child'" class="w-full space-y-6 text-center my-auto">
+                <div class="text-left">
+                    <button @click="screen = 'login-selection'" class="text-emerald-600 font-bold text-sm">⬅️ Kembali</button>
+                </div>
+                <div class="bg-yellow-100 p-5 rounded-3xl border-4 border-yellow-400 shadow-inner">
+                    <h2 class="text-2xl font-black text-emerald-600 font-kids">Sila Masukkan No PIN Anda</h2>
+                    <p class="text-xs text-slate-600 mt-1">Dapatkan 6-digit PIN daripada akaun ibu bapa anda.</p>
+                </div>
+                <div class="space-y-3">
+                    <input type="text" v-model="childPinInput" placeholder="Contoh: 123456" class="w-full p-4 text-3xl border-4 border-emerald-400 rounded-2xl focus:outline-none focus:border-yellow-400 text-center font-mono font-black tracking-widest transition-colors" maxLength="6" @keyup.enter="loginAsChild">
+                </div>
+                <button @click="loginAsChild" :disabled="childPinInput.trim().length !== 6 || authLoading" class="w-full bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-black text-xl py-4 rounded-2xl shadow-lg border-b-8 border-emerald-700 transition-all uppercase">
+                    {{ authLoading ? 'Menyemak...' : '🚀 MASUK PERMAINAN' }}
+                </button>
+            </div>
+
+            <div v-if="screen === 'login-parent'" class="w-full space-y-6 text-center my-auto">
+                <div class="text-left">
+                    <button @click="screen = 'login-selection'" class="text-emerald-600 font-bold text-sm">⬅️ Kembali</button>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-3xl border-2 border-slate-200 space-y-4">
+                    <h2 class="text-2xl font-black text-slate-700 font-kids">Log Masuk Ibu Bapa / Guru</h2>
+                    <p class="text-sm text-slate-500">Gunakan akaun Google anda untuk mengakses dashboard pengurusan keluarga & prestasi anak.</p>
+                </div>
+                
+                <button @click="handleGoogleLogin" :disabled="authLoading" class="w-full bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-700 font-bold text-md py-3 px-4 rounded-xl shadow-md border border-slate-300 transition-all flex justify-center items-center gap-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24">
+                        <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l3.227-3.11C18.281 1.045 15.49 0 12.24 0 5.58 0 0 5.37 0 12s5.58 12 12.24 12c6.96 0 11.57-4.854 11.57-11.79 0-.795-.085-1.4-.195-1.925H12.24z"/>
+                    </svg>
+                    {{ authLoading ? 'Memproses...' : 'Log Masuk Dengan Google' }}
+                </button>
+            </div>
+
+            <div v-if="parentUser && screen === 'parentDashboard'" class="w-full space-y-6 my-auto">
+                <div class="bg-purple-600 text-white p-5 rounded-3xl border-4 border-purple-400 shadow-inner text-center">
+                    <span class="text-5xl block mb-2">👨‍👩‍👦</span>
+                    <h2 class="text-2xl font-black font-kids">Akaun Utama Penjaga</h2>
+                    <p class="text-xs opacity-90 mt-1">Sila pilih menu pengurusan di bawah</p>
+                </div>
+                <div class="space-y-4">
+                    <button @click="screen = 'parentManage'; playSound('click');" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-black text-lg py-4 rounded-2xl shadow-md border-b-4 border-indigo-700 transition-all flex justify-center items-center gap-2">
+                        ⚙️ URUS AKAUN KELUARGA
+                    </button>
+                    <button @click="screen = 'parentReports'; selectedChildForReport = ''; playSound('click');" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-black text-lg py-4 rounded-2xl shadow-md border-b-4 border-pink-700 transition-all flex justify-center items-center gap-2">
+                        📊 REKOD PRESTASI
+                    </button>
+                </div>
+            </div>
+
+            <div v-if="parentUser && screen === 'parentManage'" class="w-full space-y-5 text-left">
+                <div class="flex justify-between items-center">
+                    <button @click="screen = 'parentDashboard'; playSound('click');" class="text-purple-600 font-bold text-sm">⬅️ Kembali ke Menu</button>
+                    <span class="text-xs font-bold bg-purple-100 text-purple-700 px-3 py-1 rounded-full">Urus Keluarga</span>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border-2 border-purple-200 shadow-sm space-y-3">
+                    <h3 class="font-black text-sm text-slate-700 flex items-center gap-1">➕ Tambah Profil Anak</h3>
+                    <div class="flex gap-2">
+                        <input type="text" v-model="newChildName" placeholder="Nama anak (cth: Alyaa)" class="flex-grow p-2.5 border-2 border-slate-300 rounded-xl text-sm focus:outline-none focus:border-purple-500 uppercase font-bold" maxLength="12">
+                        <button @click="addChildProfile" :disabled="!newChildName.trim() || isManagingPin" class="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold text-xs px-4 rounded-xl shadow-sm transition-all">
+                            {{ isManagingPin ? 'Menjana PIN...' : 'Tambah' }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="font-black text-sm text-slate-700 px-1">👦 Senarai Profil & PIN Anak</h3>
+                    <div v-if="childProfiles.length === 0" class="text-center p-6 text-xs text-slate-400 font-bold bg-slate-50 rounded-xl border border-dashed border-slate-300">
+                        Tiada profil anak diwujudkan lagi. Sila tambah di atas.
+                    </div>
+                    <div v-else class="space-y-3">
+                        <div v-for="child in childProfiles" :key="child.id" class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="font-black text-base text-purple-700 uppercase">{{ child.name }}</span>
+                                    <span class="ml-2 bg-yellow-100 text-yellow-800 text-[11px] font-mono px-2 py-0.5 rounded-md font-bold">PIN: {{ child.pin }}</span>
+                                </div>
+                                <div class="flex gap-1.5">
+                                    <button @click="regenerateChildPin(child.id)" :disabled="isManagingPin" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-2 py-1 rounded disabled:opacity-50">Jana PIN Baru</button>
+                                    <button @click="deleteChildProfile(child.id)" class="text-[10px] bg-red-50 text-red-500 font-bold px-2 py-1 rounded hover:bg-red-100">Padam</button>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-2 rounded-lg text-[11px] grid grid-cols-2 gap-1 text-slate-600 font-medium">
+                                <div>Sesi Selesai: <span class="font-bold text-slate-800">{{ getChildStats(child.name).total }}</span></div>
+                                <div>Purata Skor: <span class="font-bold text-emerald-600">{{ getChildStats(child.name).accuracy }}%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="parentUser && screen === 'parentReports'" class="w-full space-y-4 text-left">
+                <div class="flex justify-between items-center">
+                    <button @click="screen = 'parentDashboard'; selectedChildForReport = ''; playSound('click');" class="text-pink-600 font-bold text-sm">⬅️ Kembali ke Menu</button>
+                    <span class="text-xs font-bold bg-pink-100 text-pink-700 px-3 py-1 rounded-full">Rekod Prestasi</span>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border-2 border-pink-200 shadow-sm space-y-2">
+                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wide">Sila Pilih Nama Anak:</label>
+                    <select v-model="selectedChildForReport" @change="playSound('click')" class="w-full p-2.5 border-2 border-slate-300 rounded-xl bg-white text-sm font-bold uppercase focus:outline-none focus:border-pink-500">
+                        <option value="">-- PILIH NAMA ANAK --</option>
+                        <option v-for="child in childProfiles" :key="child.id" :value="child.name.toLowerCase()">
+                            👦 {{ child.name.toUpperCase() }}
+                        </option>
+                    </select>
+                </div>
+
+                <div v-if="selectedChildForReport" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-2 text-center">
+                        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 shadow-sm">
+                            <span class="text-[11px] text-slate-500 block font-bold">Jumlah Sesi</span>
+                            <span class="text-xl font-black text-emerald-600">{{ getChildStats(selectedChildForReport).total }}</span>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 shadow-sm">
+                            <span class="text-[11px] text-slate-500 block font-bold">Purata Skor</span>
+                            <span class="text-xl font-black text-blue-600">{{ getChildStats(selectedChildForReport).accuracy }}%</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-inner overflow-hidden max-h-[280px] overflow-y-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 font-black border-b border-slate-200 uppercase tracking-wider">
+                                    <th class="p-3">Operasi / Tahap</th>
+                                    <th class="p-3 text-center">Skor</th>
+                                    <th class="p-3 text-right">Masa</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                                <tr v-for="(item, idx) in parentFilteredReports" :key="'p-rep-'+idx" class="hover:bg-slate-50 transition-colors">
+                                    <td class="p-3">
+                                        <div class="font-bold text-slate-900">{{ item.operation }}</div>
+                                        <div class="text-[10px] text-slate-400 font-semibold">{{ item.difficulty }} • {{ item.date }}</div>
+                                    </td>
+                                    <td class="p-3 text-center">
+                                        <span :class="item.accuracy >= 80 ? 'text-emerald-600 bg-emerald-50' : item.accuracy >= 50 ? 'text-amber-600 bg-amber-50' : 'text-red-500 bg-red-50'" class="px-2 py-0.5 rounded-full font-bold">
+                                            {{ item.score }}/{{ item.total }} ({{ item.accuracy }}%)
+                                        </span>
+                                    </td>
+                                    <td class="p-3 text-right font-mono text-slate-500">
+                                        {{ item.durationStr }}
+                                    </td>
+                                </tr>
+                                <tr v-if="parentFilteredReports.length === 0">
+                                    <td colspan="3" class="p-8 text-center text-slate-400 font-bold">
+                                        📭 Tiada rekod skor untuk anak ini lagi.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="flex justify-end" v-if="parentFilteredReports.length > 0">
+                        <button @click="clearChildReports" class="text-[11px] font-bold text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg border border-red-200 transition-colors">
+                            🗑️ Padam Rekod Skor Anak Ini
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="user && screen === 'menu'" class="w-full space-y-5 my-auto">
+                <div class="bg-emerald-50 border-2 border-emerald-200 p-4 rounded-2xl">
+                    <p class="text-lg font-bold text-slate-700">Hai, <span class="text-emerald-600 font-black text-xl uppercase">{{ user }}</span>! 👋</p>
+                    <p class="text-xs text-slate-500">Sila pilih tetapan kuiz anda di bawah:</p>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="font-bold text-slate-700 text-sm block">1. Pilih Operasi:</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button v-for="op in ['Tambah', 'Tolak', 'Darab', 'Bahagi']" :key="op" @click="changeOperation(op)" :class="config.operation === op ? 'bg-emerald-500 text-white border-emerald-600 shadow-md' : 'bg-slate-100 border-slate-300 hover:bg-slate-200 text-slate-700'" class="py-3 px-4 font-bold text-lg rounded-xl border-b-4 transition-all transform active:scale-95">
+                            <span v-if="op==='Tambah'">➕ Tambah</span>
+                            <span v-if="op==='Tolak'">➖ Tolak</span>
+                            <span v-if="op==='Darab'">✖️ Darab</span>
+                            <span v-if="op==='Bahagi'">➗ Bahagi</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="font-bold text-slate-700 text-sm block">2. Bilangan Soalan:</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button v-for="num in [10, 20, 30, 40]" :key="num" @click="config.totalQuestions = num; playSound('click');" :class="config.totalQuestions === num ? 'bg-yellow-400 border-yellow-500 font-black text-slate-900' : 'bg-slate-100 border-slate-300 text-slate-700'" class="py-2 text-center font-bold rounded-xl border-b-4 transition-all">
+                            {{ num }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="font-bold text-slate-700 text-sm block">3. Tahap Kesukaran:</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button v-for="level in ['Mudah', 'Sederhana', 'Pro']" :key="level" @click="config.difficulty = level; playSound('click');" :class="config.difficulty === level ? 'bg-purple-500 text-white border-purple-600 font-black' : 'bg-slate-100 border-slate-300 text-slate-700'" class="py-2 text-center font-bold rounded-xl border-b-4 transition-all">
+                            {{ level }}
+                        </button>
+                    </div>
+                </div>
+
+                <button @click="startSession" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xl py-4 rounded-2xl shadow-lg border-b-8 border-emerald-700 transition-all transform active:scale-95 active:border-b-2 uppercase tracking-wider">
+                    📝 MULA LATIHAN
+                </button>
+            </div>
+
+            <div v-if="screen === 'gameplay' || screen === 'correction'" class="w-full flex flex-col justify-between items-center space-y-4">
+                <div class="w-full bg-slate-100 p-3 rounded-2xl border-2 border-slate-200 flex justify-between items-center text-xs font-bold text-slate-600">
+                    <div v-if="screen === 'gameplay'">Soalan: <span class="text-emerald-600 text-sm">{{ currentQuestionIndex + 1 }}</span> / {{ config.totalQuestions }}</div>
+                    <div v-else class="text-red-600 text-sm bg-red-50 px-2 py-0.5 rounded-lg border border-red-200 animate-pulse">🛠️ MOD PEMBETULAN (Soalan {{ correctionIndex + 1 }})</div>
+                    <div v-if="screen === 'gameplay'" class="text-center font-mono text-sm bg-slate-800 text-yellow-400 px-3 py-1 rounded-full shadow-inner">⏱️ {{ formattedTime }}</div>
+                    <div v-if="screen === 'gameplay'">Skor: <span class="text-blue-600 text-sm">{{ score }}</span> ({{ currentAccuracy }}%)</div>
+                    <button v-else @click="exitCorrection" class="bg-slate-700 text-white px-2.5 py-1 rounded-md text-[11px]">Batal</button>
+                </div>
+
+                <div class="w-full flex-grow bg-amber-50 p-6 rounded-3xl border-4 border-amber-200 shadow-inner min-h-[300px] flex justify-center items-center relative math-font">
+                    <div v-if="config.operation === 'Tambah' || config.operation === 'Darab'" class="flex items-center justify-center relative">
+                        <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[85px]">{{ config.operation === 'Tambah' ? '+' : '×' }}</div>
+                        <div class="flex">
+                            <div v-for="colIdx in maxColumns" :key="'col-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
+                                <div class="w-12 h-10 flex items-center justify-center mb-1">
+                                    <input type="text" readonly :value="carryArray[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'carry', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'carry' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-amber-300 bg-white'" class="w-10 h-9 text-base text-center border-2 border-dashed rounded-lg font-bold text-purple-600 focus:outline-none cursor-pointer">
+                                </div>
+                                <div class="w-12 h-12 flex items-center justify-center text-4xl font-black text-slate-800">{{ getDigitAt(currentQuestion.num1, maxColumns - colIdx) }}</div>
+                                <div class="w-12 h-12 flex items-center justify-center text-4xl font-black text-slate-800 border-b-4 border-slate-800 pb-1">{{ getDigitAt(currentQuestion.num2, maxColumns - colIdx) }}</div>
+                                <div class="w-12 h-14 flex items-center justify-center pt-2">
+                                    <input type="text" readonly :value="answerArray[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answer', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answer' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-12 text-center border-2 rounded-xl text-3xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="config.operation === 'Tolak'" class="flex items-center justify-center relative">
+                        <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[85px]">-</div>
+                        <div class="flex">
+                            <div v-for="colIdx in maxColumns" :key="'col-tolak-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
+                                <div class="w-12 h-8 flex items-center justify-center mb-1">
+                                    <input v-if="getDigitAt(currentQuestion.num1, maxColumns - colIdx) !== ''" type="text" readonly :value="borrowArray[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'borrow', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'borrow' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-red-300 bg-white'" class="w-10 h-8 text-sm text-center border-2 border-dashed rounded-md font-bold text-red-600 focus:outline-none cursor-pointer">
+                                </div>
+                                <div class="w-12 h-12 flex items-center justify-center text-4xl font-black text-slate-800 select-none cursor-pointer" @click="triggerBorrow(maxColumns - colIdx)">
+                                    <span :class="{'strikethrough text-slate-400': borrowArray[maxColumns - colIdx] !== undefined && borrowArray[maxColumns - colIdx] !== ''}">{{ getDigitAt(currentQuestion.num1, maxColumns - colIdx) }}</span>
+                                </div>
+                                <div class="w-12 h-12 flex items-center justify-center text-4xl font-black text-slate-800 border-b-4 border-slate-800 pb-1">{{ getDigitAt(currentQuestion.num2, maxColumns - colIdx) }}</div>
+                                <div class="w-12 h-14 flex items-center justify-center pt-2">
+                                    <input type="text" readonly :value="answerArray[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answer', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answer' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-12 text-center border-2 rounded-xl text-3xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="config.operation === 'Bahagi'" class="flex items-center justify-center font-bold pt-6">
+                        <div class="text-4xl text-slate-700 pr-3 pt-14">{{ currentQuestion.num2 }}</div>
+                        <div class="border-t-4 border-l-4 border-slate-800 rounded-tl-2xl pl-2 pt-2 flex">
+                            <div v-for="(digit, idx) in String(currentQuestion.num1).split('')" :key="'div-col-'+idx" class="flex flex-col items-center w-16 relative mx-0.5">
+                                <div class="w-12 h-12 flex items-center justify-center mb-1">
+                                    <input type="text" readonly :value="divisionInputs.quotientArray[idx] !== undefined ? divisionInputs.quotientArray[idx] : ''" @click="activeTarget = {type: 'div_quotient_arr', index: idx}; playSound('click');" :class="activeTarget.type === 'div_quotient_arr' && activeTarget.index === idx ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none cursor-pointer">
+                                </div>
+                                <div class="w-full border-b-2 border-slate-300 my-1"></div>
+                                <div class="w-full h-14 flex items-center justify-start relative pl-1">
+                                    <span :class="{'strikethrough text-slate-400': divisionInputs.quotientArray[idx] !== '' && divisionInputs.quotientArray[idx] !== undefined}" class="text-4xl font-black text-slate-800 select-none">{{ digit }}</span>
+                                    <input v-if="idx < String(currentQuestion.num1).length - 1 && divisionInputs.quotientArray[idx] !== '' && divisionInputs.quotientArray[idx] !== undefined" type="text" readonly :value="divisionInputs.remainderArray[idx] !== undefined ? divisionInputs.remainderArray[idx] : ''" @click="activeTarget = {type: 'div_remainder_arr', index: idx}; playSound('click');" :class="activeTarget.type === 'div_remainder_arr' && activeTarget.index === idx ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-blue-400 border-solid bg-white text-blue-600'" class="w-7 h-7 text-xs text-center border-2 rounded absolute right-0 top-1 font-bold focus:outline-none cursor-pointer" placeholder="b">
+                                </div>
+                                <div v-if="idx === String(currentQuestion.num1).length - 1 && divisionInputs.quotientArray[idx] !== '' && divisionInputs.quotientArray[idx] !== undefined" class="absolute bottom-[-50px] flex flex-col items-center">
+                                    <span class="text-[9px] text-red-500 font-bold uppercase tracking-tight">Baki Akhir</span>
+                                    <input type="text" readonly :value="divisionInputs.finalRemainder" @click="activeTarget = {type: 'div_final_remainder', index: 0}; playSound('click');" :class="activeTarget.type === 'div_final_remainder' ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-9 h-8 text-center border-2 rounded-lg text-base font-bold focus:outline-none cursor-pointer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button @click="submitAnswer" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-black text-lg py-3.5 rounded-2xl shadow-md border-b-4 border-blue-700 transition-all transform active:scale-95 active:border-b-0 uppercase">
+                    {{ screen === 'gameplay' ? 'Hantar Jawapan Helaian ➡️' : 'Semak Pembetulan ✔️' }}
+                </button>
+            </div>
+
+            <div v-if="screen === 'results'" class="w-full space-y-5 py-2 my-auto">
+                <div class="bg-gradient-to-b from-yellow-300 to-amber-400 p-5 rounded-3xl shadow-xl border-4 border-white text-slate-900 relative">
+                    <span class="text-5xl block mb-1">🎉</span>
+                    <h2 class="text-2xl font-black uppercase tracking-wide font-kids text-amber-950">Hebat, {{ user }}!</h2>
+                    <p class="font-bold text-amber-900 text-xs">Anda telah menamatkan latihan.</p>
+                </div>
+                <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md p-4 space-y-2 font-bold text-sm text-left">
+                    <div class="flex justify-between border-b pb-1">
+                        <span class="text-slate-500">Gred Betul:</span>
+                        <span class="text-emerald-600 font-black">{{ score }} / {{ config.totalQuestions }}</span>
+                    </div>
+                    <div class="flex justify-between border-b pb-1">
+                        <span class="text-slate-500">Peratusan Skor:</span>
+                        <span class="text-blue-600 font-black">{{ Math.round((score / config.totalQuestions) * 100) }}%</span>
+                    </div>
+                    <div class="flex justify-between pt-0.5">
+                        <span class="text-slate-500">Masa Diambil:</span>
+                        <span class="text-purple-600 font-mono">{{ finalTimeDisplay }}</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2 text-left">
+                    <h3 class="font-bold text-slate-700 text-sm px-1">📝 Senarai Semakan Soalan & Pembetulan:</h3>
+                    <div class="space-y-2 max-h-[220px] overflow-y-auto border border-slate-200 rounded-xl p-2 bg-slate-50">
+                        <div v-for="(q, index) in questions" :key="'rev-'+index" class="bg-white p-2.5 rounded-lg border border-slate-200 flex justify-between items-center text-sm shadow-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="text-base">{{ q.isCorrect ? '✅' : '❌' }}</span>
+                                <div>
+                                    <span class="font-bold text-slate-500 text-xs">S{{ index + 1 }}:</span>
+                                    <span class="font-mono font-bold text-slate-800 ml-1">
+                                        {{ q.num1 }} {{ config.operation === 'Tambah' ? '+' : config.operation === 'Tolak' ? '-' : config.operation === 'Darab' ? '×' : '÷' }} {{ q.num2 }} = {{ q.studentAnsStr }}
+                                    </span>
+                                    <div v-if="!q.isCorrect" class="text-[11px] text-red-500 font-medium">Jawapan betul: {{ q.correctAnsStr }}</div>
+                                    <div v-else-if="q.wasCorrected" class="text-[11px] text-emerald-600 font-bold flex items-center gap-0.5">✨ Selesai dibetulkan!</div>
+                                </div>
+                            </div>
+                            <button v-if="!q.isCorrect" @click="startCorrection(index)" class="bg-red-500 hover:bg-red-600 text-white font-bold text-xs px-2.5 py-1.5 rounded-lg border-b-2 border-red-700 transition-all transform active:scale-95 shrink-0">🛠️ Betulkan</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <button @click="retrySession" class="bg-amber-400 hover:bg-amber-500 text-slate-900 font-black text-base py-3 rounded-xl border-b-4 border-amber-600 transition-transform active:scale-95">🔁 Ulang Lagi</button>
+                    <button @click="goToMenu" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black text-base py-3 rounded-xl border-b-4 border-emerald-700 transition-transform active:scale-95">🏠 Menu Utama</button>
+                </div>
+            </div>
+
+            <div v-if="user && screen === 'reports'" class="w-full space-y-4 text-left">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-black text-slate-800 font-kids">📊 Laporan Prestasi</h2>
+                    <button @click="goToMenu" class="bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded-xl text-sm font-bold transition-all">Kembali</button>
+                </div>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-inner overflow-hidden max-h-[350px] overflow-y-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 font-black border-b border-slate-200 uppercase tracking-wider">
+                                <th class="p-3">Operasi</th>
+                                <th class="p-3 text-center">Skor</th>
+                                <th class="p-3 text-right">Masa</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                            <tr v-for="(item, idx) in filteredReportList" :key="'rep-'+idx" class="hover:bg-slate-50 transition-colors">
+                                <td class="p-3">
+                                    <div class="font-bold text-slate-900">{{ item.operation }}</div>
+                                    <div class="text-[10px] text-slate-400 font-semibold">{{ item.difficulty }} • {{ item.date }}</div>
+                                </td>
+                                <td class="p-3 text-center">
+                                    <span :class="item.accuracy >= 80 ? 'text-emerald-600 bg-emerald-50' : item.accuracy >= 50 ? 'text-amber-600 bg-amber-50' : 'text-red-500 bg-red-50'" class="px-2 py-0.5 rounded-full font-bold">
+                                        {{ item.score }}/{{ item.total }} ({{ item.accuracy }}%)
+                                    </span>
+                                </td>
+                                <td class="p-3 text-right font-mono text-slate-500">{{ item.durationStr }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+
+        <footer v-if="screen === 'gameplay' || screen === 'correction'" class="bg-slate-200 p-3 rounded-t-3xl shadow-2xl w-full border-t border-slate-300 shrink-0">
+            <div class="grid grid-cols-3 gap-2 max-w-sm mx-auto">
+                <button v-for="num in ['1', '2', '3', '4', '5', '6', '7', '8', '9']" :key="num" @click="pressKey(num)" class="bg-white active:bg-slate-300 font-bold text-2xl py-3 rounded-xl shadow-sm text-slate-800 border-b-4 border-slate-300 transition-all transform active:scale-95">{{ num }}</button>
+                <button @click="pressKey('C')" class="bg-red-500 text-white font-black text-xl py-3 rounded-xl shadow-sm border-b-4 border-red-700 transition-all transform active:scale-95">C</button>
+                <button @click="pressKey('0')" class="bg-white active:bg-slate-300 font-bold text-2xl py-3 rounded-xl shadow-sm text-slate-800 border-b-4 border-slate-300 transition-all transform active:scale-95">0</button>
+                <button @click="pressKey('BACKSPACE')" class="bg-yellow-500 text-white font-bold text-xl py-3 rounded-xl shadow-sm border-b-4 border-yellow-600 flex justify-center items-center transition-all transform active:scale-95">←</button>
+            </div>
+        </footer>
+
     </div>
-  </div>
-
-  <!-- 5. LEARN ABC (LETTER SELECTOR) SCREEN -->
-  <div id="screen-learn-select" class="screen">
-    <div class="top-bar">
-      <button class="btn btn-red btn-icon" onclick="showScreen('screen-subtopics')"><i class="fa-solid fa-arrow-left"></i></button>
-      <h2 id="txt-select-letter" style="font-size: 1.8rem; color: var(--primary-blue);">Pilih Huruf</h2>
-      <div style="width: 60px;"></div>
-    </div>
-
-    <div class="letters-grid" id="letters-selector-container">
-      <!-- Letters A-Z dynamically injected here -->
-    </div>
-  </div>
-
-  <!-- 6. LEARN ABC (QUIZ GAME) SCREEN -->
-  <div id="screen-quiz" class="screen">
-    <div class="top-bar">
-      <button class="btn btn-red btn-icon" onclick="showScreen('screen-learn-select')"><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="letter-display" id="quiz-letter-display">A</div>
-      <button class="btn btn-yellow btn-icon" onclick="playQuizPromptAudio()"><i class="fa-solid fa-volume-high"></i></button>
-    </div>
-
-    <div class="quiz-container">
-      <div class="quiz-question">
-        <span id="quiz-prompt-text">A untuk...</span>
-      </div>
-
-      <div class="quiz-grid" id="quiz-options-container">
-        <!-- 2x2 Grid Options dynamically generated -->
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: SETTINGS -->
-  <div id="modal-settings" class="modal-overlay">
-    <div class="modal-card">
-      <h2 id="txt-settings-title" style="margin-bottom: 20px; color: var(--primary-purple);">Tetapan / Settings</h2>
-      
-      <div class="setting-item">
-        <label id="txt-set-lang">Bahasa / Language</label>
-        <button class="btn btn-blue" style="padding: 8px 16px; font-size: 1rem;" onclick="toggleAppLanguage()">
-          <span id="txt-current-lang-btn">🇲🇾 BM</span>
-        </button>
-      </div>
-
-      <div class="setting-item">
-        <label id="txt-set-music">Muzik Latar / BGM</label>
-        <label class="switch">
-          <input type="checkbox" id="toggle-bgm" onchange="toggleBGM(this.checked)">
-          <span class="slider"></span>
-        </label>
-      </div>
-
-      <div class="setting-item">
-        <label id="txt-set-sfx">Kesan Bunyi / SFX</label>
-        <label class="switch">
-          <input type="checkbox" id="toggle-sfx" checked onchange="toggleSFX(this.checked)">
-          <span class="slider"></span>
-        </label>
-      </div>
-
-      <div style="margin-top: 25px; display: flex; flex-direction: column; gap: 10px;">
-        <button class="btn btn-red" onclick="resetProgress()"><i class="fa-solid fa-trash"></i> <span id="txt-reset-prog">Reset Kemajuan</span></button>
-        <button class="btn btn-yellow" onclick="closeModal('modal-settings')"><span id="txt-close">Tutup</span></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: PROGRESS & BADGES -->
-  <div id="modal-progress" class="modal-overlay">
-    <div class="modal-card">
-      <h2 id="txt-prog-title" style="margin-bottom: 15px; color: var(--primary-blue);">Kemajuan Saya</h2>
-      
-      <div style="text-align: left; margin-bottom: 10px;">
-        <span id="txt-prog-letters">Huruf Selesai:</span> <strong id="prog-letters-count">0 / 26</strong>
-      </div>
-      <div class="progress-bar-container">
-        <div id="prog-bar-fill" class="progress-fill"></div>
-      </div>
-
-      <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 1.2rem;">
-        <div>⭐ <span id="txt-prog-stars">Bintang:</span> <strong id="prog-stars-count">0</strong></div>
-        <div>✅ <span id="txt-prog-correct">Betul:</span> <strong id="prog-correct-count">0</strong></div>
-      </div>
-
-      <h3 id="txt-badges-title" style="margin-top: 25px; text-align: left; color: var(--primary-purple);">Lencana / Badges</h3>
-      <div class="badges-container">
-        <div id="badge-1" class="badge-card">
-          <div class="badge-icon">⭐</div>
-          <div class="badge-name">ABC Beginner</div>
-        </div>
-        <div id="badge-2" class="badge-card">
-          <div class="badge-icon">⭐⭐</div>
-          <div class="badge-name">ABC Explorer</div>
-        </div>
-        <div id="badge-3" class="badge-card">
-          <div class="badge-icon">⭐⭐⭐</div>
-          <div class="badge-name">ABC Master</div>
-        </div>
-      </div>
-
-      <button class="btn btn-blue mt-20" style="width: 100%;" onclick="closeModal('modal-progress')">OK</button>
-    </div>
-  </div>
-
-  <script>
-    /* ==========================================================================
-       DATA & VOCABULARY DEFINITION
-       ========================================================================== */
-    const vocabData = {
-      A: { bm: "Ayam", en: "Ant", emoji: "🐔" },
-      B: { bm: "Bola", en: "Ball", emoji: "⚽" },
-      C: { bm: "Cicak", en: "Cat", emoji: "🐱" },
-      D: { bm: "Daun", en: "Dog", emoji: "🐶" },
-      E: { bm: "Epal", en: "Elephant", emoji: "🐘" },
-      F: { bm: "Fish", en: "Flower", emoji: "🌸" },
-      G: { bm: "Gajah", en: "Goat", emoji: "🐐" },
-      H: { bm: "Harimau", en: "House", emoji: "🏠" },
-      I: { bm: "Itik", en: "Ice Cream", emoji: "🍦" },
-      J: { bm: "Jari", en: "Jellyfish", emoji: "🪼" },
-      K: { bm: "Kucing", en: "Kite", emoji: "🪁" },
-      L: { bm: "Lebah", en: "Lion", emoji: "🦁" },
-      M: { bm: "Mata", en: "Monkey", emoji: "🐒" },
-      N: { bm: "Nanas", en: "Nest", emoji: "🪹" },
-      O: { bm: "Oren", en: "Owl", emoji: "🦉" },
-      P: { bm: "Pisang", en: "Parrot", emoji: "🦜" },
-      Q: { bm: "Queen", en: "Quilt", emoji: "👑" },
-      R: { bm: "Roti", en: "Rabbit", emoji: "🐰" },
-      S: { bm: "Singa", en: "Sun", emoji: "☀️" },
-      T: { bm: "Tupai", en: "Tiger", emoji: "🐯" },
-      U: { bm: "Ular", en: "Umbrella", emoji: "☂️" },
-      V: { bm: "Van", en: "Violin", emoji: "🎻" },
-      W: { bm: "Wang", en: "Whale", emoji: "🐳" },
-      X: { bm: "X-ray", en: "Xylophone", emoji: "🎼" },
-      Y: { bm: "Yoyo", en: "Yak", emoji: "🪀" },
-      Z: { bm: "Zebra", en: "Zoo", emoji: "🦓" }
-    };
-
-    const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-
-    /* ==========================================================================
-       APP STATE
-       ========================================================================== */
-    let state = {
-      lang: 'bm', // 'bm' or 'en'
-      childName: '',
-      currentTracingIndex: 0,
-      currentQuizLetter: 'A',
-      currentQuizAnswer: null,
-      completedTracing: new Set(),
-      stars: 0,
-      totalCorrect: 0,
-      bgmEnabled: false,
-      sfxEnabled: true
-    };
-
-    /* ==========================================================================
-       TRANSLATIONS
-       ========================================================================== */
-    const translations = {
-      bm: {
-        enterName: "Masukkan Nama Comel",
-        btnContinue: "Mula Belajar",
-        homeGreeting: "Hai",
-        mainTopic: "Pilih Topik",
-        abcSub: "Huruf & Abjad",
-        subTracing: "ABC Tracing",
-        subTracingDesc: "Suram & Tulis Huruf",
-        subLearn: "Learn ABC",
-        subLearnDesc: "Padan Gambar & Huruf",
-        reset: "Padam",
-        selectLetter: "Pilih Huruf",
-        forWord: "untuk...",
-        settingsTitle: "Tetapan",
-        setLang: "Bahasa",
-        setMusic: "Muzik Latar",
-        setSfx: "Kesan Bunyi",
-        resetProg: "Reset Kemajuan",
-        close: "Tutup",
-        progTitle: "Pencapaian Saya",
-        progLetters: "Huruf Diselesai:",
-        progStars: "Bintang:",
-        progCorrect: "Jawapan Betul:",
-        badgesTitle: "Lencana Saya"
-      },
-      en: {
-        enterName: "Enter Child's Name",
-        btnContinue: "Start Learning",
-        homeGreeting: "Hello",
-        mainTopic: "Main Topics",
-        abcSub: "Letters & Alphabet",
-        subTracing: "ABC Tracing",
-        subTracingDesc: "Trace & Write Letters",
-        subLearn: "Learn ABC",
-        subLearnDesc: "Match Pictures & Letters",
-        reset: "Reset",
-        selectLetter: "Select a Letter",
-        forWord: "for...",
-        settingsTitle: "Settings",
-        setLang: "Language",
-        setMusic: "Background Music",
-        setSfx: "Sound Effects",
-        resetProg: "Reset Progress",
-        close: "Close",
-        progTitle: "My Progress",
-        progLetters: "Letters Completed:",
-        progStars: "Stars:",
-        progCorrect: "Total Correct:",
-        badgesTitle: "My Badges"
-      }
-    };
-
-    /* ==========================================================================
-       AUDIO SYNTHESIZER & SOUND EFFECTS (Web Audio API)
-       ========================================================================== */
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    let audioCtx = null;
-    let bgmOscillator = null;
-    let bgmGain = null;
-    let bgmInterval = null;
-
-    function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new AudioContext();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
-
-    function playClickSound() {
-      if (!state.sfxEnabled) return;
-      initAudio();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
-      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.08);
-    }
-
-    function playSuccessSound() {
-      if (!state.sfxEnabled) return;
-      initAudio();
-      const now = audioCtx.currentTime;
-      const notes = [261.63, 329.63, 392.00, 523.25]; // C E G C
-      notes.forEach((freq, idx) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.2, now + idx * 0.1);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.3);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(now + idx * 0.1);
-        osc.stop(now + idx * 0.1 + 0.3);
-      });
-    }
-
-    function playWrongSound() {
-      if (!state.sfxEnabled) return;
-      initAudio();
-      const now = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(180, now);
-      osc.frequency.linearRampToValueAtTime(110, now + 0.25);
-      gain.gain.setValueAtTime(0.2, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + 0.25);
-    }
-
-    /* Simple Soft Cheerful Procedural BGM */
-    function toggleBGM(enable) {
-      state.bgmEnabled = enable;
-      if (enable) {
-        initAudio();
-        startBGM();
-      } else {
-        stopBGM();
-      }
-    }
-
-    function startBGM() {
-      if (bgmInterval) return;
-      const notes = [261.63, 329.63, 392.00, 329.63, 349.23, 440.00, 392.00, 293.66];
-      let step = 0;
-      bgmInterval = setInterval(() => {
-        if (!state.bgmEnabled || !audioCtx) return;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = notes[step % notes.length];
-        gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.4);
-        step++;
-      }, 500);
-    }
-
-    function stopBGM() {
-      if (bgmInterval) {
-        clearInterval(bgmInterval);
-        bgmInterval = null;
-      }
-    }
-
-    function toggleSFX(enable) {
-      state.sfxEnabled = enable;
-    }
-
-    /* ==========================================================================
-       SPEECH SYNTHESIS (VOICE AUDIO)
-       ========================================================================== */
-    function speakText(text) {
-      if (!('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel(); // Stop active speech
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.85; // Cheerful slow rate for preschoolers
-      utterance.pitch = 1.2; // Cheerful higher pitch
-      utterance.lang = state.lang === 'bm' ? 'ms-MY' : 'en-US';
-      window.speechSynthesis.speak(utterance);
-    }
-
-    /* ==========================================================================
-       NAVIGATION & SCREEN MANAGEMENT
-       ========================================================================== */
-    function showScreen(screenId) {
-      playClickSound();
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      const target = document.getElementById(screenId);
-      if (target) target.classList.add('active');
-    }
-
-    function selectLanguage(lang) {
-      state.lang = lang;
-      updateUIStrings();
-      showScreen('screen-name');
-    }
-
-    function toggleAppLanguage() {
-      state.lang = state.lang === 'bm' ? 'en' : 'bm';
-      updateUIStrings();
-      if (document.getElementById('screen-tracing').classList.contains('active')) {
-        updateTracingPage();
-      }
-    }
-
-    function updateUIStrings() {
-      const t = translations[state.lang];
-      document.getElementById('txt-enter-name').innerText = t.enterName;
-      document.getElementById('txt-btn-continue').innerText = t.btnContinue;
-      document.getElementById('home-greeting').innerText = `${t.homeGreeting}, ${state.childName || 'Adik'}!`;
-      document.getElementById('txt-main-topic').innerText = t.mainTopic;
-      document.getElementById('txt-topic-abc-sub').innerText = t.abcSub;
-      document.getElementById('txt-sub-tracing').innerText = t.subTracing;
-      document.getElementById('txt-sub-tracing-desc').innerText = t.subTracingDesc;
-      document.getElementById('txt-sub-learn').innerText = t.subLearn;
-      document.getElementById('txt-sub-learn-desc').innerText = t.subLearnDesc;
-      document.getElementById('txt-reset').innerText = t.reset;
-      document.getElementById('txt-select-letter').innerText = t.selectLetter;
-      document.getElementById('txt-settings-title').innerText = t.settingsTitle;
-      document.getElementById('txt-set-lang').innerText = t.setLang;
-      document.getElementById('txt-set-music').innerText = t.setMusic;
-      document.getElementById('txt-set-sfx').innerText = t.setSfx;
-      document.getElementById('txt-reset-prog').innerText = t.resetProg;
-      document.getElementById('txt-close').innerText = t.close;
-      document.getElementById('txt-current-lang-btn').innerText = state.lang === 'bm' ? '🇲🇾 BM' : '🇬🇧 EN';
-      
-      // Progress modal strings
-      document.getElementById('txt-prog-title').innerText = t.progTitle;
-      document.getElementById('txt-prog-letters').innerText = t.progLetters;
-      document.getElementById('txt-prog-stars').innerText = t.progStars;
-      document.getElementById('txt-prog-correct').innerText = t.progCorrect;
-      document.getElementById('txt-badges-title').innerText = t.badgesTitle;
-    }
-
-    function saveNameAndProceed() {
-      const input = document.getElementById('input-child-name').value.trim();
-      state.childName = input || (state.lang === 'bm' ? 'Adik' : 'Friend');
-      updateUIStrings();
-      showScreen('screen-home');
-    }
-
-    function openSubtopicSelect() {
-      showScreen('screen-subtopics');
-    }
-
-    /* ==========================================================================
-       SUBTOPIC 1: ABC TRACING ENGINE
-       ========================================================================== */
-    let canvas, ctx;
-    let isDrawing = false;
-    let drawnPixels = 0;
-
-    function startTracingMode() {
-      showScreen('screen-tracing');
-      setTimeout(initCanvas, 100);
-      updateTracingPage();
-    }
-
-    function initCanvas() {
-      canvas = document.getElementById('tracing-canvas');
-      ctx = canvas.getContext('2d');
-
-      // Clear & setup touch listeners
-      canvas.addEventListener('mousedown', startDraw);
-      canvas.addEventListener('mousemove', draw);
-      canvas.addEventListener('mouseup', endDraw);
-      
-      canvas.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        const touch = e.touches[0];
-        const rect = canvas.getBoundingClientRect();
-        startDraw({ clientX: touch.clientX, clientY: touch.clientY, rect });
-      });
-
-      canvas.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        const touch = e.touches[0];
-        draw({ clientX: touch.clientX, clientY: touch.clientY });
-      });
-
-      canvas.addEventListener('touchend', endDraw);
-
-      resetCanvas();
-    }
-
-    function updateTracingPage() {
-      const letter = alphabets[state.currentTracingIndex];
-      const vocab = vocabData[letter];
-      const word = state.lang === 'bm' ? vocab.bm : vocab.en;
-
-      document.getElementById('tracing-letter-title').innerText = `${letter} ${letter.toLowerCase()}`;
-      document.getElementById('vocab-emoji').innerText = vocab.emoji;
-      document.getElementById('vocab-word').innerText = word;
-      document.getElementById('vocab-lang-tag').innerText = state.lang === 'bm' ? 'Bahasa Melayu' : 'English';
-
-      resetCanvas();
-      speakCurrentVocab();
-    }
-
-    function resetCanvas() {
-      if (!ctx) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawnPixels = 0;
-
-      // Draw Guide Letter (Stroke Template)
-      const letter = alphabets[state.currentTracingIndex];
-      ctx.font = 'bold 180px Fredoka, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#E0E0E0';
-      ctx.fillText(`${letter}${letter.toLowerCase()}`, canvas.width / 2, canvas.height / 2);
-
-      // Draw Dashed Outline Guide
-      ctx.strokeStyle = '#BDBDBD';
-      ctx.setLineDash([8, 8]);
-      ctx.lineWidth = 4;
-      ctx.strokeText(`${letter}${letter.toLowerCase()}`, canvas.width / 2, canvas.height / 2);
-      ctx.setLineDash([]); // Reset line dash
-    }
-
-    function startDraw(e) {
-      isDrawing = true;
-      initAudio();
-      ctx.beginPath();
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      ctx.moveTo(x, y);
-    }
-
-    function draw(e) {
-      if (!isDrawing) return;
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      ctx.lineWidth = 22;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#FF6B6B'; // Cheerful Red stroke
-      
-      ctx.lineTo(x, y);
-      ctx.stroke();
-      drawnPixels++;
-    }
-
-    function endDraw() {
-      if (!isDrawing) return;
-      isDrawing = false;
-      
-      // Auto Guide Path Detection & Completion Threshold
-      if (drawnPixels > 35) {
-        onTracingComplete();
-      }
-    }
-
-    function onTracingComplete() {
-      const letter = alphabets[state.currentTracingIndex];
-      if (!state.completedTracing.has(letter)) {
-        state.completedTracing.add(letter);
-        state.stars += 5;
-        updateBadges();
-      }
-
-      playSuccessSound();
-      confetti({
-        particleCount: 70,
-        spread: 60,
-        origin: { y: 0.6 }
-      });
-    }
-
-    function nextTracingLetter() {
-      state.currentTracingIndex = (state.currentTracingIndex + 1) % alphabets.length;
-      updateTracingPage();
-    }
-
-    function prevTracingLetter() {
-      state.currentTracingIndex = (state.currentTracingIndex - 1 + alphabets.length) % alphabets.length;
-      updateTracingPage();
-    }
-
-    function speakCurrentVocab() {
-      const letter = alphabets[state.currentTracingIndex];
-      const vocab = vocabData[letter];
-      const word = state.lang === 'bm' ? vocab.bm : vocab.en;
-      const phrase = state.lang === 'bm' ? `${letter} untuk ${word}` : `${letter} for ${word}`;
-      speakText(phrase);
-    }
-
-    /* ==========================================================================
-       SUBTOPIC 2: LEARN ABC (QUIZ GAME ENGINE)
-       ========================================================================== */
-    function startLearnMode() {
-      showScreen('screen-learn-select');
-      renderLetterGrid();
-    }
-
-    function renderLetterGrid() {
-      const container = document.getElementById('letters-selector-container');
-      container.innerHTML = '';
-
-      alphabets.forEach(letter => {
-        const btn = document.createElement('button');
-        btn.className = `letter-btn ${state.completedTracing.has(letter) ? 'completed' : ''}`;
-        btn.innerText = letter;
-        btn.onclick = () => selectQuizLetter(letter);
-        container.appendChild(btn);
-      });
-    }
-
-    function selectQuizLetter(letter) {
-      state.currentQuizLetter = letter;
-      showScreen('screen-quiz');
-      generateQuizQuestion();
-    }
-
-    function generateQuizQuestion() {
-      const targetLetter = state.currentQuizLetter;
-      const targetVocab = vocabData[targetLetter];
-      const targetWord = state.lang === 'bm' ? targetVocab.bm : targetVocab.en;
-      
-      state.currentQuizAnswer = targetWord;
-
-      // Update UI Display
-      document.getElementById('quiz-letter-display').innerText = targetLetter;
-      document.getElementById('quiz-prompt-text').innerText = `${targetLetter} ${translations[state.lang].forWord}`;
-
-      // Pick 3 Incorrect Random Distractors
-      const otherLetters = alphabets.filter(l => l !== targetLetter);
-      const shuffledOthers = otherLetters.sort(() => 0.5 - Math.random()).slice(0, 3);
-      
-      const options = [
-        { word: targetWord, emoji: targetVocab.emoji, correct: true },
-        ...shuffledOthers.map(l => ({
-          word: state.lang === 'bm' ? vocabData[l].bm : vocabData[l].en,
-          emoji: vocabData[l].emoji,
-          correct: false
-        }))
-      ];
-
-      // Shuffle 2x2 grid options
-      options.sort(() => 0.5 - Math.random());
-
-      // Render 2x2 Options Grid
-      const container = document.getElementById('quiz-options-container');
-      container.innerHTML = '';
-
-      options.forEach(opt => {
-        const card = document.createElement('div');
-        card.className = 'option-card';
-        card.innerHTML = `
-          <div class="option-emoji">${opt.emoji}</div>
-          <div class="option-label">${opt.word}</div>
-        `;
-        card.onclick = () => handleOptionClick(card, opt);
-        container.appendChild(card);
-      });
-
-      playQuizPromptAudio();
-    }
-
-    function playQuizPromptAudio() {
-      const letter = state.currentQuizLetter;
-      const prompt = state.lang === 'bm' ? `${letter} untuk...` : `${letter} for...`;
-      speakText(prompt);
-    }
-
-    function handleOptionClick(cardElement, option) {
-      speakText(option.word);
-
-      if (option.correct) {
-        playSuccessSound();
-        cardElement.style.borderColor = 'var(--primary-green)';
-        cardElement.style.backgroundColor = '#E8F5E9';
-
-        confetti({
-          particleCount: 80,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-
-        state.stars += 2;
-        state.totalCorrect += 1;
-        updateBadges();
-
-        // Automatically load next randomized question after short delay
-        setTimeout(() => {
-          generateQuizQuestion();
-        }, 1500);
-
-      } else {
-        playWrongSound();
-        cardElement.classList.add('shake');
-        setTimeout(() => {
-          cardElement.classList.remove('shake');
-        }, 600);
-      }
-    }
-
-    /* ==========================================================================
-       PROGRESS & BADGES SYSTEM
-       ========================================================================== */
-    function updateBadges() {
-      const completedCount = state.completedTracing.size;
-      
-      // Update Progress Modal Counts
-      document.getElementById('prog-letters-count').innerText = `${completedCount} / 26`;
-      document.getElementById('prog-stars-count').innerText = state.stars;
-      document.getElementById('prog-correct-count').innerText = state.totalCorrect;
-      
-      const pct = (completedCount / 26) * 100;
-      document.getElementById('prog-bar-fill').style.width = `${pct}%`;
-
-      // Badge Unlocks
-      if (state.stars >= 10) document.getElementById('badge-1').classList.add('unlocked');
-      if (state.stars >= 30) document.getElementById('badge-2').classList.add('unlocked');
-      if (state.stars >= 60) document.getElementById('badge-3').classList.add('unlocked');
-    }
-
-    function openProgressModal() {
-      playClickSound();
-      updateBadges();
-      document.getElementById('modal-progress').style.display = 'flex';
-    }
-
-    function openSettings() {
-      playClickSound();
-      document.getElementById('modal-settings').style.display = 'flex';
-    }
-
-    function closeModal(modalId) {
-      playClickSound();
-      document.getElementById(modalId).style.display = 'none';
-    }
-
-    function resetProgress() {
-      if (confirm("Reset all progress? / Padam semua kemajuan?")) {
-        state.completedTracing.clear();
-        state.stars = 0;
-        state.totalCorrect = 0;
-        updateBadges();
-        closeModal('modal-settings');
-        alert("Progress Reset / Kemajuan dipadam.");
-      }
-    }
-
-    // Initialize UI on startup
-    window.addEventListener('DOMContentLoaded', () => {
-      updateUIStrings();
-    });
-  </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref as dbRef, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Firebase Configuration Baharu
+        const firebaseConfig = {
+            apiKey: "AIzaSyC4dHeiYsYgXA3Z936jYp6qZQ8Q-NnX_GM",
+            authDomain: "bijak-matematik-8b3a8.firebaseapp.com",
+            databaseURL: "https://bijak-matematik-8b3a8-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bijak-matematik-8b3a8",
+            storageBucket: "bijak-matematik-8b3a8.firebasestorage.app",
+            messagingSenderId: "815699722160",
+            appId: "1:815699722160:web:ebd68b21b0fcfa80f92075"
+        };
+
+        const fApp = initializeApp(firebaseConfig);
+        const fAuth = getAuth(fApp);
+        const fDatabase = getDatabase(fApp);
+        const googleProvider = new GoogleAuthProvider();
+
+        const { createApp, ref, computed, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const user = ref(null);               
+                const parentUser = ref(null);         
+                const screen = ref('login-selection');
+                
+                const childPinInput = ref('');
+                const authLoading = ref(false);
+                const isManagingPin = ref(false);
+                const newChildName = ref('');
+                
+                const selectedChildForReport = ref('');
+
+                const childProfiles = ref([]);
+                const reportList = ref([]);
+
+                const config = ref({
+                    operation: 'Tambah',
+                    totalQuestions: 10,
+                    difficulty: 'Mudah',
+                    activeParentId: null
+                });
+
+                const questions = ref([]);
+                const currentQuestionIndex = ref(0);
+                const score = ref(0);
+                const usedQuestionCombos = ref(new Set());
+                const correctionIndex = ref(null);
+
+                const answerArray = ref([]); 
+                const carryArray = ref([]);  
+                const borrowArray = ref([]); 
+                
+                const divisionInputs = ref({
+                    quotientArray: [],
+                    remainderArray: [],
+                    finalRemainder: ''
+                });
+
+                const activeTarget = ref({ type: 'answer', index: 0 });
+                const timerSeconds = ref(0);
+                const timerInterval = ref(null);
+                const finalTimeDisplay = ref('');
+
+                const playSound = (type) => {
+                    try {
+                        const AudioContext = window.AudioContext || window.webkitAudioContext;
+                        if (!AudioContext) return;
+                        const ctx = new AudioContext();
+                        if (type === 'click') {
+                            const osc = ctx.createOscillator();
+                            const gain = ctx.createGain();
+                            osc.type = 'sine';
+                            osc.frequency.setValueAtTime(400, ctx.currentTime);
+                            osc.frequency.exponentialRampToValueAtTime(10, ctx.currentTime + 0.1);
+                            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                            osc.connect(gain);
+                            gain.connect(ctx.destination);
+                            osc.start();
+                            osc.stop(ctx.currentTime + 0.1);
+                        } else if (type === 'correct') {
+                            const now = ctx.currentTime;
+                            [600, 900].forEach((freq, i) => {
+                                const osc = ctx.createOscillator();
+                                const gain = ctx.createGain();
+                                osc.type = 'triangle';
+                                osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                                gain.gain.setValueAtTime(0.2, now + i * 0.08);
+                                gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.3);
+                                osc.connect(gain);
+                                gain.connect(ctx.destination);
+                                osc.start(now + i * 0.08);
+                                osc.stop(now + i * 0.08 + 0.3);
+                            });
+                        } else if (type === 'wrong') {
+                            const osc = ctx.createOscillator();
+                            const gain = ctx.createGain();
+                            osc.type = 'sawtooth';
+                            osc.frequency.setValueAtTime(150, ctx.currentTime);
+                            osc.frequency.linearRampToValueAtTime(80, ctx.currentTime + 0.3);
+                            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                            osc.connect(gain);
+                            gain.connect(ctx.destination);
+                            osc.start();
+                            osc.stop(ctx.currentTime + 0.3);
+                        }
+                    } catch (e) {}
+                };
+
+                onMounted(() => {
+                    onAuthStateChanged(fAuth, (firebaseUser) => {
+                        if (firebaseUser) {
+                            if (!user.value) {
+                                parentUser.value = firebaseUser.uid;
+                                syncParentDatabaseBranches(firebaseUser.uid);
+                                screen.value = 'parentDashboard';
+                            }
+                        } else {
+                            if (!user.value) {
+                                parentUser.value = null;
+                                screen.value = 'login-selection';
+                            }
+                        }
+                    });
+                });
+
+                const syncParentDatabaseBranches = (uid) => {
+                    const profilesRef = dbRef(fDatabase, `users/${uid}/profiles`);
+                    onValue(profilesRef, (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            childProfiles.value = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                        } else {
+                            childProfiles.value = [];
+                        }
+                    });
+
+                    const reportsRef = dbRef(fDatabase, `users/${uid}/reports`);
+                    onValue(reportsRef, (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            reportList.value = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                        } else {
+                            reportList.value = [];
+                        }
+                    });
+                };
+
+                const handleGoogleLogin = async () => {
+                    authLoading.value = true;
+                    try {
+                        await signInWithPopup(fAuth, googleProvider);
+                        user.value = null; 
+                    } catch (error) {
+                        alert("Ralat Pengesahan Google: " + error.message);
+                        playSound('wrong');
+                    } finally {
+                        authLoading.value = false;
+                    }
+                };
+
+                const loginAsChild = async () => {
+                    if (childPinInput.value.trim().length !== 6) return;
+                    authLoading.value = true;
+                    try {
+                        const globalUsersRef = dbRef(fDatabase, 'users');
+                        const snapshot = await get(globalUsersRef);
+                        let pinFound = false;
+
+                        if (snapshot.exists()) {
+                            const allUsers = snapshot.val();
+                            for (const parentUid in allUsers) {
+                                const profiles = allUsers[parentUid].profiles;
+                                if (profiles) {
+                                    for (const profileId in profiles) {
+                                        if (String(profiles[profileId].pin) === childPinInput.value.trim()) {
+                                            parentUser.value = null; 
+                                            user.value = profiles[profileId].name;
+                                            
+                                            const reportsRef = dbRef(fDatabase, `users/${parentUid}/reports`);
+                                            onValue(reportsRef, (repSnapshot) => {
+                                                const repData = repSnapshot.val();
+                                                if (repData) {
+                                                    reportList.value = Object.keys(repData).map(key => ({ id: key, ...repData[key] }));
+                                                } else {
+                                                    reportList.value = [];
+                                                }
+                                            });
+
+                                            config.value.activeParentId = parentUid;
+                                            playSound('correct');
+                                            screen.value = 'menu';
+                                            pinFound = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (pinFound) break;
+                            }
+                        }
+
+                        if (!pinFound) {
+                            alert("No PIN tidak sah. Sila semak dengan ibu bapa anda.");
+                            playSound('wrong');
+                        }
+                    } catch (e) {
+                        alert("Ralat sambungan: " + e.message);
+                    } finally {
+                        authLoading.value = false;
+                    }
+                };
+
+                // Fungsi baharu untuk menjana PIN 6-digit unik yang tidak wujud lagi dalam seluruh pangkalan data
+                const generateUniquePin = async () => {
+                    const existingPins = new Set();
+                    try {
+                        const globalUsersRef = dbRef(fDatabase, 'users');
+                        const snapshot = await get(globalUsersRef);
+                        if (snapshot.exists()) {
+                            const allUsers = snapshot.val();
+                            for (const pUid in allUsers) {
+                                const profiles = allUsers[pUid].profiles;
+                                if (profiles) {
+                                    for (const profId in profiles) {
+                                        if (profiles[profId].pin) {
+                                            existingPins.add(String(profiles[profId].pin));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Gagal membaca senarai PIN sedia ada: ", e);
+                    }
+
+                    let pin;
+                    let isUnique = false;
+                    while (!isUnique) {
+                        pin = String(Math.floor(100000 + Math.random() * 900000));
+                        if (!existingPins.has(pin)) {
+                            isUnique = true;
+                        }
+                    }
+                    return pin;
+                };
+
+                const addChildProfile = async () => {
+                    if (!newChildName.value.trim() || !parentUser.value) return;
+                    isManagingPin.value = true;
+                    try {
+                        const pin = await generateUniquePin(); 
+                        const profilesRef = dbRef(fDatabase, `users/${parentUser.value}/profiles`);
+                        const newProfile = {
+                            name: newChildName.value.trim().toLowerCase(),
+                            pin: pin
+                        };
+                        await push(profilesRef, newProfile);
+                        newChildName.value = '';
+                        playSound('correct');
+                    } catch (e) {
+                        alert("Gagal menambah profil: " + e.message);
+                    } finally {
+                        isManagingPin.value = false;
+                    }
+                };
+
+                const regenerateChildPin = async (profileId) => {
+                    if (!parentUser.value) return;
+                    isManagingPin.value = true;
+                    try {
+                        const newPin = await generateUniquePin();
+                        await set(dbRef(fDatabase, `users/${parentUser.value}/profiles/${profileId}/pin`), newPin);
+                        playSound('correct');
+                        alert("PIN 6-digit baharu berjaya dijana!");
+                    } catch (e) {
+                        alert("Gagal menukar PIN: " + e.message);
+                    } finally {
+                        isManagingPin.value = false;
+                    }
+                };
+
+                const deleteChildProfile = async (profileId) => {
+                    if (!parentUser.value || !confirm("Padam profil anak ini secara kekal?")) return;
+                    try {
+                        await remove(dbRef(fDatabase, `users/${parentUser.value}/profiles/${profileId}`));
+                        playSound('wrong');
+                    } catch (e) {
+                        alert("Gagal memadam: " + e.message);
+                    }
+                };
+
+                const getChildStats = (name) => {
+                    if (!name) return { total: 0, accuracy: 0 };
+                    const childReports = reportList.value.filter(r => r.studentName === name.toLowerCase());
+                    if (childReports.length === 0) return { total: 0, accuracy: 0 };
+                    const total = childReports.length;
+                    const avgAcc = Math.round(childReports.reduce((s, r) => s + (r.accuracy || 0), 0) / total);
+                    return { total, accuracy: avgAcc };
+                };
+
+                const clearChildReports = async () => {
+                    if (!parentUser.value || !selectedChildForReport.value) return;
+                    if (!confirm(`Adakah anda pasti mahu memadam semua sejarah rekod skor milik ${selectedChildForReport.value.toUpperCase()}?`)) return;
+                    
+                    playSound('wrong');
+                    try {
+                        const targets = reportList.value.filter(r => r.studentName === selectedChildForReport.value.toLowerCase());
+                        for (const report of targets) {
+                            await remove(dbRef(fDatabase, `users/${parentUser.value}/reports/${report.id}`));
+                        }
+                        alert("Rekod berjaya dipadamkan.");
+                    } catch(e) {
+                        alert("Gagal memadam rekod: " + e.message);
+                    }
+                };
+
+                const logout = async () => {
+                    playSound('wrong');
+                    stopTimer();
+                    await signOut(fAuth);
+                    user.value = null;
+                    parentUser.value = null;
+                    childProfiles.value = [];
+                    reportList.value = [];
+                    childPinInput.value = '';
+                    selectedChildForReport.value = '';
+                    config.value.activeParentId = null;
+                    screen.value = 'login-selection';
+                };
+
+                const filteredReportList = computed(() => {
+                    if (!user.value) return reportList.value; 
+                    return reportList.value.filter(r => r.studentName === user.value.toLowerCase());
+                });
+
+                const parentFilteredReports = computed(() => {
+                    if (!selectedChildForReport.value) return [];
+                    return reportList.value.filter(r => r.studentName === selectedChildForReport.value.toLowerCase());
+                });
+
+                const currentQuestion = computed(() => {
+                    if (screen.value === 'correction' && correctionIndex.value !== null) {
+                        return questions.value[correctionIndex.value] || { num1: 0, num2: 0 };
+                    }
+                    return questions.value[currentQuestionIndex.value] || { num1: 0, num2: 0 };
+                });
+
+                const maxColumns = computed(() => {
+                    const len1 = String(currentQuestion.value.num1).length;
+                    const len2 = String(currentQuestion.value.num2).length;
+                    return Math.max(len1, len2) + (config.value.operation === 'Tambah' || config.value.operation === 'Darab' ? 1 : 0);
+                });
+
+                const formattedTime = computed(() => {
+                    const mins = Math.floor(timerSeconds.value / 60);
+                    const secs = timerSeconds.value % 60;
+                    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                });
+
+                const currentAccuracy = computed(() => {
+                    if (currentQuestionIndex.value === 0) return 100;
+                    return Math.round((score.value / currentQuestionIndex.value) * 100);
+                });
+
+                const getDigitAt = (number, index) => {
+                    const str = String(number);
+                    const revIndex = str.length - 1 - index;
+                    if (revIndex >= 0 && revIndex < str.length) {
+                        return str[revIndex];
+                    }
+                    return ''; 
+                };
+
+                const changeOperation = (op) => {
+                    config.value.operation = op;
+                    playSound('click');
+                };
+
+                const openReports = () => {
+                    playSound('click');
+                    screen.value = 'reports';
+                };
+
+                const generateQuestions = () => {
+                    questions.value = [];
+                    usedQuestionCombos.value.clear();
+                    let attempts = 0;
+                    while (questions.value.length < config.value.totalQuestions && attempts < 1500) {
+                        attempts++;
+                        let num1 = 0, num2 = 0;
+                        const diff = config.value.difficulty;
+                        const op = config.value.operation;
+
+                        if (op === 'Tambah' || op === 'Tolak') {
+                            if (diff === 'Mudah') { num1 = Math.floor(Math.random() * 90) + 10; num2 = Math.floor(Math.random() * 9) + 1; } 
+                            else if (diff === 'Sederhana') { num1 = Math.floor(Math.random() * 900) + 100; num2 = Math.floor(Math.random() * 90) + 10; } 
+                            else { num1 = Math.floor(Math.random() * 9000) + 1000; num2 = Math.floor(Math.random() * 900) + 100; }
+                            if (op === 'Tolak' && num1 < num2) { let temp = num1; num1 = num2; num2 = temp; }
+                        } else if (op === 'Darab') {
+                            if (diff === 'Mudah') { num1 = Math.floor(Math.random() * 9) + 1; num2 = Math.floor(Math.random() * 9) + 1; } 
+                            else if (diff === 'Sederhana') { num1 = Math.floor(Math.random() * 90) + 10; num2 = Math.floor(Math.random() * 9) + 1; } 
+                            else { num1 = Math.floor(Math.random() * 900) + 100; num2 = Math.floor(Math.random() * 9) + 1; }
+                        } else if (op === 'Bahagi') {
+                            if (diff === 'Mudah') {
+                                num2 = Math.floor(Math.random() * 8) + 2; let quotient = Math.floor(Math.random() * 4) + 11; num1 = num2 * quotient;
+                                if (num1 > 99) { quotient = Math.floor(99 / num2); num1 = num2 * quotient; }
+                            } else if (diff === 'Sederhana') {
+                                num2 = Math.floor(Math.random() * 8) + 2; num1 = Math.floor(Math.random() * 89) + 10;
+                                if (num1 % num2 === 0) { num1 = (num1 + 1) > 99 ? num1 - 1 : num1 + 1; }
+                            } else {
+                                num2 = Math.floor(Math.random() * 8) + 2; num1 = Math.floor(Math.random() * 899) + 100;
+                                if (num1 % num2 === 0) { num1 = (num1 + 1) > 999 ? num1 - 1 : num1 + 1; }
+                            }
+                        }
+
+                        const key = op === 'Tambah' || op === 'Darab' ? [num1, num2].sort((a,b)=>a-b).join('-') : `${num1}-${num2}`;
+                        if (!usedQuestionCombos.value.has(key)) {
+                            usedQuestionCombos.value.add(key);
+                            questions.value.push({ num1, num2, isCorrect: false, studentAnsStr: '', correctAnsStr: '', wasCorrected: false });
+                        }
+                    }
+                };
+
+                const startSession = () => {
+                    if (!user.value) user.value = "Utama";
+                    playSound('correct');
+                    generateQuestions();
+                    currentQuestionIndex.value = 0;
+                    score.value = 0;
+                    correctionIndex.value = null;
+                    setupQuestionLayout();
+                    screen.value = 'gameplay';
+                    startTimer();
+                };
+
+                const setupQuestionLayout = () => {
+                    const op = config.value.operation;
+                    activeTarget.value = { type: 'answer', index: 0 };
+                    answerArray.value = Array(maxColumns.value).fill('');
+                    carryArray.value = Array(maxColumns.value).fill('');
+                    borrowArray.value = Array(maxColumns.value).fill('');
+
+                    if (op === 'Bahagi') {
+                        const len = String(currentQuestion.value.num1).length;
+                        divisionInputs.value = { quotientArray: Array(len).fill(''), remainderArray: Array(len).fill(''), finalRemainder: '' };
+                        activeTarget.value = { type: 'div_quotient_arr', index: 0 };
+                    }
+                };
+
+                const startCorrection = (index) => {
+                    playSound('click');
+                    correctionIndex.value = index;
+                    screen.value = 'correction';
+                    setupQuestionLayout();
+                };
+
+                const exitCorrection = () => {
+                    playSound('click');
+                    correctionIndex.value = null;
+                    screen.value = 'results';
+                };
+
+                const triggerBorrow = (idx) => {
+                    if (config.value.operation !== 'Tolak') return;
+                    playSound('click');
+                    activeTarget.value = { type: 'borrow', index: idx };
+                };
+
+                const pressKey = (key) => {
+                    playSound('click');
+                    const target = activeTarget.value;
+                    const op = config.value.operation;
+                    const digitCount = String(currentQuestion.value.num1).length;
+                    
+                    if (key === 'C') { clearActiveTarget(); return; }
+                    if (key === 'BACKSPACE') { backspaceActiveTarget(); return; }
+
+                    if (target.type === 'answer') {
+                        answerArray.value[target.index] = key;
+                        if (target.index < maxColumns.value - 1) {
+                            let needsCarry = false;
+                            if (op === 'Tambah') {
+                                const d1 = parseInt(getDigitAt(currentQuestion.value.num1, target.index)) || 0;
+                                const d2 = parseInt(getDigitAt(currentQuestion.value.num2, target.index)) || 0;
+                                const c = parseInt(carryArray.value[target.index]) || 0;
+                                if ((d1 + d2 + c) > 9) needsCarry = true;
+                            } else if (op === 'Darab') {
+                                const d1 = parseInt(getDigitAt(currentQuestion.value.num1, target.index)) || 0;
+                                const num2Val = parseInt(currentQuestion.value.num2) || 0;
+                                const c = parseInt(carryArray.value[target.index]) || 0;
+                                if ((d1 * num2Val + c) > 9) needsCarry = true;
+                            }
+                            if (needsCarry) activeTarget.value = { type: 'carry', index: target.index + 1 };
+                            else activeTarget.value = { type: 'answer', index: target.index + 1 };
+                        }
+                    } else if (target.type === 'carry') {
+                        carryArray.value[target.index] = key;
+                        activeTarget.value = { type: 'answer', index: target.index };
+                    } else if (target.type === 'borrow') {
+                        let currentVal = String(borrowArray.value[target.index] || '');
+                        if (currentVal.length < 2) borrowArray.value[target.index] = currentVal + key;
+                    } else if (target.type === 'div_quotient_arr') {
+                        divisionInputs.value.quotientArray[target.index] = key;
+                        if (target.index < digitCount - 1) activeTarget.value = { type: 'div_remainder_arr', index: target.index };
+                        else activeTarget.value = { type: 'div_final_remainder', index: 0 };
+                    } else if (target.type === 'div_remainder_arr') {
+                        divisionInputs.value.remainderArray[target.index] = key;
+                        if (target.index + 1 < digitCount) activeTarget.value = { type: 'div_quotient_arr', index: target.index + 1 };
+                    } else if (target.type === 'div_final_remainder') {
+                        divisionInputs.value.finalRemainder = key;
+                    }
+                };
+
+                const clearActiveTarget = () => {
+                    const target = activeTarget.value;
+                    if (target.type === 'answer') answerArray.value[target.index] = '';
+                    if (target.type === 'carry') carryArray.value[target.index] = '';
+                    if (target.type === 'borrow') borrowArray.value[target.index] = '';
+                    if (target.type === 'div_quotient_arr') divisionInputs.value.quotientArray[target.index] = '';
+                    if (target.type === 'div_remainder_arr') divisionInputs.value.remainderArray[target.index] = '';
+                    if (target.type === 'div_final_remainder') divisionInputs.value.finalRemainder = '';
+                };
+
+                const backspaceActiveTarget = () => {
+                    const target = activeTarget.value;
+                    const op = config.value.operation;
+
+                    if (target.type === 'answer') {
+                        answerArray.value[target.index] = '';
+                        if (target.index > 0) {
+                            if (op === 'Tambah' || op === 'Darab') activeTarget.value = { type: 'carry', index: target.index };
+                            else activeTarget.value = { type: 'answer', index: target.index - 1 };
+                        }
+                    }
+                    if (target.type === 'carry') { carryArray.value[target.index] = ''; activeTarget.value = { type: 'answer', index: target.index - 1 }; }
+                    if (target.type === 'borrow') { let val = String(borrowArray.value[target.index] || ''); borrowArray.value[target.index] = val.substring(0, val.length - 1); }
+                    if (target.type === 'div_quotient_arr') { divisionInputs.value.quotientArray[target.index] = ''; if (target.index > 0) activeTarget.value = { type: 'div_remainder_arr', index: target.index - 1 }; }
+                    if (target.type === 'div_remainder_arr') { divisionInputs.value.remainderArray[target.index] = ''; activeTarget.value = { type: 'div_quotient_arr', index: target.index }; }
+                    if (target.type === 'div_final_remainder') { divisionInputs.value.finalRemainder = ''; const len = String(currentQuestion.value.num1).length; activeTarget.value = { type: 'div_quotient_arr', index: len - 1 }; }
+                };
+
+                const submitAnswer = () => {
+                    const op = config.value.operation;
+                    const q = currentQuestion.value;
+                    let isCorrect = false; let studentAnsStr = ''; let correctAnsStr = '';
+
+                    if (op === 'Tambah' || op === 'Tolak' || op === 'Darab') {
+                        const submittedString = [...answerArray.value].reverse().join('').trim();
+                        const submittedAns = parseInt(submittedString, 10) || 0;
+                        studentAnsStr = submittedString || '0';
+                        let actualAns = 0;
+                        if (op === 'Tambah') actualAns = q.num1 + q.num2;
+                        if (op === 'Tolak') actualAns = q.num1 - q.num2;
+                        if (op === 'Darab') actualAns = q.num1 * q.num2;
+                        correctAnsStr = String(actualAns);
+                        if (submittedAns === actualAns) isCorrect = true;
+                    } else if (op === 'Bahagi') {
+                        const actualQuotient = Math.floor(q.num1 / q.num2);
+                        const actualRemainder = q.num1 % q.num2;
+                        const submittedQuotientStr = divisionInputs.value.quotientArray.join('').trim();
+                        const sQuotient = parseInt(submittedQuotientStr, 10) || 0;
+                        const sRemainder = parseInt(divisionInputs.value.finalRemainder, 10) || 0;
+                        studentAnsStr = `${sQuotient}${sRemainder > 0 ? ' Baki ' + sRemainder : ''}`;
+                        correctAnsStr = `${actualQuotient}${actualRemainder > 0 ? ' Baki ' + actualRemainder : ''}`;
+                        if (sQuotient === actualQuotient && sRemainder === actualRemainder) isCorrect = true;
+                    }
+
+                    if (screen.value === 'correction') {
+                        if (isCorrect) {
+                            playSound('correct'); alert("Syabas! Pembetulan anda betul! 🎉");
+                            const idx = correctionIndex.value;
+                            questions.value[idx].isCorrect = true;
+                            questions.value[idx].studentAnsStr = studentAnsStr;
+                            questions.value[idx].wasCorrected = true; 
+                            exitCorrection();
+                        } else {
+                            playSound('wrong'); alert("Alamak, jawapan pembetulan masih kurang tepat. Cuba lagi ya! 💪");
+                        }
+                        return;
+                    }
+
+                    questions.value[currentQuestionIndex.value].isCorrect = isCorrect;
+                    questions.value[currentQuestionIndex.value].studentAnsStr = studentAnsStr;
+                    questions.value[currentQuestionIndex.value].correctAnsStr = correctAnsStr;
+
+                    if (isCorrect) { score.value += 1; playSound('correct'); } 
+                    else { playSound('wrong'); }
+
+                    if (currentQuestionIndex.value < config.value.totalQuestions - 1) {
+                        currentQuestionIndex.value += 1;
+                        setupQuestionLayout();
+                    } else {
+                        endSession();
+                    }
+                };
+
+                const startTimer = () => { timerSeconds.value = 0; timerInterval.value = setInterval(() => { timerSeconds.value += 1; }, 1000); };
+                const stopTimer = () => { if (timerInterval.value) { clearInterval(timerInterval.value); timerInterval.value = null; } };
+
+                const endSession = async () => {
+                    stopTimer();
+                    const mins = Math.floor(timerSeconds.value / 60); const secs = timerSeconds.value % 60;
+                    let durationStr = `${secs}s`; if (mins > 0) durationStr = `${mins}m ${secs}s`;
+                    finalTimeDisplay.value = mins > 0 ? `${mins} minit ${secs} saat` : `${secs} saat`;
+
+                    const now = new Date();
+                    const dateStr = `${now.getDate()}/${now.getMonth()+1} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+                    
+                    const newRecord = {
+                        studentName: user.value.toLowerCase(),
+                        operation: config.value.operation,
+                        difficulty: config.value.difficulty,
+                        score: score.value,
+                        total: config.value.totalQuestions,
+                        accuracy: Math.round((score.value / config.value.totalQuestions) * 100),
+                        durationSecs: timerSeconds.value,
+                        durationStr: durationStr,
+                        date: dateStr
+                    };
+
+                    const activeUid = parentUser.value || config.value.activeParentId;
+                    if (activeUid) {
+                        try {
+                            const reportsRef = dbRef(fDatabase, `users/${activeUid}/reports`);
+                            await push(reportsRef, newRecord);
+                        } catch (e) { console.log("Database write error:", e); }
+                    }
+                    screen.value = 'results';
+                };
+
+                const retrySession = () => { startSession(); };
+                const goToMenu = () => {
+                    playSound('click');
+                    if (user.value) screen.value = 'menu';
+                    else if (parentUser.value) screen.value = 'parentDashboard';
+                    else screen.value = 'login-selection';
+                };
+
+                return {
+                    user, parentUser, screen, childPinInput, authLoading, isManagingPin,
+                    newChildName, childProfiles, reportList, filteredReportList, parentFilteredReports, selectedChildForReport, config, score, currentQuestionIndex,
+                    currentQuestion, maxColumns, answerArray, carryArray, borrowArray, divisionInputs, activeTarget,
+                    formattedTime, currentAccuracy, finalTimeDisplay, questions, correctionIndex,
+                    handleGoogleLogin, loginAsChild, addChildProfile, regenerateChildPin, deleteChildProfile, getChildStats,
+                    logout, getDigitAt, changeOperation, startSession, triggerBorrow, pressKey, 
+                    submitAnswer, retrySession, goToMenu, playSound, openReports, startCorrection, exitCorrection, clearChildReports
+                };
+            }
+        }).mount('#app');
+    </script>
 </body>
 </html>
