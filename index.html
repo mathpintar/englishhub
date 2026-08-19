@@ -1776,7 +1776,7 @@ bentuk: {
 
                     const langQuestions = topicObj.questions[lang.value] || topicObj.questions['ms'];
                     let rawQuestions = [...langQuestions];
-                    rawQuestions.sort(() => Math.random() - 0.20);
+                    rawQuestions.sort(() => Math.random() - 0.5);
 
                     topicQuestions.value = rawQuestions.slice(0, 5).map(q => {
                         let shuffledOptions = [...q.options].sort(() => Math.random() - 0.20);
