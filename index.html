@@ -44,7 +44,7 @@
         <header class="bg-emerald-500 text-white p-4 flex justify-between items-center shadow-md rounded-b-2xl shrink-0">
             <h1 @click="goToModeSelection" class="text-2xl font-bold tracking-wide font-kids cursor-pointer select-none">✏️ MathPintar</h1>
             <div v-if="user || parentUser" class="flex items-center gap-2">
-                <button v-if="user && (screen === 'menu' || screen === 'mode-selection' || screen === 'sifir-menu')" @click="openReports" class="bg-emerald-600 hover:bg-emerald-700 px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1">📊 Rekod</button>
+                <button v-if="user && (screen === 'menu' || screen === 'mode-selection' || screen === 'sifir-menu' || screen === 'topic-year-select')" @click="openReports" class="bg-emerald-600 hover:bg-emerald-700 px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1">📊 Rekod</button>
                 <button v-if="parentUser && (screen === 'parentDashboard' || screen === 'parentManage' || screen === 'parentReports')" @click="logout" class="bg-red-500 hover:bg-red-600 px-2.5 py-1 rounded-lg text-xs font-bold transition-all transform active:scale-95">Keluar</button>
                 <div v-if="user" class="flex items-center gap-2">
                     <span class="text-sm font-bold bg-emerald-600 px-3 py-1 rounded-full text-yellow-200 max-w-[100px] truncate">👤 {{ user }}</span>
@@ -107,27 +107,92 @@
             </div>
 
             <!-- PAPARAN PILIHAN MOD MODUL (SELEPAS LOG MASUK PIN) -->
-            <div v-if="user && screen === 'mode-selection'" class="w-full space-y-6 my-auto text-center">
+            <div v-if="user && screen === 'mode-selection'" class="w-full space-y-4 my-auto text-center">
                 <div class="bg-emerald-50 border-2 border-emerald-200 p-4 rounded-2xl">
                     <p class="text-lg font-bold text-slate-700">Selamat Datang, <span class="text-emerald-600 font-black text-xl uppercase">{{ user }}</span>! 👋</p>
                     <p class="text-xs text-slate-500">Sila pilih modul latihan anda hari ini:</p>
                 </div>
 
-                <div class="space-y-4">
-                    <button @click="screen = 'menu'; playSound('click');" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white p-5 rounded-3xl shadow-lg border-b-8 border-emerald-700 transition-all flex items-center justify-between transform active:scale-95">
+                <div class="space-y-3">
+                    <!-- BUTTON BARU: LATIHAN IKUT TOPIK -->
+                    <button @click="screen = 'topic-year-select'; playSound('click');" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white p-4 rounded-3xl shadow-lg border-b-8 border-indigo-700 transition-all flex items-center justify-between transform active:scale-95">
                         <div class="text-left">
-                            <span class="text-2xl font-black block font-kids">📐 Math Bentuk Lazim</span>
-                            <span class="text-xs text-emerald-100 font-medium">Latihan Tambah, Tolak, Darab & Bahagi</span>
+                            <span class="text-xl font-black block font-kids">📚 Latihan Ikut Topik</span>
+                            <span class="text-xs text-indigo-100 font-medium">Silibu KSSR Tahun 1 hingga 6 (5 Soalan)</span>
                         </div>
-                        <span class="text-4xl">➡️</span>
+                        <span class="text-3xl">➡️</span>
                     </button>
 
-                    <button @click="screen = 'sifir-menu'; playSound('click');" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-900 p-5 rounded-3xl shadow-lg border-b-8 border-amber-600 transition-all flex items-center justify-between transform active:scale-95">
+                    <button @click="screen = 'menu'; playSound('click');" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white p-4 rounded-3xl shadow-lg border-b-8 border-emerald-700 transition-all flex items-center justify-between transform active:scale-95">
                         <div class="text-left">
-                            <span class="text-2xl font-black block font-kids">⚡ Bijak Sifir</span>
+                            <span class="text-xl font-black block font-kids">📐 Math Bentuk Lazim</span>
+                            <span class="text-xs text-emerald-100 font-medium">Latihan Tambah, Tolak, Darab & Bahagi</span>
+                        </div>
+                        <span class="text-3xl">➡️</span>
+                    </button>
+
+                    <button @click="screen = 'sifir-menu'; playSound('click');" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-900 p-4 rounded-3xl shadow-lg border-b-8 border-amber-600 transition-all flex items-center justify-between transform active:scale-95">
+                        <div class="text-left">
+                            <span class="text-xl font-black block font-kids">⚡ Bijak Sifir</span>
                             <span class="text-xs text-amber-900 font-medium">Latihan Hafalan Sifir 2 hingga 12</span>
                         </div>
-                        <span class="text-4xl">➡️</span>
+                        <span class="text-3xl">➡️</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PILIHAN TAHUN & TOPIK KSSR -->
+            <div v-if="user && screen === 'topic-year-select'" class="w-full space-y-4 my-auto">
+                <div class="flex justify-between items-center">
+                    <button @click="screen = 'mode-selection'; playSound('click');" class="text-indigo-600 font-bold text-sm">⬅️ Pilih Modul</button>
+                    <span class="text-xs font-bold bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full">📚 Latihan Ikut Topik</span>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="font-bold text-slate-700 text-sm block">1. Pilih Tahun (KSSR):</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button v-for="y in [1, 2, 3, 4, 5, 6]" :key="y" @click="selectedYear = y; selectedTopicKey = ''; playSound('click');" :class="selectedYear === y ? 'bg-indigo-600 text-white border-indigo-800 font-black scale-105 shadow-md' : 'bg-slate-100 border-slate-300 hover:bg-slate-200 text-slate-700'" class="py-2 font-bold text-base rounded-xl border-b-4 transition-all">
+                            Tahun {{ y }}
+                        </button>
+                    </div>
+                </div>
+
+                <div v-if="selectedYear" class="space-y-2">
+                    <label class="font-bold text-slate-700 text-sm block">2. Pilih Topik Silibus:</label>
+                    <div class="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+                        <button v-for="(topic, key) in kssrTopics['tahun' + selectedYear]" :key="key" @click="selectedTopicKey = key; playSound('click');" :class="selectedTopicKey === key ? 'bg-amber-400 border-amber-600 text-slate-900 font-black' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'" class="w-full p-3 text-left font-bold text-sm rounded-xl border-b-4 transition-all flex justify-between items-center">
+                            <span>{{ topic.name }}</span>
+                            <span v-if="selectedTopicKey === key">✔️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button v-if="selectedYear && selectedTopicKey" @click="startTopicSession" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-black text-xl py-3.5 rounded-2xl shadow-lg border-b-8 border-indigo-700 transition-all transform active:scale-95 uppercase tracking-wider mt-2">
+                    🚀 MULA LATIHAN (5 SOALAN)
+                </button>
+            </div>
+
+            <!-- GAMEPLAY LATIHAN TOPIK (MCQ / MULTIPLE CHOICE) -->
+            <div v-if="screen === 'topic-gameplay'" class="w-full flex flex-col justify-between items-center space-y-4 my-auto">
+                <div class="w-full bg-slate-100 p-3 rounded-2xl border-2 border-slate-200 flex justify-between items-center text-xs font-bold text-slate-600">
+                    <div>Soalan: <span class="text-indigo-600 text-sm">{{ currentTopicIndex + 1 }}</span> / 5</div>
+                    <div class="text-center font-mono text-sm bg-slate-800 text-yellow-400 px-3 py-1 rounded-full shadow-inner">⏱️ {{ formattedTime }}</div>
+                    <div>Skor: <span class="text-blue-600 text-sm">{{ score }}</span></div>
+                </div>
+
+                <div class="w-full bg-indigo-50 p-6 rounded-3xl border-4 border-indigo-200 shadow-inner flex flex-col items-center justify-center min-h-[160px] text-center">
+                    <span class="text-xs font-bold bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full mb-3">
+                        Tahun {{ selectedYear }} • {{ currentTopicQuestion.topicName }}
+                    </span>
+                    <h3 class="text-xl font-bold text-slate-800 leading-snug">{{ currentTopicQuestion.question }}</h3>
+                </div>
+
+                <div class="w-full space-y-2.5">
+                    <button v-for="(opt, idx) in currentTopicQuestion.options" :key="idx" @click="submitTopicAnswer(opt)" class="w-full bg-white hover:bg-indigo-100 active:bg-indigo-200 text-slate-800 font-bold text-base py-3.5 px-4 rounded-2xl border-2 border-indigo-200 shadow-sm transition-all text-left flex items-center gap-3 transform active:scale-95">
+                        <span class="w-8 h-8 rounded-xl bg-indigo-500 text-white font-black flex items-center justify-center text-sm shrink-0">
+                            {{ String.fromCharCode(65 + idx) }}
+                        </span>
+                        <span>{{ opt }}</span>
                     </button>
                 </div>
             </div>
@@ -557,6 +622,168 @@
                 const childProfiles = ref([]);
                 const reportList = ref([]);
 
+                // Konfigurasi Latihan Ikut Topik KSSR
+                const selectedYear = ref(null);
+                const selectedTopicKey = ref('');
+                const topicQuestions = ref([]);
+                const currentTopicIndex = ref(0);
+
+                // DATA SOALAN SILIBUS KSSR TAHUN 1 - TAHUN 6 (SETIAP TOPIK 5 SOALAN TANPA BERULANG)
+                const kssrTopics = {
+                    tahun1: {
+                        nombor: {
+                            name: "Nombor hingga 100",
+                            questions: [
+                                { question: "Apakah nombor selepas 49?", options: ["48", "50", "51", "60"], correct: "50" },
+                                { question: "Pilih nombor yang paling besar.", options: ["12", "89", "45", "78"], correct: "89" },
+                                { question: "Antara berikut, yang manakah nombor dalam perkataan bagi 67?", options: ["Enam puluh tujuh", "Tujuh puluh enam", "Enam puluh", "Enam puluh lapan"], correct: "Enam puluh tujuh" },
+                                { question: "Nilai tempat bagi digit 5 dalam nombor 52 ialah:", options: ["Sa", "Puluh", "Ratus", "Ribu"], correct: "Puluh" },
+                                { question: "Lengkapkan urutan nombor: 10, 20, 30, __, 50.", options: ["35", "40", "45", "60"], correct: "40" }
+                            ]
+                        },
+                        tambah_tolak: {
+                            name: "Tambah dan Tolak",
+                            questions: [
+                                { question: "Berapakah 8 + 7?", options: ["13", "14", "15", "16"], correct: "15" },
+                                { question: "Berapakah 19 - 6?", options: ["11", "12", "13", "14"], correct: "13" },
+                                { question: "Ahmad ada 5 biji guli. Ibu beri lagi 6 biji. Berapa guli Ahmad?", options: ["10", "11", "12", "13"], correct: "11" },
+                                { question: "Siti beli 14 cawan. 4 cawan pecah. Berapa cawan yang tinggal?", options: ["8", "9", "10", "11"], correct: "10" },
+                                { question: "Cari jawapan bagi 25 + 10.", options: ["30", "35", "40", "45"], correct: "35" }
+                            ]
+                        },
+                        wang: {
+                            name: "Wang Ringgit",
+                            questions: [
+                                { question: "RM1 bersamaan dengan berapa sen?", options: ["10 sen", "50 sen", "100 sen", "200 sen"], correct: "100 sen" },
+                                { question: "Dua keping duit 50 sen menjadi:", options: ["50 sen", "RM1", "RM2", "RM5"], correct: "RM1" },
+                                { question: "Harga sebatang pensel ialah 80 sen. Pembeli memberi RM1. Berapakah baki duitnya?", options: ["10 sen", "20 sen", "30 sen", "40 sen"], correct: "20 sen" },
+                                { question: "Antara berikut, nilai wang manakah paling tinggi?", options: ["RM1", "RM5", "RM10", "50 sen"], correct: "RM10" },
+                                { question: "50 sen + 20 sen = ?", options: ["60 sen", "70 sen", "80 sen", "90 sen"], correct: "70 sen" }
+                            ]
+                        }
+                    },
+                    tahun2: {
+                        darab_bahagi: {
+                            name: "Darab dan Bahagi",
+                            questions: [
+                                { question: "3 × 4 = ?", options: ["7", "10", "12", "15"], correct: "12" },
+                                { question: "15 ÷ 3 = ?", options: ["3", "4", "5", "6"], correct: "5" },
+                                { question: "5 × 5 = ?", options: ["20", "25", "30", "35"], correct: "25" },
+                                { question: "20 ÷ 4 = ?", options: ["4", "5", "6", "10"], correct: "5" },
+                                { question: "Ada 4 kumpulan budak. Setiap kumpulan ada 2 orang. Berapa orang semuanya?", options: ["6", "8", "10", "12"], correct: "8" }
+                            ]
+                        },
+                        pecahan: {
+                            name: "Pecahan dan Perpuluhan",
+                            questions: [
+                                { question: "Satu daripada dua bahagian yang sama besar dipanggil:", options: ["Satu perdua", "Satu pertiga", "Satu perempat", "Tiga perempat"], correct: "Satu perdua" },
+                                { question: "Pecahan bagi kawasan berlorek half/separuh ialah:", options: ["1/2", "1/4", "3/4", "2/2"], correct: "1/2" },
+                                { question: "Tiga perempat ditulis dalam angka sebagai:", options: ["1/4", "2/4", "3/4", "4/3"], correct: "3/4" },
+                                { question: "Tulis 0.5 dalam bentuk pecahan ringkas.", options: ["1/4", "1/2", "3/4", "1/5"], correct: "1/2" },
+                                { question: "Pilih nilai perpuluhan yang mewakili lima persepuluh.", options: ["0.1", "0.5", "0.05", "5.0"], correct: "0.5" }
+                            ]
+                        },
+                        masa: {
+                            name: "Masa dan Waktu",
+                            questions: [
+                                { question: "1 jam bersamaan berapa minit?", options: ["30 minit", "45 minit", "60 minit", "100 minit"], correct: "60 minit" },
+                                { question: "Pukul berapa apabila jarum pendek di angka 3 dan jarum panjang di angka 12?", options: ["Pukul 3:00", "Pukul 12:00", "Pukul 3:30", "Pukul 12:15"], correct: "Pukul 3:00" },
+                                { question: "Setengah jam bersamaan dengan berapa minit?", options: ["15 minit", "30 minit", "45 minit", "60 minit"], correct: "30 minit" },
+                                { question: "1 hari ada berapa jam?", options: ["12 jam", "24 jam", "48 jam", "60 jam"], correct: "24 jam" },
+                                { question: "Jarum panjang bergerak dari 12 ke 6 menunjukkan selang masa:", options: ["15 minit", "30 minit", "45 minit", "60 minit"], correct: "30 minit" }
+                            ]
+                        }
+                    },
+                    tahun3: {
+                        nombor_3: {
+                            name: "Nombor hingga 10 000",
+                            questions: [
+                                { question: "Bundarkan 4,567 kepada ratus terdekat.", options: ["4,500", "4,600", "5,000", "4,570"], correct: "4,600" },
+                                { question: "Nilai digit 8 dalam 8,312 ialah:", options: ["8", "80", "800", "8,000"], correct: "8,000" },
+                                { question: "Cari jumlah bagi 3,450 + 1,230.", options: ["4,680", "4,688", "4,580", "4,780"], correct: "4,680" },
+                                { question: "Berapakah 7,890 - 2,450?", options: ["5,440", "5,450", "5,430", "5,540"], correct: "5,440" },
+                                { question: "Pilih urutan nombor tertib menaik.", options: ["1200, 1100, 1000", "1000, 1200, 1100", "1000, 1100, 1200", "1200, 1000, 1100"], correct: "1000, 1100, 1200" }
+                            ]
+                        },
+                        panjang: {
+                            name: "Ukuran dan Sukatan",
+                            questions: [
+                                { question: "1 meter bersamaan berapa sentimeter (cm)?", options: ["10 cm", "100 cm", "1000 cm", "50 cm"], correct: "100 cm" },
+                                { question: "1 kilogram (kg) bersamaan berapa gram (g)?", options: ["10 g", "100 g", "1000 g", "500 g"], correct: "1000 g" },
+                                { question: "Unit yang sesuai untuk mengukur jisim sebiji tembikai ialah:", options: ["Gram (g)", "Kilogram (kg)", "Meter (m)", "Liter (l)"], correct: "Kilogram (kg)" },
+                                { question: "1 liter (l) bersamaan berapa mililiter (ml)?", options: ["10 ml", "100 ml", "500 ml", "1000 ml"], correct: "1000 ml" },
+                                { question: "3 m tukarkan kepada cm menjadi:", options: ["30 cm", "300 cm", "3000 cm", "30000 cm"], correct: "300 cm" }
+                            ]
+                        }
+                    },
+                    tahun4: {
+                        nombor_4: {
+                            name: "Nombor hingga 100 000",
+                            questions: [
+                                { question: "Antara berikut, nombor manakah nombor perdana?", options: ["4", "9", "13", "15"], correct: "13" },
+                                { question: "Bundarkan 56,782 kepada ribu terdekat.", options: ["56,000", "57,000", "56,800", "60,000"], correct: "57,000" },
+                                { question: "45,000 + 12,300 = ?", options: ["57,300", "57,000", "58,300", "56,300"], correct: "57,300" },
+                                { question: "Cari hasil darab 1,200 × 10.", options: ["12,000", "120,000", "1,200", "120"], correct: "12,000" },
+                                { question: "Apakah nombor perdana yang terkeil?", options: ["0", "1", "2", "3"], correct: "2" }
+                            ]
+                        },
+                        masa_4: {
+                            name: "Masa dan Waktu (Abad/Dekad)",
+                            questions: [
+                                { question: "1 dekad bersamaan berapa tahun?", options: ["5 tahun", "10 tahun", "50 tahun", "100 tahun"], correct: "10 tahun" },
+                                { question: "1 abad bersamaan berapa tahun?", options: ["10 tahun", "50 tahun", "100 tahun", "1000 tahun"], correct: "100 tahun" },
+                                { question: "3 dekad = __ tahun.", options: ["13 tahun", "30 tahun", "300 tahun", "3 tahun"], correct: "30 tahun" },
+                                { question: "2 abad 5 dekad bersamaan berapa tahun?", options: ["25 tahun", "250 tahun", "205 tahun", "2500 tahun"], correct: "250 tahun" },
+                                { question: "1 minggu ada berapa hari?", options: ["5 hari", "6 hari", "7 hari", "8 hari"], correct: "7 hari" }
+                            ]
+                        }
+                    },
+                    tahun5: {
+                        nombor_5: {
+                            name: "Nombor hingga 1 000 000",
+                            questions: [
+                                { question: "Nilai tempat bagi digit 7 dalam 745,210 ialah:", options: ["Ribu", "Puluh Ribu", "Ratus Ribu", "Juta"], correct: "Ratus Ribu" },
+                                { question: "Tulis 'Tiga ratus ribu lima puluh' dalam angka.", options: ["300,050", "300,500", "30,050", "3,000,050"], correct: "300,050" },
+                                { question: "Berapakah 500,000 + 250,000?", options: ["650,000", "750,000", "850,000", "700,000"], correct: "750,000" },
+                                { question: "Berapakah 1,000,000 - 400,000?", options: ["500,000", "600,000", "700,000", "800,000"], correct: "600,000" },
+                                { question: "1/2 juta dalam bentuk nombor bulat ialah:", options: ["50,000", "500,000", "5,000", "250,000"], correct: "500,000" }
+                            ]
+                        },
+                        peratus: {
+                            name: "Peratus dan Pecahan",
+                            questions: [
+                                { question: "Tukarkan 1/2 kepada peratus.", options: ["25%", "50%", "75%", "100%"], correct: "50%" },
+                                { question: "Tukarkan 3/4 kepada peratus.", options: ["50%", "60%", "75%", "80%"], correct: "75%" },
+                                { question: "Berapakah 20% daripada RM100?", options: ["RM10", "RM20", "RM30", "RM50"], correct: "RM20" },
+                                { question: "Tukarkan 0.25 kepada peratus.", options: ["2.5%", "25%", "250%", "0.25%"], correct: "25%" },
+                                { question: "Cari nilai 10% daripada 500.", options: ["5", "50", "500", "10"], correct: "50" }
+                            ]
+                        }
+                    },
+                    tahun6: {
+                        juta: {
+                            name: "Nombor Bulat dan Juta",
+                            questions: [
+                                { question: "Tukarkan 1.5 juta kepada nombor bulat.", options: ["150,000", "1,500,000", "15,000,000", "1,005,000"], correct: "1,500,000" },
+                                { question: "3/4 juta bersamaan dengan:", options: ["340,000", "750,000", "500,000", "250,000"], correct: "750,000" },
+                                { question: "Tulis 2,500,000 dalam nombor perpuluhan juta.", options: ["0.25 juta", "2.5 juta", "25 juta", "2.05 juta"], correct: "2.5 juta" },
+                                { question: "Berapakah 0.2 juta + 0.3 juta?", options: ["50,000", "500,000", "5,000,000", "500"], correct: "500,000" },
+                                { question: "1/5 juta bersamaan dengan:", options: ["100,000", "200,000", "250,000", "500,000"], correct: "200,000" }
+                            ]
+                        },
+                        nisbah: {
+                            name: "Nisbah dan Kadaran",
+                            questions: [
+                                { question: "Nisbah 3 kepada 5 ditulis sebagai:", options: ["3/5", "3:5", "3-5", "5:3"], correct: "3:5" },
+                                { question: "Ada 4 epal merah dan 6 epal hijau. Apakah nisbah epal merah kepada semua epal?", options: ["4:6", "4:10", "6:4", "10:4"], correct: "4:10" },
+                                { question: "Permudahkan nisbah 2 : 4.", options: ["1:2", "1:4", "2:1", "4:2"], correct: "1:2" },
+                                { question: "Jika nisbah murid lelaki kepada perempuan ialah 1:2, dan murid lelaki ada 5 orang, berapa murid perempuan?", options: ["5", "10", "15", "20"], correct: "10" },
+                                { question: "Nisbah harga pen A kepada pen B ialah 2:3. Jika pen A berharga RM4, berapakah harga pen B?", options: ["RM5", "RM6", "RM8", "RM9"], correct: "RM6" }
+                            ]
+                        }
+                    }
+                };
+
                 // Konfigurasi Bentuk Lazim
                 const config = ref({
                     operation: 'Tambah',
@@ -886,6 +1113,10 @@
                     return sifirQuestions.value[currentSifirIndex.value] || { num1: 0, num2: 0 };
                 });
 
+                const currentTopicQuestion = computed(() => {
+                    return topicQuestions.value[currentTopicIndex.value] || { question: '', options: [], correct: '', topicName: '' };
+                });
+
                 const maxColumns = computed(() => {
                     const len1 = String(currentQuestion.value.num1).length;
                     const len2 = String(currentQuestion.value.num2).length;
@@ -904,6 +1135,7 @@
                 });
 
                 const currentSessionTotalQuestions = computed(() => {
+                    if (currentSessionType.value === 'Latihan Ikut Topik') return 5;
                     return currentSessionType.value === 'Bentuk Lazim' ? config.value.totalQuestions : sifirConfig.value.totalQuestions;
                 });
 
@@ -924,6 +1156,50 @@
                 const openReports = () => {
                     playSound('click');
                     screen.value = 'reports';
+                };
+
+                // GENERASI SOALAN LATIHAN IKUT TOPIK (5 SOALAN TANPA BERULANG)
+                const startTopicSession = () => {
+                    if (!selectedYear.value || !selectedTopicKey.value) return;
+                    const topicObj = kssrTopics['tahun' + selectedYear.value][selectedTopicKey.value];
+                    if (!topicObj || !topicObj.questions) return;
+
+                    // Buat Salinan & Rawakkan Soalan Supaya Tiada Soalan Berulang
+                    let rawQuestions = [...topicObj.questions];
+                    rawQuestions.sort(() => Math.random() - 0.5);
+
+                    // Ambil 5 Soalan Khas & Rawakkan Pilihan Jawapan
+                    topicQuestions.value = rawQuestions.slice(0, 5).map(q => {
+                        let shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+                        return {
+                            ...q,
+                            options: shuffledOptions,
+                            topicName: topicObj.name
+                        };
+                    });
+
+                    currentSessionType.value = 'Latihan Ikut Topik';
+                    currentTopicIndex.value = 0;
+                    score.value = 0;
+                    playSound('correct');
+                    screen.value = 'topic-gameplay';
+                    startTimer();
+                };
+
+                const submitTopicAnswer = (selectedOpt) => {
+                    const q = currentTopicQuestion.value;
+                    if (selectedOpt === q.correct) {
+                        score.value += 1;
+                        playSound('correct');
+                    } else {
+                        playSound('wrong');
+                    }
+
+                    if (currentTopicIndex.value < 4) {
+                        currentTopicIndex.value += 1;
+                    } else {
+                        endSession();
+                    }
                 };
 
                 // GENERASI SOALAN BENTUK LAZIM
@@ -973,19 +1249,14 @@
                     const selected = sifirConfig.value.selectedSifir;
                     const totalReq = sifirConfig.value.totalQuestions;
 
-                    // Buat senarai pendarab dari 1 hingga 12
                     let multipliers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-                    
-                    // Rawakkan senarai
                     multipliers.sort(() => Math.random() - 0.5);
 
-                    // Jika bilangan soalan melebihi 12 (cth: 20 atau 30), gabungkan pendarab rawak tambahan tanpa pengulangan berdekatan
                     while (multipliers.length < totalReq) {
                         let extra = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].sort(() => Math.random() - 0.5);
                         multipliers = multipliers.concat(extra);
                     }
 
-                    // Ambil mengikut bilangan soalan dikehendaki
                     const finalMultipliers = multipliers.slice(0, totalReq);
 
                     sifirQuestions.value = finalMultipliers.map(m => ({
@@ -1056,7 +1327,6 @@
                 const pressKey = (key) => {
                     playSound('click');
 
-                    // JIKA MOD BIJAK SIFIR
                     if (screen.value === 'sifir-gameplay') {
                         if (key === 'C') {
                             sifirAnswerInput.value = '';
@@ -1072,7 +1342,6 @@
                         return;
                     }
 
-                    // JIKA MOD BENTUK LAZIM
                     const target = activeTarget.value;
                     const op = config.value.operation;
                     const digitCount = String(currentQuestion.value.num1).length;
@@ -1231,9 +1500,20 @@
                     const now = new Date();
                     const dateStr = `${now.getDate()}/${now.getMonth()+1} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
                     
-                    const totalQ = currentSessionType.value === 'Bentuk Lazim' ? config.value.totalQuestions : sifirConfig.value.totalQuestions;
-                    const opName = currentSessionType.value === 'Bentuk Lazim' ? `Bentuk Lazim (${config.value.operation})` : `Bijak Sifir (${sifirConfig.value.selectedSifir})`;
-                    const diffName = currentSessionType.value === 'Bentuk Lazim' ? config.value.difficulty : 'Hafalan';
+                    let totalQ = currentSessionTotalQuestions.value;
+                    let opName = '';
+                    let diffName = '';
+
+                    if (currentSessionType.value === 'Latihan Ikut Topik') {
+                        opName = `Topik Thn ${selectedYear.value}`;
+                        diffName = kssrTopics['tahun' + selectedYear.value][selectedTopicKey.value].name;
+                    } else if (currentSessionType.value === 'Bentuk Lazim') {
+                        opName = `Bentuk Lazim (${config.value.operation})`;
+                        diffName = config.value.difficulty;
+                    } else {
+                        opName = `Bijak Sifir (${sifirConfig.value.selectedSifir})`;
+                        diffName = 'Hafalan';
+                    }
 
                     const newRecord = {
                         studentName: user.value.toLowerCase(),
@@ -1258,7 +1538,8 @@
                 };
 
                 const retryCurrentSession = () => {
-                    if (currentSessionType.value === 'Bentuk Lazim') startSession();
+                    if (currentSessionType.value === 'Latihan Ikut Topik') startTopicSession();
+                    else if (currentSessionType.value === 'Bentuk Lazim') startSession();
                     else startSifirSession();
                 };
 
@@ -1274,6 +1555,7 @@
                     newChildName, childProfiles, reportList, filteredReportList, parentFilteredReports, selectedChildForReport, config, sifirConfig, score, currentQuestionIndex,
                     currentQuestion, currentSifirQuestion, currentSifirIndex, sifirAnswerInput, maxColumns, answerArray, carryArray, borrowArray, divisionInputs, activeTarget,
                     formattedTime, currentAccuracy, currentSessionTotalQuestions, currentSessionType, finalTimeDisplay, questions, correctionIndex,
+                    selectedYear, selectedTopicKey, kssrTopics, currentTopicQuestion, currentTopicIndex, startTopicSession, submitTopicAnswer,
                     handleGoogleLogin, loginAsChild, addChildProfile, regenerateChildPin, deleteChildProfile, getChildStats,
                     logout, getDigitAt, changeOperation, startSession, startSifirSession, submitSifirAnswer, triggerBorrow, pressKey, 
                     submitAnswer, retryCurrentSession, goToModeSelection, playSound, openReports, startCorrection, exitCorrection, clearChildReports
